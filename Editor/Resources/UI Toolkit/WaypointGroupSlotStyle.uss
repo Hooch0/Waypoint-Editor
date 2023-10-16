@@ -1,0 +1,15 @@
+#WaypointGroupSlot {
+}
+
+#WaypointGroupSlot > #GroupBackground {
+}
+
+#WaypointGroupSlot > #GroupBackground > Label {
+    -unity-text-align: upper-center;
+    font-size: 16px;
+    -unity-font-style: bold;
+}
+
+#WaypointGroupSlot > #GroupBackground > TextField {
+    font-size: 16px;
+}

@@ -1,0 +1,39 @@
+#CustomVector3 > VisualElement > FloatField > Label {
+    min-width: 15px;
+    margin-left: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 1px;
+    padding-right: 2px;
+    padding-top: 2px;
+    padding-bottom: 0;
+    flex-basis: 15px;
+}
+
+#CustomVector3 > VisualElement > FloatField > FloatInput {
+    flex-grow: 1;
+    margin-left: 0;
+    margin-right: 1px;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 2px;
+    padding-right: 2px;
+    padding-top: 1px;
+    padding-bottom: 0;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+#CustomVector3 > VisualElement > #custom-x-input > Label {
+    margin-left: 0;
+}
+
+#CustomVector3 > VisualElement > #custom-y-input#custom-z-input > Label {
+    margin-left: 3px;
+}
+
+#CustomVector3 > VisualElement > #custom-y-input > FloatInput {
+    color: rgb(123, 123, 123);
+}
