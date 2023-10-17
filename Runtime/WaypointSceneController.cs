@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace Hooch.Waypoint
 {
-    [ExecuteInEditMode]
     public class WaypointSceneController : MonoBehaviour
     {
         public IReadOnlyDictionary<uint, IReadOnlyWaypoint> RuntimeWaypointMap => _runtimeWaypointMap;
