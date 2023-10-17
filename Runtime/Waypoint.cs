@@ -10,11 +10,13 @@ namespace Hooch.Waypoint
         public Vector3 Position { get => _position; set => _position = value; }
         public float Radius { get => _radius; set => _radius = value; }
         public float Height { get => _height; set => _height = value; }
+        public string Tag { get => _tag; set => _tag = value; }
 
         [SerializeField] private uint _iD;
         [SerializeField] private Vector3 _position;
         [SerializeField] private float _radius;
         [SerializeField] private float _height;
+        [SerializeField] private string _tag;
 
         public Waypoint(uint id, Vector3 position, float detectionRadius) 
         {

@@ -8,6 +8,7 @@ namespace Hooch.Waypoint
         Vector3 Position { get; }
         float Radius { get; }
         float Height { get; }
+        string Tag { get; }
     }
 }
 

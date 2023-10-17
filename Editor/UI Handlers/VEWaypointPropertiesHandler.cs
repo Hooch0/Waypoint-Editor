@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -19,6 +20,7 @@ namespace Hooch.Waypoint.Editor
         private FloatField _positionVector3ZField;
         private FloatField _radiusFloatField;
         private FloatField _heightFloatField;
+        private TextField _tagTextField;
 
         private VisualElement _connectionsContainer;
         private ListView _connectionsListView;
@@ -42,6 +44,7 @@ namespace Hooch.Waypoint.Editor
             _positionVector3Field = _root.Q<Vector3Field>(WaypointConstants.PositionVector3Field);
             _radiusFloatField = _root.Q<FloatField>(WaypointConstants.RadiusFloatField);
             _heightFloatField = _root.Q<FloatField>(WaypointConstants.HeightFloatField);
+            _tagTextField = _root.Q<TextField>(WaypointConstants.TagTextField);
 
             _connectionsContainer = _root.Q<VisualElement>(WaypointConstants.ConnectionsContainer);
             _connectionsListView = _root.Q<ListView>(WaypointConstants.ConnectionListView);            
@@ -60,6 +63,7 @@ namespace Hooch.Waypoint.Editor
             _positionVector3ZField.RegisterValueChangedCallback(OnPositionZValueChanged);
             _radiusFloatField.RegisterValueChangedCallback(OnRadiusValueChanged);
             _heightFloatField.RegisterValueChangedCallback(OnHeightValueChanged);
+            _tagTextField.RegisterValueChangedCallback(OnTagValueChanged);
 
             _connectionsListView.makeItem += OnMakeItemListView;
 
@@ -88,6 +92,7 @@ namespace Hooch.Waypoint.Editor
                 _positionVector3Field.SetValueWithoutNotify(Vector3.zero);
                 _radiusFloatField.SetValueWithoutNotify(0);
                 _heightFloatField.SetValueWithoutNotify(0);
+                _tagTextField.SetValueWithoutNotify("");
 
                 _connectionsListView.Unbind();
                 _connectionsListView.itemsSource = new List<object>();
@@ -116,6 +121,7 @@ namespace Hooch.Waypoint.Editor
                 SetVector3Field(waypoint.Position);
                 _radiusFloatField.SetValueWithoutNotify(waypoint.Radius);
                 _heightFloatField.SetValueWithoutNotify(waypoint.Height);
+                _tagTextField.SetValueWithoutNotify(waypoint.Tag);
 
                 //Set the list view only if we have 1 waypoint selected
                 _currentSerializedConnections = GetSerializedConnection(waypoint.ID);
@@ -145,6 +151,7 @@ namespace Hooch.Waypoint.Editor
                 CheckPositionMulti(startWaypoint);
                 CheckRadiusMulti(startWaypoint);
                 CheckHeightMulti(startWaypoint);
+                CheckTagMulti(startWaypoint);
 
                 //This clears the listview
                 _connectionsListView.Unbind();
@@ -209,34 +216,33 @@ namespace Hooch.Waypoint.Editor
 
         private void CheckRadiusMulti(Waypoint comparisonWaypoint)
         {
-            bool mixedValue = false;
-            foreach(Waypoint waypoint in _currentSelectedWaypoints)
-            {
-                if (EqualityComparer<float>.Default.Equals(waypoint.Radius, comparisonWaypoint.Radius) == false)
-                {
-                    mixedValue = true;
-                    break;
-                }
-            }
-            
-            _radiusFloatField.SetValueWithoutNotify(comparisonWaypoint.Radius);
-            _radiusFloatField.showMixedValue = mixedValue;
+            CheckMixedValue(comparisonWaypoint.Radius, x => x.Radius, _radiusFloatField);
         }
 
         private void CheckHeightMulti(Waypoint comparisonWaypoint)
         {
+            CheckMixedValue(comparisonWaypoint.Height, x => x.Height, _heightFloatField);
+        }
+
+        private void CheckTagMulti(Waypoint comparisonWaypoint)
+        {
+            CheckMixedValue(comparisonWaypoint.Tag, x => x.Tag, _tagTextField);
+        }
+
+        private void CheckMixedValue<T>(T checkvalue, Func<Waypoint, T> comparison, TextInputBaseField<T> valueField)
+        {
             bool mixedValue = false;
             foreach(Waypoint waypoint in _currentSelectedWaypoints)
             {
-                if (EqualityComparer<float>.Default.Equals(waypoint.Height, comparisonWaypoint.Height) == false)
+                if (EqualityComparer<T>.Default.Equals(comparison.Invoke(waypoint), checkvalue) == false)
                 {
                     mixedValue = true;
                     break;
                 }
             }
 
-            _heightFloatField.SetValueWithoutNotify(comparisonWaypoint.Height);
-            _heightFloatField.showMixedValue = mixedValue;
+            valueField.SetValueWithoutNotify(checkvalue);
+            valueField.showMixedValue = mixedValue;
         }
 
         private void SetVector3Field(Vector3 newValue)
@@ -255,6 +261,7 @@ namespace Hooch.Waypoint.Editor
             _positionVector3ZField.showMixedValue = false;
             _radiusFloatField.showMixedValue = false;
             _heightFloatField.showMixedValue = false;
+            _tagTextField.showMixedValue = false;
         }
 
         private SerializedProperty GetSerializedConnection(uint id)
@@ -284,6 +291,7 @@ namespace Hooch.Waypoint.Editor
             SetVector3Field(Vector3.zero);
             _radiusFloatField.SetValueWithoutNotify(0);
             _heightFloatField.SetValueWithoutNotify(0);
+            _tagTextField.SetValueWithoutNotify("");
 
             
             //This clears the listview
@@ -342,7 +350,7 @@ namespace Hooch.Waypoint.Editor
             Undo.RegisterCompleteObjectUndo(_serializedSceneData.targetObject, "Changed Waypoint Radius");
 
             Waypoint first = _currentSelectedWaypoints[0];
-            if ( _radiusFloatField.showMixedValue == true)
+            if (_radiusFloatField.showMixedValue == true)
             {
                 _radiusFloatField.SetValueWithoutNotify(Mathf.Clamp(first.Radius,0 , Mathf.Infinity));
                 _radiusFloatField.showMixedValue = false;
@@ -371,6 +379,26 @@ namespace Hooch.Waypoint.Editor
             foreach(Waypoint waypoint in _currentSelectedWaypoints)
             {
                 waypoint.Height = evt.newValue;
+            }
+
+            EditorUtility.SetDirty(_serializedSceneData.targetObject);
+            _serializedSceneData.ApplyModifiedProperties();
+        }
+
+        private void OnTagValueChanged(ChangeEvent<string> evt)
+        {
+            Undo.RegisterCompleteObjectUndo(_serializedSceneData.targetObject, "Changed Waypoint Tag");
+
+            Waypoint first = _currentSelectedWaypoints[0];
+            if (_tagTextField.showMixedValue == true)
+            {
+                _tagTextField.SetValueWithoutNotify(first.Tag);
+                _tagTextField.showMixedValue = false;
+            }
+
+            foreach(Waypoint waypoint in _currentSelectedWaypoints)
+            {
+                waypoint.Tag = evt.newValue;
             }
 
             EditorUtility.SetDirty(_serializedSceneData.targetObject);

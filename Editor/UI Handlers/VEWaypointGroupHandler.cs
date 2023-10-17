@@ -15,8 +15,6 @@ namespace Hooch.Waypoint.Editor
         private Button _groupButton;
         private TextField _groupTextField;
 
-        private SerializedObject _serializedSceneData;
-
         
 
         public VEWaypointGroupHandler(VisualElement root, WaypointEditorWindow editor)
@@ -47,8 +45,6 @@ namespace Hooch.Waypoint.Editor
 
         public void UpdateSceneData(SerializedObject serializedSceneData)
         {
-            _serializedSceneData = serializedSceneData;
-
             if (serializedSceneData == null)
             {
                 //This clears the listview

@@ -42,7 +42,6 @@ namespace Hooch.Waypoint.Editor
             WaypointEditorWindow wnd = GetWindow<WaypointEditorWindow>();
             wnd.titleContent = new GUIContent("Waypoint Editor");
             wnd.minSize = wnd._windowSize;
-            wnd.ResetEditor();
             return wnd;
         }
 
@@ -104,40 +103,14 @@ namespace Hooch.Waypoint.Editor
 
         public void SetSceneData(WaypointSceneController controller)
         {
+            UpdateSceneDataIntenral(controller);
             _sceneController = controller;
-            UpdateSceneData();
             SerializedObject.UpdateIfRequiredOrScript();
         }
 
         public void UpdateSceneData()
         {
-            if (WaypointHandler.CurrentGroup != null)
-            {
-                SetSelectedGroup(null);
-            }
-            
-            if (_sceneController != null)
-            {
-                SerializedSceneController = new SerializedObject(_sceneController);
-                WaypointHandler.IDHandler.SetupUniqueID(GetCurrentWaypointGroupList());
-                SerializedWaypointGroups = SerializedSceneController.FindProperty(WaypointConstants.WaypointGroupsBinding);
-
-                //If default is not available, add it.
-                if (SerializedWaypointGroups.arraySize == 0)
-                {
-                    AddWaypointGroup(new WaypointGroup(WaypointConstants.DEFAULT_GROUP_NAME));
-                }
-                else
-                {
-                    SetSelectedGroup((WaypointGroup)SerializedWaypointGroups.GetArrayElementAtIndex(0).managedReferenceValue);
-                }
-            }
-            else
-            {
-                SerializedSceneController = null;
-                SerializedWaypointGroups = null;
-                ResetEditor();
-            }
+            UpdateSceneDataIntenral(_sceneController);
         }
 
         public void AddWaypointGroup(WaypointGroup group)
@@ -274,6 +247,36 @@ namespace Hooch.Waypoint.Editor
             if (SerializedObject != null && SerializedObject.targetObject != null)
             {
                 SerializedObject.UpdateIfRequiredOrScript();
+            }
+        }
+
+        private void UpdateSceneDataIntenral(WaypointSceneController sceneController)
+        {
+            if (WaypointHandler.CurrentGroup != null)
+            {
+                SetSelectedGroup(null);
+            }
+            
+            if (sceneController != null)
+            {
+                SerializedSceneController = new SerializedObject(sceneController);
+                WaypointHandler.IDHandler.SetupUniqueID(GetCurrentWaypointGroupList());
+                SerializedWaypointGroups = SerializedSceneController.FindProperty(WaypointConstants.WaypointGroupsBinding);
+                //If default is not available, add it.
+                if (SerializedWaypointGroups.arraySize == 0)
+                {
+                    AddWaypointGroup(new WaypointGroup(WaypointConstants.DEFAULT_GROUP_NAME));
+                }
+                else
+                {
+                    SetSelectedGroup((WaypointGroup)SerializedWaypointGroups.GetArrayElementAtIndex(0).managedReferenceValue);
+                }
+            }
+            else
+            {
+                SerializedSceneController = null;
+                SerializedWaypointGroups = null;
+                ResetEditor();
             }
         }
 

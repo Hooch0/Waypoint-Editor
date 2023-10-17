@@ -1,4 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <Style src="project://database/Packages/dev.hooch.waypoint/Editor/Resources/UI%20Toolkit/WaypointGroupSlotStyle.uss?fileID=7433441132597879392&amp;guid=c04499a207f3fd54a8a502a4b40236c0&amp;type=3#WaypointGroupSlotStyle" />
+    <Style src="project://database/Packages/dev.hooch.waypoint/Editor/Resources/UI%20Toolkit/FloatFieldStyle.uss?fileID=7433441132597879392&amp;guid=b34ff77030fb2d84594c9a7082ef8680&amp;type=3#FloatFieldStyle" />
     <ui:VisualElement style="flex-grow: 1;">
         <ui:Label text="Scene Data" display-tooltip-when-elided="true" style="-unity-text-align: middle-center; -unity-font-style: bold; font-size: 18px;" />
         <uie:ObjectField label="Waypoint Scene Data" name="WaypointSceneDataField" type="Hooch.Waypoint.WaypointSceneController, WaypointEditor" />
@@ -29,6 +31,7 @@
                     <uie:Vector3Field label="Position" name="PositionVector3Field" />
                     <uie:FloatField label="Radius" value="10" name="RadiusFloatField" />
                     <uie:FloatField label="Height" value="0" name="HeightFloatField" />
+                    <ui:TextField picking-mode="Ignore" label="Tag" name="TagTextField" />
                 </ui:VisualElement>
                 <ui:VisualElement style="height: 17px;" />
                 <ui:Label text="Selected Waypoint Connections" display-tooltip-when-elided="true" style="font-size: 18px; -unity-font-style: bold; -unity-text-align: upper-center;" />
