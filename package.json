@@ -1,6 +1,6 @@
 {
     "name": "dev.hooch.waypoint",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "displayName": "Waypoint Editor",
     "description": "A tool made to create waypoints.",
     "unity": "2021.3",
@@ -10,6 +10,6 @@
       "AI"
     ],
     "author": {
-      "name": "Hooch"
+      "name": "Hooch, Ron"
     }
   }
