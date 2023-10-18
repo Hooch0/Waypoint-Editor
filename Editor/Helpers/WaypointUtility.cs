@@ -32,7 +32,7 @@ namespace Hooch.Waypoint.Editor
             Handles.color = cachedColor;
         }
     
-        public static bool Raycast(Ray ray, out RaycastHit hit) => Physics.Raycast(ray, out hit, Mathf.Infinity, WaypointEditorSettingsHandler.GetEditorSettings().LayerMask);
+        public static bool Raycast(Ray ray, out RaycastHit hit) => Physics.Raycast(ray, out hit, Mathf.Infinity, WaypointEditorSettingsHandler.GetEditorSettings().GetLayerMask());
 
         public static void DebugLog_WaypointControl(int controlID, uint id, string log) => Debug.Log($"ControlID: {controlID} -- ID: {id}\nLog: {log}");
 

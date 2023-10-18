@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 
 namespace Hooch.Waypoint.Editor
@@ -9,7 +10,9 @@ namespace Hooch.Waypoint.Editor
     public class WaypointEditorSettingsHandler
     {
         private const string _DEFUALT_RADIUS_KEY = "Varadia.WaypointSettings.defaultRadius";
+        private const string _LAYER_OPTIONS_KEY = "Varadia.WaypointSettings.layerOptions";
         private const string _LAYER_MASK_KEY = "Varadia.WaypointSettings.layerMask";
+        
 
         private const string _ID_COLOR_KEY_R = "Varadia.WaypointSettings.IDColor_R";
         private const string _ID_COLOR_KEY_G = "Varadia.WaypointSettings.IDColor_G";
@@ -40,12 +43,15 @@ namespace Hooch.Waypoint.Editor
         public class WaypointEditorSettings
         {
             public float DefaultRadius { get; set; }
+            public int LayerOptions { get; set; }
             public int LayerMask { get; set; }
             public Color IDColor { get; set; }
             public Color RadiusColor { get; set; }
             public Color ArrowHeadColor { get; set; }
             public Color LineColor { get; set; }
             public Color SelectedLineColor { get; set; }
+
+            public int GetLayerMask() => LayerMask;
         }
 
         public static WaypointEditorSettings GetEditorSettings()
@@ -53,6 +59,7 @@ namespace Hooch.Waypoint.Editor
             return new WaypointEditorSettings
             {
                 DefaultRadius = EditorPrefs.GetFloat(_DEFUALT_RADIUS_KEY, 1f),
+                LayerOptions = EditorPrefs.GetInt(_LAYER_OPTIONS_KEY, 0),
                 LayerMask = EditorPrefs.GetInt(_LAYER_MASK_KEY, 0),
 
                 IDColor = new Color(EditorPrefs.GetFloat(_ID_COLOR_KEY_R, Color.cyan.r), 
@@ -85,6 +92,7 @@ namespace Hooch.Waypoint.Editor
         public static void SetEditorSettings(WaypointEditorSettings settings)
         {
             EditorPrefs.SetFloat(_DEFUALT_RADIUS_KEY, settings.DefaultRadius);
+            EditorPrefs.SetInt(_LAYER_OPTIONS_KEY, settings.LayerOptions);
             EditorPrefs.SetInt(_LAYER_MASK_KEY, settings.LayerMask);
 
             EditorPrefs.SetFloat(_ID_COLOR_KEY_R, settings.IDColor.r);
@@ -142,8 +150,11 @@ namespace Hooch.Waypoint.Editor
             EditorGUILayout.LabelField("Settings", headerStyle);
             settings.DefaultRadius = Mathf.Max(EditorGUILayout.FloatField(_defaultRadiusLabel, settings.DefaultRadius), 0);
             
-            string[] options = Enumerable.Range(0, 31).Select(index => LayerMask.LayerToName(index)).Where(l => !string.IsNullOrEmpty(l)).ToArray();
-            settings.LayerMask = EditorGUILayout.MaskField(_layerMaskLabel, settings.LayerMask, options);
+            
+            
+            settings.LayerOptions = EditorGUILayout.MaskField(_layerMaskLabel, settings.LayerOptions, InternalEditorUtility.layers);
+            settings.LayerMask = GetLayerMask(settings.LayerOptions);;
+
 
             EditorGUILayout.LabelField("Colors", headerStyle);
             settings.IDColor = EditorGUILayout.ColorField(_IDColorLabel, settings.IDColor);
@@ -162,6 +173,44 @@ namespace Hooch.Waypoint.Editor
             EditorGUILayout.LabelField(usage);
             EditorGUILayout.EndHorizontal();
         }
+
+        private static int GetLayerMask(int layerOptions)
+        {
+            int layerMask = 0;
+            string[] options = InternalEditorUtility.layers;
+            int[] layerIndexes = ToLayerArray(layerOptions);
+
+            List<string> layerNames = new List<string>(); 
+            for (int i = 0; i < layerIndexes.Length; i++)
+            {
+                layerNames.Add(options[layerIndexes[i]]);
+            }
+
+            
+            foreach(string layerName in layerNames)
+            {
+                layerMask |= 1 << LayerMask.NameToLayer(layerName);
+            }
+
+            return layerMask;
+        }
+
+        private static int[] ToLayerArray(int mask)
+        {
+            List<int> layers = new List<int>();
+
+            for (int i = 0; i < 32; i++) // Unity supports 32 layers (0 to 31)
+            {
+                int layer = 1 << i;
+                if ((mask & layer) != 0)
+                {
+                    layers.Add(i);
+                }
+            }
+
+            return layers.ToArray();
+        }
+
     }
 
 #if UNITY_2018_3_OR_NEWER

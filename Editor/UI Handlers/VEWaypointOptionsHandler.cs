@@ -74,7 +74,7 @@ namespace Hooch.Waypoint.Editor
         {
             if (evt.newValue == false)
             {
-                _editor.ResetHandler();
+                _editor.WaypointHandler.ClearSelection();
             }
         }
 
