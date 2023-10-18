@@ -153,7 +153,6 @@ namespace Hooch.Waypoint.Editor
 
         public void SetSelectedGroup(WaypointGroup group)
         {
-            Debug.Log($"Changing group to: {group}");
             WaypointHandler.ResetSelectedWaypoints();
             WaypointHandler.SetSelectedGroup(group);
             CurrentGroupChanged?.Invoke(group);
