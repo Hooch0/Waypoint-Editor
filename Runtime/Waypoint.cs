@@ -6,6 +6,7 @@ namespace Hooch.Waypoint
     [Serializable]
     public class Waypoint : IReadOnlyWaypoint
     {
+        public bool HasTag => string.IsNullOrEmpty(Tag) == false;
         public uint ID { get => _iD; }
         public Vector3 Position { get => _position; set => _position = value; }
         public float Radius { get => _radius; set => _radius = value; }

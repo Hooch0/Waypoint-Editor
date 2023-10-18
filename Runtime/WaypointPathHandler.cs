@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using URandom = UnityEngine.Random;
 
 
 namespace Hooch.Waypoint
@@ -8,6 +10,7 @@ namespace Hooch.Waypoint
     //This is actually used by the AIAgent for movement.
     public class WaypointPathHandler : MonoBehaviour
     {
+        public event Action<string> WaypointWithTagReached;
 
         [SerializeField] private uint _testWaypointID;
         [SerializeField] private WaypointSceneController _controller;
@@ -46,6 +49,12 @@ namespace Hooch.Waypoint
 
             if (Vector3.Distance(_agent.transform.position, _currentWaypoint.Position) < _currentWaypoint.Radius)
             {
+
+                if (_currentWaypoint.HasTag == true)
+                {
+                    WaypointWithTagReached?.Invoke(_currentWaypoint.Tag);
+                }
+                
                 _currentWaypoint = GetNextWaypoint();
 
                 if (_currentWaypoint != null)
@@ -67,7 +76,7 @@ namespace Hooch.Waypoint
 
             if (transitions.Count > 1)
             {
-                float value = Random.Range(0.0f, 1.0f);
+                float value = URandom.Range(0.0f, 1.0f);
                 //This is a hardset random range 
                 for (int i = 0; i < transitions.Count; i++)
                 {
