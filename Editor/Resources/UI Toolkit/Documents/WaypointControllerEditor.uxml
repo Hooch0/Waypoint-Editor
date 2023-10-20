@@ -1,21 +1,26 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
-    <Style src="project://database/Packages/dev.hooch.waypoint/Editor/Resources/UI%20Toolkit/WaypointGroupSlotStyle.uss?fileID=7433441132597879392&amp;guid=c04499a207f3fd54a8a502a4b40236c0&amp;type=3#WaypointGroupSlotStyle" />
-    <Style src="project://database/Packages/dev.hooch.waypoint/Editor/Resources/UI%20Toolkit/FloatFieldStyle.uss?fileID=7433441132597879392&amp;guid=b34ff77030fb2d84594c9a7082ef8680&amp;type=3#FloatFieldStyle" />
+    <Style src="project://database/Packages/dev.hooch.waypoint/Editor/Resources/UI%20Toolkit/Styles/WaypointGroupSlotStyle.uss?fileID=7433441132597879392&amp;guid=c04499a207f3fd54a8a502a4b40236c0&amp;type=3#WaypointGroupSlotStyle" />
+    <Style src="project://database/Packages/dev.hooch.waypoint/Editor/Resources/UI%20Toolkit/Styles/FloatFieldStyle.uss?fileID=7433441132597879392&amp;guid=b34ff77030fb2d84594c9a7082ef8680&amp;type=3#FloatFieldStyle" />
+    <Style src="project://database/Packages/dev.hooch.waypoint/Editor/Resources/UI%20Toolkit/Styles/WaypointHeaderStyle.uss?fileID=7433441132597879392&amp;guid=82738805e5d509c458e2cb106229a9c3&amp;type=3#WaypointHeaderStyle" />
     <ui:VisualElement style="flex-grow: 1;">
+        <ui:VisualElement style="flex-direction: row;">
+            <uie:ToolbarButton text="Button" display-tooltip-when-elided="true" style="flex-grow: 1;" />
+            <uie:ToolbarToggle focusable="false" label="Toggle" style="flex-grow: 1;" />
+        </ui:VisualElement>
         <ui:Label text="Scene Data" display-tooltip-when-elided="true" style="-unity-text-align: middle-center; -unity-font-style: bold; font-size: 18px;" />
         <uie:ObjectField label="Waypoint Scene Data" name="WaypointSceneDataField" type="Hooch.Waypoint.WaypointSceneController, WaypointEditor" />
         <ui:Button text="Create Scene Controller" display-tooltip-when-elided="true" name="CreateSceneController" />
         <ui:VisualElement style="height: 25px;" />
         <ui:VisualElement name="CoreInspector">
             <ui:VisualElement style="height: 21px;" />
-            <ui:Label text="Groups" display-tooltip-when-elided="true" style="-unity-text-align: middle-center; -unity-font-style: bold; font-size: 18px;" />
+            <ui:Label text="Groups" display-tooltip-when-elided="true" class="label-font" />
             <ui:ListView focusable="true" name="GroupListView" virtualization-method="DynamicHeight" show-bound-collection-size="false" show-border="true" style="height: 116px;" />
             <ui:VisualElement style="flex-direction: row;">
                 <ui:Button text="Add Group" display-tooltip-when-elided="true" name="GroupButton" />
                 <ui:TextField picking-mode="Ignore" max-length="20" name="GroupTextField" style="flex-grow: 1;" />
             </ui:VisualElement>
             <ui:VisualElement style="height: 50px;" />
-            <ui:Label text="Waypoints" display-tooltip-when-elided="true" style="-unity-text-align: upper-center; -unity-font-style: bold; font-size: 18px;" />
+            <ui:Label text="Waypoints" display-tooltip-when-elided="true" class="label-font" />
             <ui:VisualElement style="height: auto;">
                 <ui:Toggle label="Toggle Editing" name="EditingToggle" />
                 <ui:Toggle label="Autolink" name="AutolinkToggle" />
@@ -25,7 +30,7 @@
                 </ui:VisualElement>
                 <ui:TextField picking-mode="Ignore" label="Selected ID&apos;s" readonly="true" focusable="false" name="SelectedIDsTextField" style="white-space: normal;" />
                 <ui:VisualElement style="height: 17px;" />
-                <ui:Label text="Selected Waypoint Properties" display-tooltip-when-elided="true" style="font-size: 18px; -unity-font-style: bold; -unity-text-align: upper-center;" />
+                <ui:Label text="Selected Waypoint Properties" display-tooltip-when-elided="true" class="label-font" />
                 <ui:VisualElement name="PropertiesContainer" style="height: auto; background-color: rgb(94, 94, 94); visibility: visible;">
                     <ui:TextField picking-mode="Ignore" label="ID" name="IDTextField" readonly="true" />
                     <uie:Vector3Field label="Position" name="PositionVector3Field" />
@@ -34,7 +39,7 @@
                     <ui:TextField picking-mode="Ignore" label="Tag" name="TagTextField" />
                 </ui:VisualElement>
                 <ui:VisualElement style="height: 17px;" />
-                <ui:Label text="Selected Waypoint Connections" display-tooltip-when-elided="true" style="font-size: 18px; -unity-font-style: bold; -unity-text-align: upper-center;" />
+                <ui:Label text="Selected Waypoint Connections" display-tooltip-when-elided="true" class="label-font" />
                 <ui:VisualElement />
                 <ui:VisualElement name="ConnectionsContainer" style="flex-direction: row;">
                     <ui:ListView focusable="true" name="ConnectionListView" virtualization-method="DynamicHeight" show-bound-collection-size="false" show-border="true" style="height: 100px; min-width: 80px;" />

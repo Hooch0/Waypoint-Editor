@@ -24,17 +24,17 @@ namespace Hooch.Waypoint.Editor
             _editor.WaypointHandler.SelectionChanged += OnSelectionChanged;
 
 
-            _editingToggle = _root.Q<Toggle>(WaypointConstants.EditingToggle);
-            _autolinkToggle = _root.Q<Toggle>(WaypointConstants.AutolinkToggle);
-            _linkButton = _root.Q<Button>(WaypointConstants.LinkButton);
-            _unlinkButton = _root.Q<Button>(WaypointConstants.UnlinkButton);
-            _selectedIdsTextField = _root.Q<TextField>(WaypointConstants.SelectedIDsTextField);
+            _editingToggle = _root.Q<Toggle>(WaypointConstants.WaypointEditor.EditingToggle);
+            _autolinkToggle = _root.Q<Toggle>(WaypointConstants.WaypointEditor.AutolinkToggle);
+            _linkButton = _root.Q<Button>(WaypointConstants.WaypointEditor.LinkButton);
+            _unlinkButton = _root.Q<Button>(WaypointConstants.WaypointEditor.UnlinkButton);
+            _selectedIdsTextField = _root.Q<TextField>(WaypointConstants.WaypointEditor.SelectedIDsTextField);
 
             _linkButton.clicked += OnLinkButtonClicked;
             _unlinkButton.clicked += OnUnlinkButtonClicked;
 
-            SerializedProperty editingProp = _editor.SerializedObject.FindProperty(WaypointConstants.EditingToggleBindingPath);
-            SerializedProperty autolinkProp = _editor.SerializedObject.FindProperty(WaypointConstants.AutolinkBindingPath);
+            SerializedProperty editingProp = _editor.SerializedObject.FindProperty(WaypointConstants.WaypointEditor.EditingToggleBindingPath);
+            SerializedProperty autolinkProp = _editor.SerializedObject.FindProperty(WaypointConstants.WaypointEditor.AutolinkBindingPath);
 
             _editingToggle.BindProperty(editingProp);
             _autolinkToggle.BindProperty(autolinkProp);

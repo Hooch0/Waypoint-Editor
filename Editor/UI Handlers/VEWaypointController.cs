@@ -37,19 +37,19 @@ namespace Hooch.Waypoint.Editor
             _optionsHandler = new VEWaypointOptionsHandler(_root, _editor);
             _propertiesHandler = new VEWaypointPropertiesHandler(_root, _editor);
 
-            _coreInspector = _root.Q<VisualElement>(WaypointConstants.CoreInspector);
+            _coreInspector = _root.Q<VisualElement>(WaypointConstants.WaypointEditor.CoreInspector);
             _coreInspector.SetEnabled(false);
 
             
 
-            _createSceneData = _root.Q<Button>(WaypointConstants.CreateSceneController);
+            _createSceneData = _root.Q<Button>(WaypointConstants.WaypointEditor.CreateSceneController);
             _createSceneData.clicked += OnCreateSceenData;
 
-            _generateRuntimeMapButton = _root.Q<Button>(WaypointConstants.GenerateRuntimeMapButton);
+            _generateRuntimeMapButton = _root.Q<Button>(WaypointConstants.WaypointEditor.GenerateRuntimeMapButton);
             _generateRuntimeMapButton.clicked += OnGenerateRuntimeMap;
 
-            _autoGenerateToggle = _root.Q<Toggle>(WaypointConstants.AutoGenerateToggle);
-            _autoGenProp = editor.SerializedObject.FindProperty(WaypointConstants.AutogenerateBinding);
+            _autoGenerateToggle = _root.Q<Toggle>(WaypointConstants.WaypointEditor.AutoGenerateToggle);
+            _autoGenProp = editor.SerializedObject.FindProperty(WaypointConstants.WaypointEditor.AutogenerateBinding);
             _autoGenProp.boolValue = EditorPrefs.GetBool(_AUTO_GENERATE_KEY, false);
             editor.SerializedObject.ApplyModifiedProperties();
 
@@ -58,9 +58,9 @@ namespace Hooch.Waypoint.Editor
 
             ObjectChangeEvents.changesPublished += OnChangesPublished;
 
-            _waypointSceneDataField = _root.Q<ObjectField>(WaypointConstants.WaypointSceneDataField);
+            _waypointSceneDataField = _root.Q<ObjectField>(WaypointConstants.WaypointEditor.WaypointSceneDataField);
             _waypointSceneDataField.RegisterValueChangedCallback(OnWaypointSceneDataFieldValueChanged);
-            _waypointSceneDataField.BindProperty(editor.SerializedObject.FindProperty(WaypointConstants.SceneControllerBinding));
+            _waypointSceneDataField.BindProperty(editor.SerializedObject.FindProperty(WaypointConstants.WaypointEditor.SceneControllerBinding));
         }
 
         private void OnAutoGenerateToggleChanged(ChangeEvent<bool> evt)

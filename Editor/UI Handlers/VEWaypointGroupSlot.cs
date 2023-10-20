@@ -69,11 +69,11 @@ namespace Hooch.Waypoint.Editor
 
         public void SetValueWithoutNotify(string newValue)
         {
-            if(string.IsNullOrEmpty(_groupName) && newValue == WaypointConstants.DEFAULT_GROUP_NAME)
+            if(string.IsNullOrEmpty(_groupName) && newValue == WaypointConstants.WaypointEditor.DEFAULT_GROUP_NAME)
             {
                 _textField.UnregisterValueChangedCallback(OnTextFieldChanged);
                 _label.UnregisterCallback<MouseDownEvent>(OnLabelMouseDown);
-                _groupBackground.tooltip = $"{WaypointConstants.DEFAULT_GROUP_NAME} cannot be renamed or deleted.";
+                _groupBackground.tooltip = $"{WaypointConstants.WaypointEditor.DEFAULT_GROUP_NAME} cannot be renamed or deleted.";
                 _contextMenu.target = null;
             }
             

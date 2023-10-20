@@ -39,16 +39,16 @@ namespace Hooch.Waypoint.Editor
             _root = root;
             _editor = editor;
             
-            _propertiesContainer = _root.Q<VisualElement>(WaypointConstants.PropertiesContainer);
-            _idTextField = _root.Q<TextField>(WaypointConstants.IDTextField);
-            _positionVector3Field = _root.Q<Vector3Field>(WaypointConstants.PositionVector3Field);
-            _radiusFloatField = _root.Q<FloatField>(WaypointConstants.RadiusFloatField);
-            _heightFloatField = _root.Q<FloatField>(WaypointConstants.HeightFloatField);
-            _tagTextField = _root.Q<TextField>(WaypointConstants.TagTextField);
+            _propertiesContainer = _root.Q<VisualElement>(WaypointConstants.WaypointEditor.PropertiesContainer);
+            _idTextField = _root.Q<TextField>(WaypointConstants.WaypointEditor.IDTextField);
+            _positionVector3Field = _root.Q<Vector3Field>(WaypointConstants.WaypointEditor.PositionVector3Field);
+            _radiusFloatField = _root.Q<FloatField>(WaypointConstants.WaypointEditor.RadiusFloatField);
+            _heightFloatField = _root.Q<FloatField>(WaypointConstants.WaypointEditor.HeightFloatField);
+            _tagTextField = _root.Q<TextField>(WaypointConstants.WaypointEditor.TagTextField);
 
-            _connectionsContainer = _root.Q<VisualElement>(WaypointConstants.ConnectionsContainer);
-            _connectionsListView = _root.Q<ListView>(WaypointConstants.ConnectionListView);            
-            _probabilityFloatField = _root.Q<FloatField>(WaypointConstants.ProbabilityFloatField);
+            _connectionsContainer = _root.Q<VisualElement>(WaypointConstants.WaypointEditor.ConnectionsContainer);
+            _connectionsListView = _root.Q<ListView>(WaypointConstants.WaypointEditor.ConnectionListView);            
+            _probabilityFloatField = _root.Q<FloatField>(WaypointConstants.WaypointEditor.ProbabilityFloatField);
 
 
             _idTextField.SetEnabled(false);
@@ -133,7 +133,7 @@ namespace Hooch.Waypoint.Editor
                     {
                         _connectionsListView.SetSelection(0);
                     });
-                    _currentSerializedTransitions = _currentSerializedConnections.FindPropertyRelative(WaypointConstants.WaypointTransitionBinding);
+                    _currentSerializedTransitions = _currentSerializedConnections.FindPropertyRelative(WaypointConstants.WaypointEditor.WaypointTransitionBinding);
                     _connectionsListView.BindProperty(_currentSerializedTransitions);
                 }
 
@@ -267,7 +267,7 @@ namespace Hooch.Waypoint.Editor
         private SerializedProperty GetSerializedConnection(uint id)
         {
             
-            SerializedProperty serializedConnectionList = _editor.GetCurrentSerializedGroup().FindPropertyRelative(WaypointConstants.WaypointConnectionsBinding);
+            SerializedProperty serializedConnectionList = _editor.GetCurrentSerializedGroup().FindPropertyRelative(WaypointConstants.WaypointEditor.WaypointConnectionsBinding);
 
             for (int i = 0; i < serializedConnectionList.arraySize; i++)
             {
@@ -423,7 +423,7 @@ namespace Hooch.Waypoint.Editor
             if (_connectionsListView.selectedItem == null) return;
 
             SerializedProperty currentSerializedTransitions = (SerializedProperty)_connectionsListView.selectedItem;
-            _probabilityFloatField.BindProperty(currentSerializedTransitions.FindPropertyRelative(WaypointConstants.ProbabilityBinding));
+            _probabilityFloatField.BindProperty(currentSerializedTransitions.FindPropertyRelative(WaypointConstants.WaypointEditor.ProbabilityBinding));
         }
 
         private void OnBindItemListView(VisualElement element, int arg2)

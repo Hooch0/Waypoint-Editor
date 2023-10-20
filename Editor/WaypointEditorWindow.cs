@@ -33,10 +33,11 @@ namespace Hooch.Waypoint.Editor
         private int _id;
 
         private SceneView _currentView;
+        private const string _EDITOR_UI_DOCUMENT = "UI Toolkit/Documents/WaypointControllerEditor";
 
 
 
-        [MenuItem("Tools/Waypoint Editor", priority = 20)]
+        [MenuItem("Tools/Waypoint System/Editor", priority = 20)]
         public static WaypointEditorWindow ShowWindow()
         {
             WaypointEditorWindow wnd = GetWindow<WaypointEditorWindow>();
@@ -96,7 +97,7 @@ namespace Hooch.Waypoint.Editor
             {
                 LoadWaypointSceneController();
             }
-            VisualTreeAsset tree = Resources.Load("UI Toolkit/WaypointControllerEditor") as VisualTreeAsset;
+            VisualTreeAsset tree = Resources.Load(_EDITOR_UI_DOCUMENT) as VisualTreeAsset;
             tree.CloneTree(rootVisualElement);
             _veController = new VEWaypointController(rootVisualElement, this);
         }
@@ -177,7 +178,7 @@ namespace Hooch.Waypoint.Editor
         {
             if (SerializedSceneController != null)
             {
-                SerializedProperty groupsProp = SerializedSceneController.FindProperty(WaypointConstants.WaypointGroupsBinding);
+                SerializedProperty groupsProp = SerializedSceneController.FindProperty(WaypointConstants.WaypointEditor.WaypointGroupsBinding);
 
                 for (int i = 0; i < groupsProp.arraySize; i++)
                 {
@@ -256,11 +257,11 @@ namespace Hooch.Waypoint.Editor
             {
                 SerializedSceneController = new SerializedObject(sceneController);
                 WaypointHandler.IDHandler.SetupUniqueID(GetCurrentWaypointGroupList());
-                SerializedWaypointGroups = SerializedSceneController.FindProperty(WaypointConstants.WaypointGroupsBinding);
+                SerializedWaypointGroups = SerializedSceneController.FindProperty(WaypointConstants.WaypointEditor.WaypointGroupsBinding);
                 //If default is not available, add it.
                 if (SerializedWaypointGroups.arraySize == 0)
                 {
-                    AddWaypointGroup(new WaypointGroup(WaypointConstants.DEFAULT_GROUP_NAME));
+                    AddWaypointGroup(new WaypointGroup(WaypointConstants.WaypointEditor.DEFAULT_GROUP_NAME));
                 }
                 else
                 {
@@ -282,7 +283,7 @@ namespace Hooch.Waypoint.Editor
 
             if (SerializedSceneController != null)
             {
-                SerializedProperty groupsProp = SerializedSceneController.FindProperty(WaypointConstants.WaypointGroupsBinding);
+                SerializedProperty groupsProp = SerializedSceneController.FindProperty(WaypointConstants.WaypointEditor.WaypointGroupsBinding);
 
 
                 for (int i = 0; i < groupsProp.arraySize; i++)
@@ -363,7 +364,7 @@ namespace Hooch.Waypoint.Editor
         Disbaled until a suitable replacement can be found for generating dicitonary/hashmaps in editor without losing performance.
         private System.Collections.IEnumerator RunGenerateRuntimeMap()
         {
-            SerializedProperty groupsProp = SerializedSceneController.FindProperty(WaypointConstants.WaypointGroupsBinding);
+            SerializedProperty groupsProp = SerializedSceneController.FindProperty(WaypointConstants.WaypointEditor.WaypointGroupsBinding);
 
             int groupsCnt = groupsProp.arraySize;
             int waypointsCnt = 0;

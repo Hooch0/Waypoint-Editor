@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <Style src="project://database/Packages/dev.hooch.waypoint/Editor/Resources/UI%20Toolkit/Styles/WaypointHeaderStyle.uss?fileID=7433441132597879392&amp;guid=82738805e5d509c458e2cb106229a9c3&amp;type=3#WaypointHeaderStyle" />
+    <ui:VisualElement style="flex-grow: 1;">
+        <ui:Label text="Settings" display-tooltip-when-elided="true" class="label-font" />
+        <uie:LayerMaskField label="Ground Detection" name="GroundDetectionLayerMask" />
+    </ui:VisualElement>
+</ui:UXML>

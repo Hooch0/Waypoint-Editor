@@ -24,9 +24,9 @@ namespace Hooch.Waypoint.Editor
 
             _editor.CurrentGroupChanged += OnCurrentGroupChanged;
 
-            _groupListView = _root.Q<ListView>(WaypointConstants.GroupListView);
-            _groupButton = _root.Q<Button>(WaypointConstants.GroupButton);
-            _groupTextField = _root.Q<TextField>(WaypointConstants.GroupTextField);
+            _groupListView = _root.Q<ListView>(WaypointConstants.WaypointEditor.GroupListView);
+            _groupButton = _root.Q<Button>(WaypointConstants.WaypointEditor.GroupButton);
+            _groupTextField = _root.Q<TextField>(WaypointConstants.WaypointEditor.GroupTextField);
             
 
             _groupButton.clicked += OnGroupButtonClicked;
@@ -137,7 +137,7 @@ namespace Hooch.Waypoint.Editor
         private void OnBindItemListView(VisualElement element, int index)
         {
             VEWaypointGroupSlot slot = (VEWaypointGroupSlot)element;
-            SerializedProperty group = _editor.SerializedWaypointGroups.GetArrayElementAtIndex(index).FindPropertyRelative(WaypointConstants.WaypointGroupNameBinding);
+            SerializedProperty group = _editor.SerializedWaypointGroups.GetArrayElementAtIndex(index).FindPropertyRelative(WaypointConstants.WaypointEditor.WaypointGroupNameBinding);
             slot.Unbind();
             slot.Reset();
             slot.BindProperty(group);
