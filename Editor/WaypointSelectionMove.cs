@@ -32,8 +32,8 @@ namespace Hooch.Waypoint.Editor
             {
                 Vector3 newPositon = position;
                 RaycastHit hit;
-                Ray ray = new Ray(position + Vector3.up * 1000, Vector3.down);
-                if (WaypointUtility.Raycast(ray, out hit) == true)
+                Ray ray = HandleUtility.GUIPointToWorldRay(HandleUtility.WorldToGUIPoint(position));
+                if (WaypointUtility.Raycast(ray, out hit))
                 {
                     newPositon = hit.point;
                 }
@@ -45,10 +45,10 @@ namespace Hooch.Waypoint.Editor
 
             Vector3 startPosition = startWaypoint.Position;
             
-            Vector3 position = _freeMove.Do(FreeMoveControlID, startWaypoint.Position);
+            Vector3 newPosition = _freeMove.Do(FreeMoveControlID, startWaypoint.Position);
             if (FreeMoveDrag == false) return;
 
-            Vector3 diff = position - startPosition;
+            Vector3 diff = newPosition - startPosition;
 
             bool isDirty = diff.magnitude > 0;
             
@@ -57,7 +57,7 @@ namespace Hooch.Waypoint.Editor
                 _handler.RegisterUndo("Moved Waypoint('s)");
             }
 
-            startWaypoint.Position = GetWaypointPosition(position);
+            startWaypoint.Position = GetWaypointPosition(newPosition);
             
             foreach (uint id in _handler.SelectedWaypoints.Keys)
             {
@@ -65,9 +65,9 @@ namespace Hooch.Waypoint.Editor
                 if (id == FreeMoveWaypoint.ID) continue;
                 Waypoint waypoint = _handler.SelectedWaypoints[id];
 
-                position = waypoint.Position + diff;
+                newPosition = waypoint.Position + diff;
                 
-                waypoint.Position = GetWaypointPosition(position);
+                waypoint.Position = GetWaypointPosition(newPosition);
             }
 
             if (isDirty == true)

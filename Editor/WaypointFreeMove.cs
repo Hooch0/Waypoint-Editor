@@ -10,12 +10,10 @@ namespace Hooch.Waypoint.Editor
         public event Action<int> StartMove;
         public event Action<int> EndMove;
 
-        private Plane _plane = new Plane(Vector3.up, Vector3.zero);
 
         public Vector3 Do(int id, Vector3 position)
         {
             Event current = Event.current;
-            Ray ray = HandleUtility.GUIPointToWorldRay(current.mousePosition);
 
             switch (current.GetTypeForControl(id))
             {
@@ -24,10 +22,11 @@ namespace Hooch.Waypoint.Editor
                     {
                         GUIUtility.hotControl = id;
 
-                        if (_plane.Raycast(ray, out float enter))
+                        if (HandleUtility.PlaceObject(current.mousePosition, out Vector3 newPos, out Vector3 normal))
                         {
-                            position = ray.GetPoint(enter);
+                            position = newPos;
                         }
+
                         current.Use();
                         EditorGUIUtility.SetWantsMouseJumping(1);
                         StartMove?.Invoke(id);
@@ -40,9 +39,9 @@ namespace Hooch.Waypoint.Editor
                             break;
                         }
 
-                        if (_plane.Raycast(ray, out float enter))
+                        if (HandleUtility.PlaceObject(current.mousePosition, out Vector3 newPos, out Vector3 normal))
                         {
-                            position = ray.GetPoint(enter);
+                            position = newPos;
                         }
                         GUI.changed = true;
                         current.Use();
