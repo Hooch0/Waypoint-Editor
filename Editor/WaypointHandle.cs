@@ -516,7 +516,7 @@ namespace Hooch.Waypoint.Editor
         {
             RegisterUndo("Created Waypoint");
 
-            Waypoint waypoint = new Waypoint(IDHandler.GetUniqueID(), position, WaypointEditorSettingsHandler.GetEditorSettings().DefaultRadius);
+            Waypoint waypoint = new Waypoint(IDHandler.GetUniqueID(), position, WaypointEditorSettingsScriptableObject.Instance.DefaultRadius);
             
             CurrentGroup.AddWaypoint(waypoint);
             _waypointMap.Add(waypoint.ID, waypoint);

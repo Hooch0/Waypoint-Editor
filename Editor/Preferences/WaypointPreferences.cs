@@ -7,10 +7,8 @@ using UnityEngine;
 namespace Hooch.Waypoint.Editor
 {
     [InitializeOnLoad]
-    public class WaypointEditorSettingsHandler
+    public class WaypointPreferencesHandler
     {
-        private const string _DEFUALT_RADIUS_KEY = "Varadia.WaypointSettings.defaultRadius";
-
         private const string _ID_COLOR_KEY_R = "Varadia.WaypointSettings.IDColor_R";
         private const string _ID_COLOR_KEY_G = "Varadia.WaypointSettings.IDColor_G";
         private const string _ID_COLOR_KEY_B = "Varadia.WaypointSettings.IDColor_B";
@@ -37,7 +35,7 @@ namespace Hooch.Waypoint.Editor
         private const string _SELECTED_LINE_COLOR_KEY_A = "Varadia.WaypointSettings.selectedLineColor_A";
 
 
-        public class WaypointEditorSettings
+        public class WaypointPreferences
         {
             public float DefaultRadius { get; set; }
             public Color IDColor { get; set; }
@@ -47,12 +45,10 @@ namespace Hooch.Waypoint.Editor
             public Color SelectedLineColor { get; set; }
         }
 
-        public static WaypointEditorSettings GetEditorSettings()
+        public static WaypointPreferences GetPreferencesSettings()
         {
-            return new WaypointEditorSettings
+            return new WaypointPreferences
             {
-                DefaultRadius = EditorPrefs.GetFloat(_DEFUALT_RADIUS_KEY, 1f),
-
                 IDColor = new Color(EditorPrefs.GetFloat(_ID_COLOR_KEY_R, Color.cyan.r), 
                                             EditorPrefs.GetFloat(_ID_COLOR_KEY_G, Color.cyan.g), 
                                             EditorPrefs.GetFloat(_ID_COLOR_KEY_B, Color.cyan.b), 
@@ -80,10 +76,8 @@ namespace Hooch.Waypoint.Editor
             };
         }
 
-        public static void SetEditorSettings(WaypointEditorSettings settings)
+        public static void SetPreferencesSettings(WaypointPreferences settings)
         {
-            EditorPrefs.SetFloat(_DEFUALT_RADIUS_KEY, settings.DefaultRadius);
-
             EditorPrefs.SetFloat(_ID_COLOR_KEY_R, settings.IDColor.r);
             EditorPrefs.SetFloat(_ID_COLOR_KEY_G, settings.IDColor.g);
             EditorPrefs.SetFloat(_ID_COLOR_KEY_B, settings.IDColor.b);
@@ -111,9 +105,8 @@ namespace Hooch.Waypoint.Editor
         }
     }
 
-    internal class WaypointEditorSettingsGUIContent
+    internal class WaypointPreferencesGUIContent
     {
-        private static GUIContent _defaultRadiusLabel = new GUIContent("Default Radius", "The Default radius new waypoints will be assigned.");
         private static GUIContent _IDColorLabel = new GUIContent("ID Color", "The Color of the currently selectied waypoints ID.");
         private static GUIContent _radiusColorLabel = new GUIContent("Radius Color", "The Color of Radius around the currently selected waypoints.");  
         private static GUIContent _arrowHeadColorLabel = new GUIContent("Arrow Head Color", "The Color of the Arrow head of the connections between waypoints.");
@@ -122,7 +115,7 @@ namespace Hooch.Waypoint.Editor
 
 
 
-        public static void DrawSettingsButtons(WaypointEditorSettingsHandler.WaypointEditorSettings settings)
+        public static void DrawPreferencesButtons(WaypointPreferencesHandler.WaypointPreferences settings)
         {
             EditorGUI.indentLevel += 1;
             GUIStyle headerStyle = EditorStyles.boldLabel;
@@ -135,8 +128,6 @@ namespace Hooch.Waypoint.Editor
             DrawKeybinds($"delete", "Deletes any selected waypoints.");
 
             GUILayout.Space(10);
-            EditorGUILayout.LabelField("Settings", headerStyle);
-            settings.DefaultRadius = Mathf.Max(EditorGUILayout.FloatField(_defaultRadiusLabel, settings.DefaultRadius), 0);
             
             EditorGUILayout.LabelField("Colors", headerStyle);
             settings.IDColor = EditorGUILayout.ColorField(_IDColorLabel, settings.IDColor);
@@ -159,7 +150,7 @@ namespace Hooch.Waypoint.Editor
     }
 
 #if UNITY_2018_3_OR_NEWER
-    static class WaypointEditorSettingsProvider
+    static class WaypointPreferencesProvider
     {
         [SettingsProvider]
         public static SettingsProvider CreateSettingsProvider()
@@ -170,12 +161,12 @@ namespace Hooch.Waypoint.Editor
 
                 guiHandler = (searchContext) =>
                 {
-                    WaypointEditorSettingsHandler.WaypointEditorSettings settings = WaypointEditorSettingsHandler.GetEditorSettings();
+                    WaypointPreferencesHandler.WaypointPreferences settings = WaypointPreferencesHandler.GetPreferencesSettings();
                     EditorGUI.BeginChangeCheck();
-                    WaypointEditorSettingsGUIContent.DrawSettingsButtons(settings);
+                    WaypointPreferencesGUIContent.DrawPreferencesButtons(settings);
                     if (EditorGUI.EndChangeCheck())
                     {
-                        WaypointEditorSettingsHandler.SetEditorSettings(settings);
+                        WaypointPreferencesHandler.SetPreferencesSettings(settings);
                     }
                 },
 

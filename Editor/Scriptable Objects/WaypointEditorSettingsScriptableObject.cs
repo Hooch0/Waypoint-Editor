@@ -21,10 +21,10 @@ namespace Hooch.Waypoint.Editor
             }
         }
 
+        public float DefaultRadius => _defualtRadius;
+        public LayerMask GroundDetectionLayer => _groundDetectionLayer;
 
-        [SerializeField] public LayerMask GroundDetectionLayer => _groundDetectionLayer;
-
-
+        [SerializeField] private float _defualtRadius = 1;
         [SerializeField] private LayerMask _groundDetectionLayer;
 
         private static WaypointEditorSettingsScriptableObject _instance;

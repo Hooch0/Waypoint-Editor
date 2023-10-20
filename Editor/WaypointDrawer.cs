@@ -33,7 +33,7 @@ namespace Hooch.Waypoint.Editor
         public void DrawWaypoints(Waypoint waypoint)
         {
             Vector3 position = waypoint.Position;
-            WaypointEditorSettingsHandler.WaypointEditorSettings settings = WaypointEditorSettingsHandler.GetEditorSettings();
+            WaypointPreferencesHandler.WaypointPreferences settings = WaypointPreferencesHandler.GetPreferencesSettings();
             //Only for selected.
             if (_handler.SelectedWaypoints.ContainsKey(waypoint.ID) && _handler.IsEditing == true)
             {
@@ -78,7 +78,7 @@ namespace Hooch.Waypoint.Editor
         public void DrawConnections()
         {
             Color lineColor;
-            WaypointEditorSettingsHandler.WaypointEditorSettings settings = WaypointEditorSettingsHandler.GetEditorSettings();
+            WaypointPreferencesHandler.WaypointPreferences settings = WaypointPreferencesHandler.GetPreferencesSettings();
             foreach(WaypointConnections connection in _handler.Connections)
             {
                 if (_handler.SelectedWaypoints.ContainsKey(connection.ID) == true)

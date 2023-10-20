@@ -49,6 +49,8 @@ namespace Hooch.Waypoint.Editor
     
         public static class WaypointSettings
         {
+            public const string DefaultRadiusFloatField = "DefaultRadiusFloatField";
+            public const string DefaultRadiusFloatFieldBindingPath = "_defualtRadius";
             public const string GroundDetectionLayerMask = "GroundDetectionLayerMask";
             public const string GroundDetectionlayerMaskBindingPath = "_groundDetectionLayer";
         }

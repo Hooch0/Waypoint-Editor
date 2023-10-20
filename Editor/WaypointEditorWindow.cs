@@ -37,7 +37,7 @@ namespace Hooch.Waypoint.Editor
 
 
 
-        [MenuItem("Tools/Waypoint System/Editor", priority = 20)]
+        [MenuItem("Tools/Waypoint System/Waypoint Editor", priority = 20)]
         public static WaypointEditorWindow ShowWindow()
         {
             WaypointEditorWindow wnd = GetWindow<WaypointEditorWindow>();
