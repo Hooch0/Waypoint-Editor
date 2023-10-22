@@ -24,7 +24,6 @@ namespace Hooch.Waypoint.Editor
                 controller = WaypointUtility.CreateSceenData();
                 if (EditorWindow.HasOpenInstances<WaypointEditorWindow>() == true)
                 {
-                    Debug.Log("Bob");
                     EditorWindow.GetWindow<WaypointEditorWindow>().SetSceneData(controller);
                 }
             }
@@ -58,11 +57,16 @@ namespace Hooch.Waypoint.Editor
             _window.EnableEditing();
         }
 
-        public override void OnWillBeDeactivated()
+        public override void OnToolGUI(EditorWindow window)
         {
-            _window.DisableEditing();
+            Selection.objects = new Object[1] {_window.SceneController };
         }
 
+        public override void OnWillBeDeactivated()
+        {
+            Selection.objects = null;
+            _window.DisableEditing();
+        }
 
     }
 }

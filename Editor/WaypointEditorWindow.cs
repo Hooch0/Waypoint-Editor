@@ -35,7 +35,6 @@ namespace Hooch.Waypoint.Editor
         private SceneView _currentView;
 
 
-
         [MenuItem("Tools/Waypoint System/Waypoint Editor", priority = 20)]
         public static WaypointEditorWindow ShowWindow()
         {
@@ -64,6 +63,7 @@ namespace Hooch.Waypoint.Editor
             Undo.undoRedoPerformed += OnUndoRedoPerformed;
             EditorSceneManager.sceneOpened += OnSceneOpened;
             EditorApplication.update += Update;
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
         }
 
         private void OnDisable()
@@ -81,6 +81,7 @@ namespace Hooch.Waypoint.Editor
             Undo.undoRedoPerformed -= OnUndoRedoPerformed;
             EditorSceneManager.sceneOpened -= OnSceneOpened;
             EditorApplication.update -= Update;
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
         }
 
         private void Update()
@@ -324,6 +325,21 @@ namespace Hooch.Waypoint.Editor
             if (_sceneController == null) return;
             WaypointHandler.SetSelectedGroup(WaypointHandler.CurrentGroup, true);
             WaypointHandler.IDHandler.SetupUniqueID(GetCurrentWaypointGroupList());
+        }
+
+        private void OnPlayModeStateChanged(PlayModeStateChange change)
+        {
+            if (change == PlayModeStateChange.ExitingEditMode && _sceneController != null)
+            {
+                _id = _sceneController.GetInstanceID();
+            }
+
+            if (change == PlayModeStateChange.EnteredEditMode && _sceneController == null)
+            {
+                WaypointSceneController controller = (WaypointSceneController)EditorUtility.InstanceIDToObject(_id);
+                SetSceneData(controller);
+            }
+
         }
 
         private void OnSceneOpened(Scene scene, OpenSceneMode mode)
