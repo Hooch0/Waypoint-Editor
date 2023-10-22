@@ -5,6 +5,7 @@ using UnityEngine.UIElements;
 using System;
 using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
+using UnityEditor.EditorTools;
 
 namespace Hooch.Waypoint.Editor
 {
@@ -18,13 +19,12 @@ namespace Hooch.Waypoint.Editor
 
         public WaypointSceneController SceneController => _sceneController;
         public WaypointHandle WaypointHandler { get; private set; }
-        public bool EditingToggle => _editingToggle;
         public bool AutolinkToggle => _autolinkToggle;
 
 
         private VEWaypointController _veController;
         [SerializeField] private WaypointSceneController _sceneController;
-        [SerializeField] private bool _editingToggle;
+        private bool _editingToggle;
         [SerializeField] private bool _autolinkToggle;
         [SerializeField] private bool _autoGenerate;
         
@@ -33,7 +33,6 @@ namespace Hooch.Waypoint.Editor
         private int _id;
 
         private SceneView _currentView;
-        private const string _EDITOR_UI_DOCUMENT = "UI Toolkit/Documents/WaypointControllerEditor";
 
 
 
@@ -64,8 +63,16 @@ namespace Hooch.Waypoint.Editor
             SceneView.duringSceneGui += OnDuringSceneGUI;
             Undo.undoRedoPerformed += OnUndoRedoPerformed;
             EditorSceneManager.sceneOpened += OnSceneOpened;
-            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
             EditorApplication.update += Update;
+        }
+
+        private void OnDisable()
+        {
+            if (ToolManager.activeToolType == typeof(WaypointTool))
+            {
+                // Try to activate previously used tool
+                ToolManager.RestorePreviousPersistentTool();
+            }
         }
 
         private void OnDestroy()
@@ -73,15 +80,12 @@ namespace Hooch.Waypoint.Editor
             SceneView.duringSceneGui -= OnDuringSceneGUI;
             Undo.undoRedoPerformed -= OnUndoRedoPerformed;
             EditorSceneManager.sceneOpened -= OnSceneOpened;
-            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
             EditorApplication.update -= Update;
         }
 
-
-
         private void Update()
         {
-            if (_currentView == null || EditingToggle == false) return;
+            if (_currentView == null || _editingToggle == false) return;
 
             _currentView.Repaint();
             /*if (_autoGenerate == false || WaypointHandler.IsDirty == false) return;
@@ -97,10 +101,20 @@ namespace Hooch.Waypoint.Editor
             {
                 LoadWaypointSceneController();
             }
-            VisualTreeAsset tree = Resources.Load(_EDITOR_UI_DOCUMENT) as VisualTreeAsset;
+            VisualTreeAsset tree = WaypointResourceAsset.Instance.EditorUI;
             tree.CloneTree(rootVisualElement);
             _veController = new VEWaypointController(rootVisualElement, this);
         }
+
+        public void EnableEditing()
+        {   
+            _editingToggle = true;
+        }
+
+        public void DisableEditing()
+        {
+            _editingToggle = false;
+        }   
 
         public void SetSceneData(WaypointSceneController controller)
         {
@@ -202,14 +216,6 @@ namespace Hooch.Waypoint.Editor
             //_sceneController.StartCoroutine(RunGenerateRuntimeMap());
         }
 
-        public void CreateSceenData()
-        {
-            GameObject go = new GameObject("Waypoint Controller", typeof(WaypointSceneController));
-
-            WaypointSceneController sceneData = go.GetComponent<WaypointSceneController>();
-            SetSceneData(sceneData);
-        }
-
         public SerializedProperty GetCurrentSerializedGroup()
         {
             if (SerializedWaypointGroups != null)
@@ -309,12 +315,8 @@ namespace Hooch.Waypoint.Editor
         {
             _currentView = view;
             if (_sceneController == null) return;
-            WaypointHandler.HandleWaypoints(EditingToggle, AutolinkToggle);
+            WaypointHandler.HandleWaypoints(_editingToggle, AutolinkToggle);
 
-            if (EditingToggle == false) return;
-
-            Selection.objects = null;
-            UnityEditor.Tools.current = Tool.Custom;
         }
 
         private void OnUndoRedoPerformed()
@@ -337,28 +339,6 @@ namespace Hooch.Waypoint.Editor
             }
         }
 
-        private void OnPlayModeStateChanged(PlayModeStateChange change)
-        {
-            if (change == PlayModeStateChange.ExitingPlayMode)
-            {
-                _id = SceneController.gameObject.GetInstanceID();
-                _sceneController = null;
-            }
-
-            if (change == PlayModeStateChange.EnteredEditMode && _sceneController == null)
-            {
-                WaypointSceneController[] controllers = FindObjectsOfType<WaypointSceneController>();
-
-                foreach(WaypointSceneController controller in controllers)
-                {
-                    if (controller.gameObject.GetInstanceID() == _id)
-                    {
-                        SetSceneData(controller);
-                        break;
-                    }
-                }
-            }
-        }
     
         /*
         Disbaled until a suitable replacement can be found for generating dicitonary/hashmaps in editor without losing performance.
@@ -411,5 +391,4 @@ namespace Hooch.Waypoint.Editor
         }
         */
     }
-    
 }

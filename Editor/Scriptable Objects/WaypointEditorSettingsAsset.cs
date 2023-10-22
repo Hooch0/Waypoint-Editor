@@ -6,9 +6,9 @@ using UnityEngine;
 
 namespace Hooch.Waypoint.Editor
 {
-    public class WaypointEditorSettingsScriptableObject : ScriptableObject
+    public class WaypointEditorSettingsAsset : ScriptableObject
     {
-        public static WaypointEditorSettingsScriptableObject Instance
+        public static WaypointEditorSettingsAsset Instance
         {
             get
             {
@@ -27,19 +27,19 @@ namespace Hooch.Waypoint.Editor
         [SerializeField] private float _defualtRadius = 1;
         [SerializeField] private LayerMask _groundDetectionLayer;
 
-        private static WaypointEditorSettingsScriptableObject _instance;
+        private static WaypointEditorSettingsAsset _instance;
         private const string _FOLDER_NAME = "Waypoint System Settings";
         private const string _ASSET_NAME = "Settings.asset";
 
-        private static WaypointEditorSettingsScriptableObject CheckForSettingsFile()
+        private static WaypointEditorSettingsAsset CheckForSettingsFile()
         {
             string assetsDirectory = "Assets";
             string directory = Path.Combine(assetsDirectory, _FOLDER_NAME);
             string path = Path.Combine(directory, _ASSET_NAME);
 
-            WaypointEditorSettingsScriptableObject settings = null;
+            WaypointEditorSettingsAsset settings = null;
 
-            Object asset = AssetDatabase.LoadAssetAtPath(path, typeof(WaypointEditorSettingsScriptableObject));
+            Object asset = AssetDatabase.LoadAssetAtPath(path, typeof(WaypointEditorSettingsAsset));
             if (asset == null)
             {
                 if (AssetDatabase.IsValidFolder(directory) == false)
@@ -47,13 +47,13 @@ namespace Hooch.Waypoint.Editor
                     AssetDatabase.CreateFolder(assetsDirectory, _FOLDER_NAME);
                 }
 
-                settings = CreateInstance<WaypointEditorSettingsScriptableObject>();
+                settings = CreateInstance<WaypointEditorSettingsAsset>();
                 AssetDatabase.CreateAsset(settings, path);
                 AssetDatabase.Refresh();
             }
             else
             {
-                settings = (WaypointEditorSettingsScriptableObject)asset;
+                settings = (WaypointEditorSettingsAsset)asset;
             }
 
             return settings;

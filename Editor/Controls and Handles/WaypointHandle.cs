@@ -50,7 +50,6 @@ namespace Hooch.Waypoint.Editor
             _drawer = new WaypointDrawer(this);
             _selectionBox = new WaypointSelectionBox(this, _selectionMove);
             _selectionBox.SelectionBoxUpdate += OnSelectionBoxUpdated;
-            _drawer.LoadTexture();
 
         }
 
@@ -516,7 +515,7 @@ namespace Hooch.Waypoint.Editor
         {
             RegisterUndo("Created Waypoint");
 
-            Waypoint waypoint = new Waypoint(IDHandler.GetUniqueID(), position, WaypointEditorSettingsScriptableObject.Instance.DefaultRadius);
+            Waypoint waypoint = new Waypoint(IDHandler.GetUniqueID(), position, WaypointEditorSettingsAsset.Instance.DefaultRadius);
             
             CurrentGroup.AddWaypoint(waypoint);
             _waypointMap.Add(waypoint.ID, waypoint);

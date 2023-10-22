@@ -32,10 +32,17 @@ namespace Hooch.Waypoint.Editor
             Handles.color = cachedColor;
         }
     
-        public static bool Raycast(Ray ray, out RaycastHit hit) => Physics.Raycast(ray, out hit, Mathf.Infinity, WaypointEditorSettingsScriptableObject.Instance.GroundDetectionLayer);
+        public static bool Raycast(Ray ray, out RaycastHit hit) => Physics.Raycast(ray, out hit, Mathf.Infinity, WaypointEditorSettingsAsset.Instance.GroundDetectionLayer);
 
         public static void DebugLog_WaypointControl(int controlID, uint id, string log) => Debug.Log($"ControlID: {controlID} -- ID: {id}\nLog: {log}");
 
+        public static WaypointSceneController CreateSceenData()
+        {
+            GameObject go = new GameObject("Waypoint Controller", typeof(WaypointSceneController));
+
+            WaypointSceneController sceneData = go.GetComponent<WaypointSceneController>();
+            return sceneData;
+        }
 
     }   
 }

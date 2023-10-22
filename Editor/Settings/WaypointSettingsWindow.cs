@@ -16,7 +16,7 @@ namespace Hooch.Waypoint.Editor
             WaypointSettingsWindow wnd = GetWindow<WaypointSettingsWindow>();
             wnd.titleContent = new GUIContent("Waypoint Settings");
             wnd.minSize = new Vector2(400,200);
-            WaypointEditorSettingsScriptableObject insntace = WaypointEditorSettingsScriptableObject.Instance;
+            WaypointEditorSettingsAsset insntace = WaypointEditorSettingsAsset.Instance;
             return wnd;
         }
 

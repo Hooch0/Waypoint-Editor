@@ -14,6 +14,7 @@ namespace Hooch.Waypoint.Editor
             public const string AutoGenerateToggle = "AutoGenerateToggle";
             public const string SceneControllerBinding = "_sceneController";
             public const string AutogenerateBinding = "_autoGenerate";
+            public const string ObjectFieldIMGUI = "ObjectFieldIMGUI";
 
             //Waypoint Group
             public const string GroupListView = "GroupListView";

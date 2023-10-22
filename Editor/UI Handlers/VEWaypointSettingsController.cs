@@ -23,7 +23,7 @@ namespace Hooch.Waypoint.Editor
             _defualtRadiusFloatField.bindingPath = WaypointConstants.WaypointSettings.DefaultRadiusFloatFieldBindingPath;
             _layerMaskField.bindingPath = WaypointConstants.WaypointSettings.GroundDetectionlayerMaskBindingPath;
 
-            WaypointEditorSettingsScriptableObject settings = WaypointEditorSettingsScriptableObject.Instance;
+            WaypointEditorSettingsAsset settings = WaypointEditorSettingsAsset.Instance;
 
             SerializedObject serializedObject = new SerializedObject(settings);
 

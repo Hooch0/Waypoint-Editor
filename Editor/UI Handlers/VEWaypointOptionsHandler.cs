@@ -10,7 +10,6 @@ namespace Hooch.Waypoint.Editor
     {
         private WaypointEditorWindow _editor;
         private VisualElement _root;
-        private Toggle _editingToggle;
         private Toggle _autolinkToggle;
         private Button _linkButton;
         private Button _unlinkButton;
@@ -24,7 +23,6 @@ namespace Hooch.Waypoint.Editor
             _editor.WaypointHandler.SelectionChanged += OnSelectionChanged;
 
 
-            _editingToggle = _root.Q<Toggle>(WaypointConstants.WaypointEditor.EditingToggle);
             _autolinkToggle = _root.Q<Toggle>(WaypointConstants.WaypointEditor.AutolinkToggle);
             _linkButton = _root.Q<Button>(WaypointConstants.WaypointEditor.LinkButton);
             _unlinkButton = _root.Q<Button>(WaypointConstants.WaypointEditor.UnlinkButton);
@@ -33,16 +31,12 @@ namespace Hooch.Waypoint.Editor
             _linkButton.clicked += OnLinkButtonClicked;
             _unlinkButton.clicked += OnUnlinkButtonClicked;
 
-            SerializedProperty editingProp = _editor.SerializedObject.FindProperty(WaypointConstants.WaypointEditor.EditingToggleBindingPath);
             SerializedProperty autolinkProp = _editor.SerializedObject.FindProperty(WaypointConstants.WaypointEditor.AutolinkBindingPath);
 
-            _editingToggle.BindProperty(editingProp);
             _autolinkToggle.BindProperty(autolinkProp);
             
 
             _selectedIdsTextField.SetEnabled(false);
-
-            _editingToggle.RegisterValueChangedCallback(OnEditingToggleChanged);
         }
 
         private void OnLinkButtonClicked()
@@ -69,14 +63,5 @@ namespace Hooch.Waypoint.Editor
 
             _selectedIdsTextField.value = txt;
         }
-
-        private void OnEditingToggleChanged(ChangeEvent<bool> evt)
-        {
-            if (evt.newValue == false)
-            {
-                _editor.WaypointHandler.ClearSelection();
-            }
-        }
-
     }
 }

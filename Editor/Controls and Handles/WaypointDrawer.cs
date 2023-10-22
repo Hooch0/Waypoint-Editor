@@ -6,7 +6,6 @@ namespace Hooch.Waypoint.Editor
     public class WaypointDrawer
     {
         private WaypointHandle _handler;
-        private Texture _waypointTexture;
         private readonly float _waypointLabelOffset = 350;
         private readonly Vector2 _waypointLabelSize = new Vector2(100, 20); 
         private readonly Vector2 _waypointTexturScaleMinMax = new Vector2(5, 100);
@@ -17,11 +16,6 @@ namespace Hooch.Waypoint.Editor
         public WaypointDrawer(WaypointHandle handler)
         {
             _handler = handler;
-        }
-
-        public void LoadTexture()
-        {
-            _waypointTexture = Resources.Load<Texture>("Varadia_Waypoint");
         }
 
         public void SetupGUI()
@@ -66,7 +60,7 @@ namespace Hooch.Waypoint.Editor
                 GUI.Label(labelRect, waypoint.ID.ToString(), _idLabelStyle);
                 GUI.color = Color.white;
                 
-                GUI.DrawTexture(textureRect, _waypointTexture);
+                GUI.DrawTexture(textureRect, WaypointResourceAsset.Instance.WaypointIcon);
                 Handles.EndGUI();
             }
 

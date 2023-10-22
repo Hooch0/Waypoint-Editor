@@ -56,7 +56,6 @@ namespace Hooch.Waypoint.Editor
             _autoGenerateToggle.BindProperty(_autoGenProp);
             _autoGenerateToggle.RegisterValueChangedCallback(OnAutoGenerateToggleChanged);
 
-            ObjectChangeEvents.changesPublished += OnChangesPublished;
 
             _waypointSceneDataField = _root.Q<ObjectField>(WaypointConstants.WaypointEditor.WaypointSceneDataField);
             _waypointSceneDataField.RegisterValueChangedCallback(OnWaypointSceneDataFieldValueChanged);
@@ -100,16 +99,9 @@ namespace Hooch.Waypoint.Editor
 
         private void OnCreateSceenData()
         {
-            _editor.CreateSceenData();
+            WaypointUtility.CreateSceenData();
         }
 
-        private void OnChangesPublished(ref ObjectChangeEventStream stream)
-        {
-            if (_waypointSceneDataField.value == null && _editor.SceneController == null && EditorWindow.HasOpenInstances<WaypointEditorWindow>() == true)
-            {
-                _editor.SetSceneData(null);
-            }
-        }
 
         private void OnGenerateRuntimeMap()
         {
