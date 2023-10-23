@@ -12,6 +12,7 @@ namespace Hooch.Waypoint.Editor
     public class WaypointEditorWindow : EditorWindow
     {
         public event Action<WaypointGroup> CurrentGroupChanged;
+        public int CurrentSceneControllerInstanceID { get; private set; }
 
         public SerializedObject SerializedObject { get; private set; }
         public SerializedObject SerializedSceneController { get; private set;}
@@ -121,6 +122,7 @@ namespace Hooch.Waypoint.Editor
         {
             UpdateSceneDataIntenral(controller);
             _sceneController = controller;
+            CurrentSceneControllerInstanceID = _sceneController != null ? _sceneController.gameObject.GetInstanceID() : -1;
             SerializedObject.UpdateIfRequiredOrScript();
         }
 

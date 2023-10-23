@@ -40,7 +40,7 @@ namespace Hooch.Waypoint.Editor
             _coreInspector = _root.Q<VisualElement>(WaypointConstants.WaypointEditor.CoreInspector);
             _coreInspector.SetEnabled(false);
 
-            
+            ObjectChangeEvents.changesPublished += OnChangesPublished;
 
             _createSceneData = _root.Q<Button>(WaypointConstants.WaypointEditor.CreateSceneController);
             _createSceneData.clicked += OnCreateSceenData;
@@ -99,9 +99,24 @@ namespace Hooch.Waypoint.Editor
 
         private void OnCreateSceenData()
         {
-            WaypointUtility.CreateSceenData();
+            _editor.SetSceneData(WaypointUtility.CreateSceenData());
         }
 
+        private void OnChangesPublished(ref ObjectChangeEventStream stream)
+        {
+            for (int i = 0; i < stream.length; i++)
+            {
+                if (stream.GetEventType(i) == ObjectChangeKind.DestroyGameObjectHierarchy)
+                {
+                    stream.GetDestroyGameObjectHierarchyEvent(i, out DestroyGameObjectHierarchyEventArgs data);
+
+                    if (data.instanceId == _editor.CurrentSceneControllerInstanceID)
+                    {
+                        _editor.SetSceneData(null);
+                    }
+                }
+            }
+        }
 
         private void OnGenerateRuntimeMap()
         {
