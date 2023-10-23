@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Hooch.Waypoint
 {
     [Serializable]
-    public class WaypointTransition
+    public class WaypointTransition : IReadOnlyWaypointTransition
     {
         [field: SerializeField] public uint ID { get; private set; }
         public float Probability => _probability;

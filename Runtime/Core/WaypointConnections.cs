@@ -10,7 +10,7 @@ namespace Hooch.Waypoint
     public class WaypointConnections : IReadOnlyWaypointConnections
     {
         [field: SerializeField] public uint ID { get; private set; }
-        public IReadOnlyList<WaypointTransition> Transitions => _transitions;
+        public IReadOnlyList<IReadOnlyWaypointTransition> Transitions => _transitions;
 
         [SerializeReference] private List<WaypointTransition> _transitions = new List<WaypointTransition>();
 
@@ -19,7 +19,7 @@ namespace Hooch.Waypoint
             ID = id;
         }
 
-        public IReadOnlyList<WaypointTransition> SortedTransitions<TKey>(Func<WaypointTransition, TKey> comparison)
+        public IReadOnlyList<IReadOnlyWaypointTransition> SortedTransitions<TKey>(Func<IReadOnlyWaypointTransition, TKey> comparison)
         {
             return _transitions.OrderBy(comparison).ToList();
         }

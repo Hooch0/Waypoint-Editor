@@ -44,5 +44,33 @@ namespace Hooch.Waypoint
                 }
             }
         }
+    
+        public IReadOnlyWaypoint GetWaypoint(WaypointRequest request)
+        {
+            if (_runtimeWaypointMap == null || _runtimeWaypointMap == null || _runtimeTagMap == null)
+            {
+                Debug.LogError("Waypoint Editor -- Runtime maps have not generated! Unable to get waypoint.");
+                return null;
+            }
+
+            IReadOnlyWaypoint waypoint = null;
+
+            if (request.Tag != null)
+            {
+                if (_runtimeTagMap.TryGetValue(request.Tag, out waypoint) == false)
+                {
+                    Debug.LogError("$Waypoint Editor -- Unable to get waypoint by provided tag \"{request.Tag}\".");
+                }
+            }
+            else
+            {
+                if (_runtimeWaypointMap.TryGetValue(request.ID, out waypoint) == false)
+                {
+                    Debug.LogError($"Waypoint Editor -- Unable to get waypoint by provided ID \"{request.ID}\".");
+                }
+            }
+
+            return waypoint;
+        }
     }
 }

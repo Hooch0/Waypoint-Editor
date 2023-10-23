@@ -7,12 +7,11 @@ using URandom = UnityEngine.Random;
 
 namespace Hooch.Waypoint
 {
-    //This is actually used by the AIAgent for movement.
     public class WaypointPathHandler : MonoBehaviour
     {
         public event Action<string> WaypointWithTagReached;
 
-        [SerializeField] private uint _testWaypointID;
+        [SerializeField] private uint _waypointID;
         [SerializeField] private WaypointSceneController _controller;
         [SerializeField] private NavMeshAgent _agent;
 
@@ -22,7 +21,7 @@ namespace Hooch.Waypoint
         {
             if (_controller == null || _agent == null) return;
 
-            SetPath(_testWaypointID);
+            SetPath(_waypointID);
         }
 
         public void Initialize(WaypointSceneController controller, NavMeshAgent agent)
@@ -67,7 +66,7 @@ namespace Hooch.Waypoint
 
         private IReadOnlyWaypoint GetNextWaypoint()
         {
-            IReadOnlyList<WaypointTransition> transitions = _controller.RuntimeConnectionMap[_currentWaypoint.ID].SortedTransitions(x => x.Probability);
+            IReadOnlyList<IReadOnlyWaypointTransition> transitions = _controller.RuntimeConnectionMap[_currentWaypoint.ID].SortedTransitions(x => x.Probability);
             
 
             if(transitions.Count == 0) return null;

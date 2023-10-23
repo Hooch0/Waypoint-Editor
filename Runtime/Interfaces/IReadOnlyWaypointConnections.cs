@@ -6,8 +6,8 @@ namespace Hooch.Waypoint
     public interface IReadOnlyWaypointConnections
     {
         uint ID { get; }
-        IReadOnlyList<WaypointTransition> Transitions { get; }
+        IReadOnlyList<IReadOnlyWaypointTransition> Transitions { get; }
 
-        IReadOnlyList<WaypointTransition> SortedTransitions<TKey>(Func<WaypointTransition, TKey> comparison);
+        IReadOnlyList<IReadOnlyWaypointTransition> SortedTransitions<TKey>(Func<IReadOnlyWaypointTransition, TKey> comparison);
     }
 }
