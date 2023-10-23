@@ -8,6 +8,7 @@ namespace Hooch.Waypoint.Editor
     public class WaypointResourceAsset : ScriptableObject
     {
         [field: SerializeField]public VisualTreeAsset EditorUI { get; private set; }
+        [field: SerializeField]public VisualTreeAsset SettingsUI { get; private set; }
         [field: SerializeField]public Texture2D WaypointIcon { get; private set; }
         [field: SerializeField]public Texture2D ToolbarIcon { get; private set; }
 

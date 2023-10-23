@@ -59,7 +59,7 @@ namespace Hooch.Waypoint.Editor
 
         public override void OnToolGUI(EditorWindow window)
         {
-            Selection.objects = new Object[1] {_window.SceneController };
+            Selection.objects = new Object[1] {_window.SceneController.gameObject };
         }
 
         public override void OnWillBeDeactivated()

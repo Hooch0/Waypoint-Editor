@@ -6,8 +6,6 @@ namespace Hooch.Waypoint.Editor
 {
     public class WaypointSettingsWindow : EditorWindow
     {
-        private const string _SETTINGS_UI_DOCUMENT = "UI Toolkit/Documents/WaypointSettingsEditor";
-
         private VEWaypointSettingsController _veController;
 
         [MenuItem("Tools/Waypoint System/Settings", priority = 40)]
@@ -22,7 +20,7 @@ namespace Hooch.Waypoint.Editor
 
         public void CreateGUI()
         {
-            VisualTreeAsset tree = Resources.Load(_SETTINGS_UI_DOCUMENT) as VisualTreeAsset;
+            VisualTreeAsset tree = WaypointResourceAsset.Instance.SettingsUI;
             tree.CloneTree(rootVisualElement);
             _veController = new VEWaypointSettingsController(rootVisualElement);
         }
