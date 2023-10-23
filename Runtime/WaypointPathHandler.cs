@@ -7,22 +7,18 @@ using URandom = UnityEngine.Random;
 
 namespace Hooch.Waypoint
 {
-    public class WaypointPathHandler : MonoBehaviour
+    public class WaypointPathHandler
     {
         public event Action<string> WaypointWithTagReached;
+        public bool IsActive { get; private set; }
 
-        [SerializeField] private uint _waypointID;
-        [SerializeField] private WaypointSceneController _controller;
-        [SerializeField] private NavMeshAgent _agent;
+        public IReadOnlyWaypoint CurrentWaypoint { get; private set; }
 
-        private IReadOnlyWaypoint _currentWaypoint;
+        private WaypointSceneController _controller;
+        private NavMeshAgent _agent;
 
-        private void Start()
-        {
-            if (_controller == null || _agent == null) return;
-
-            SetPath(_waypointID);
-        }
+        
+        private bool _pathSuspended;
 
         public void Initialize(WaypointSceneController controller, NavMeshAgent agent)
         {
@@ -38,27 +34,60 @@ namespace Hooch.Waypoint
                 return;
             }
 
-            _currentWaypoint = _controller.RuntimeWaypointMap[waypointID];;
-            _agent.SetDestination(_currentWaypoint.Position);
+            _agent.ResetPath();
+            _pathSuspended = false;
+            CurrentWaypoint = _controller.RuntimeWaypointMap[waypointID];
+            IsActive = true;
         }
 
-        private void Update()
+        public void Cancelpath()
         {
-            if (_currentWaypoint == null) return;
+            _agent.isStopped = true;
+            _agent.ResetPath();
+            CurrentWaypoint = null;
+            IsActive = false;
+        }
 
-            if (Vector3.Distance(_agent.transform.position, _currentWaypoint.Position) < _currentWaypoint.Radius)
+        public void SuspendPath()
+        {
+            _pathSuspended = true;
+            _agent.isStopped = true;
+            IsActive = false;
+        }
+
+        public void ResumePath()
+        {
+            if (CurrentWaypoint != null)
+            {
+                _pathSuspended = false;
+                _agent.isStopped = false;
+                _agent.SetDestination(CurrentWaypoint.Position);
+                IsActive = true;
+            }
+        }
+
+        public void UpdateSimulation()
+        {
+            if (CurrentWaypoint == null || _pathSuspended == true)
+
+            if (_agent.hasPath == false)
+            {
+                _agent.SetDestination(CurrentWaypoint.Position);
+            }
+
+            if (Vector3.Distance(_agent.transform.position, CurrentWaypoint.Position) < CurrentWaypoint.Radius)
             {
 
-                if (_currentWaypoint.HasTag == true)
+                if (CurrentWaypoint.HasTag == true)
                 {
-                    WaypointWithTagReached?.Invoke(_currentWaypoint.Tag);
+                    WaypointWithTagReached?.Invoke(CurrentWaypoint.Tag);
                 }
                 
-                _currentWaypoint = GetNextWaypoint();
+                CurrentWaypoint = GetNextWaypoint();
 
-                if (_currentWaypoint != null)
+                if (CurrentWaypoint != null)
                 {
-                    _agent.SetDestination(_currentWaypoint.Position);
+                    _agent.SetDestination(CurrentWaypoint.Position);
                 }
             }
 
@@ -66,9 +95,8 @@ namespace Hooch.Waypoint
 
         private IReadOnlyWaypoint GetNextWaypoint()
         {
-            IReadOnlyList<IReadOnlyWaypointTransition> transitions = _controller.RuntimeConnectionMap[_currentWaypoint.ID].SortedTransitions(x => x.Probability);
+            IReadOnlyList<IReadOnlyWaypointTransition> transitions = _controller.RuntimeConnectionMap[CurrentWaypoint.ID].SortedTransitions(x => x.Probability);
             
-
             if(transitions.Count == 0) return null;
 
             int index = 0;
@@ -76,7 +104,7 @@ namespace Hooch.Waypoint
             if (transitions.Count > 1)
             {
                 float value = URandom.Range(0.0f, 1.0f);
-                //This is a hardset random range 
+                
                 for (int i = 0; i < transitions.Count; i++)
                 {
                     if (value <= transitions[i].Probability)
