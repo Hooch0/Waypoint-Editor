@@ -33,6 +33,8 @@
                     <uie:FloatField label="Radius" value="10" name="RadiusFloatField" />
                     <uie:FloatField label="Height" value="0" name="HeightFloatField" />
                     <ui:TextField picking-mode="Ignore" label="Tag" name="TagTextField" />
+                    <ui:Label text="Event Properties" display-tooltip-when-elided="true" class="label-font" />
+                    <ui:Toggle label="Is Event" name="IsEventToggle" />
                 </ui:VisualElement>
                 <ui:VisualElement style="height: 17px;" />
                 <ui:Label text="Selected Waypoint Connections" display-tooltip-when-elided="true" class="label-font" />

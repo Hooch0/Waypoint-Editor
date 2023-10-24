@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Build;
@@ -9,6 +10,7 @@ namespace Hooch.Waypoint
     /// <summary>
     /// Prebuilt path handler for Unity's NavMesh Agent.
     /// </summary>
+    [Serializable]
     public class WaypointNavMeshAgentPathHandler : WaypointPathHandler
     {
         private NavMeshAgent _agent;

@@ -10,6 +10,7 @@ namespace Hooch.Waypoint
     /// <summary>
     /// Waypoint path handler. This is used by traversal agents to handle getting waypoints from the system.
     /// </summary>
+    [Serializable]
     public abstract class WaypointPathHandler
     {
         /// <summary>
@@ -25,12 +26,13 @@ namespace Hooch.Waypoint
         /// <summary>
         /// The current status of the path handler.
         /// </summary>
-        public PathStatus CurrentPathStatus { get; private set; }
+        public PathStatus CurrentPathStatus { get; private set; } = PathStatus.Inactive;
 
         /// <summary>
         /// The current waypoint we are traversing towards.
         /// </summary>
         public IReadOnlyWaypoint CurrentWaypoint { get; private set; }
+
 
         private WaypointSceneController _controller;
         private Transform _agentTransform;
@@ -98,6 +100,11 @@ namespace Hooch.Waypoint
             if (Vector3.Distance(_agentTransform.position, CurrentWaypoint.Position) < CurrentWaypoint.Radius)
             {
                 WaypointReached?.Invoke(CurrentWaypoint);
+
+                if(CurrentWaypoint.IsEvent == true)
+                {
+                    _controller.Interanl_RaiseEventWaypointReached(CurrentWaypoint, this);
+                }
                 
                 CurrentWaypoint = GetNextWaypoint();
 

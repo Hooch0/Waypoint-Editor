@@ -10,6 +10,7 @@ namespace Hooch.Waypoint
         float Radius { get; }
         float Height { get; }
         string Tag { get; }
+        bool IsEvent { get; }
     }
 }
 

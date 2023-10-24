@@ -39,6 +39,7 @@ namespace Hooch.Waypoint.Editor
             public const string RadiusFloatField = "RadiusFloatField";
             public const string HeightFloatField = "HeightFloatField";
             public const string TagTextField = "TagTextField";
+            public const string IsEventToggle = "IsEventToggle";
             public const string ConnectionListView = "ConnectionListView";
             public const string ConnectionsContainer = "ConnectionsContainer";
             public const string ProbabilityFloatField = "ProbabilityFloatField";

@@ -21,6 +21,7 @@ namespace Hooch.Waypoint.Editor
         private FloatField _radiusFloatField;
         private FloatField _heightFloatField;
         private TextField _tagTextField;
+        private Toggle _isEventToggle;
 
         private VisualElement _connectionsContainer;
         private ListView _connectionsListView;
@@ -45,6 +46,7 @@ namespace Hooch.Waypoint.Editor
             _radiusFloatField = _root.Q<FloatField>(WaypointConstants.WaypointEditor.RadiusFloatField);
             _heightFloatField = _root.Q<FloatField>(WaypointConstants.WaypointEditor.HeightFloatField);
             _tagTextField = _root.Q<TextField>(WaypointConstants.WaypointEditor.TagTextField);
+            _isEventToggle = _root.Q<Toggle>(WaypointConstants.WaypointEditor.IsEventToggle);
 
             _connectionsContainer = _root.Q<VisualElement>(WaypointConstants.WaypointEditor.ConnectionsContainer);
             _connectionsListView = _root.Q<ListView>(WaypointConstants.WaypointEditor.ConnectionListView);            
@@ -64,6 +66,7 @@ namespace Hooch.Waypoint.Editor
             _radiusFloatField.RegisterValueChangedCallback(OnRadiusValueChanged);
             _heightFloatField.RegisterValueChangedCallback(OnHeightValueChanged);
             _tagTextField.RegisterValueChangedCallback(OnTagValueChanged);
+            _isEventToggle.RegisterValueChangedCallback(OnIsEventToggleChanged);
 
             _connectionsListView.makeItem += OnMakeItemListView;
 
@@ -93,6 +96,7 @@ namespace Hooch.Waypoint.Editor
                 _radiusFloatField.SetValueWithoutNotify(0);
                 _heightFloatField.SetValueWithoutNotify(0);
                 _tagTextField.SetValueWithoutNotify("");
+                _isEventToggle.SetValueWithoutNotify(false);
 
                 _connectionsListView.Unbind();
                 _connectionsListView.itemsSource = new List<object>();
@@ -122,6 +126,7 @@ namespace Hooch.Waypoint.Editor
                 _radiusFloatField.SetValueWithoutNotify(waypoint.Radius);
                 _heightFloatField.SetValueWithoutNotify(waypoint.Height);
                 _tagTextField.SetValueWithoutNotify(waypoint.Tag);
+                _isEventToggle.SetValueWithoutNotify(waypoint.IsEvent);
 
                 //Set the list view only if we have 1 waypoint selected
                 _currentSerializedConnections = GetSerializedConnection(waypoint.ID);
@@ -152,6 +157,7 @@ namespace Hooch.Waypoint.Editor
                 CheckRadiusMulti(startWaypoint);
                 CheckHeightMulti(startWaypoint);
                 CheckTagMulti(startWaypoint);
+                CheckIsEventMulti(startWaypoint);
 
                 //This clears the listview
                 _connectionsListView.Unbind();
@@ -229,7 +235,12 @@ namespace Hooch.Waypoint.Editor
             CheckMixedValue(comparisonWaypoint.Tag, x => x.Tag, _tagTextField);
         }
 
-        private void CheckMixedValue<T>(T checkvalue, Func<Waypoint, T> comparison, TextInputBaseField<T> valueField)
+        private void CheckIsEventMulti(Waypoint comparisonWaypoint)
+        {
+            CheckMixedValue(comparisonWaypoint.IsEvent, x => x.IsEvent, _isEventToggle);
+        }
+
+        private void CheckMixedValue<T>(T checkvalue, Func<Waypoint, T> comparison, BaseField<T> valueField)
         {
             bool mixedValue = false;
             foreach(Waypoint waypoint in _currentSelectedWaypoints)
@@ -262,6 +273,7 @@ namespace Hooch.Waypoint.Editor
             _radiusFloatField.showMixedValue = false;
             _heightFloatField.showMixedValue = false;
             _tagTextField.showMixedValue = false;
+            _isEventToggle.showMixedValue = false;
         }
 
         private SerializedProperty GetSerializedConnection(uint id)
@@ -292,6 +304,8 @@ namespace Hooch.Waypoint.Editor
             _radiusFloatField.SetValueWithoutNotify(0);
             _heightFloatField.SetValueWithoutNotify(0);
             _tagTextField.SetValueWithoutNotify("");
+            _isEventToggle.SetValueWithoutNotify(false);
+            
 
             
             //This clears the listview
@@ -405,6 +419,26 @@ namespace Hooch.Waypoint.Editor
             _serializedSceneData.ApplyModifiedProperties();
         }
         
+        private void OnIsEventToggleChanged(ChangeEvent<bool> evt)
+        {
+            Undo.RegisterCompleteObjectUndo(_serializedSceneData.targetObject, "Changed Waypoint Is Event");
+
+            Waypoint first = _currentSelectedWaypoints[0];
+            if (_isEventToggle.showMixedValue == true)
+            {
+                _isEventToggle.SetValueWithoutNotify(first.IsEvent);
+                _isEventToggle.showMixedValue = false;
+            }
+
+            foreach(Waypoint waypoint in _currentSelectedWaypoints)
+            {
+                waypoint.IsEvent = evt.newValue;
+            }
+
+            EditorUtility.SetDirty(_serializedSceneData.targetObject);
+            _serializedSceneData.ApplyModifiedProperties();
+        }
+
         private void OnSelectionValuesChanged()
         {
             SetPropertiesData();

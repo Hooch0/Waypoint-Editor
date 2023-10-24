@@ -123,7 +123,11 @@ namespace Hooch.Waypoint.Editor
             UpdateSceneDataIntenral(controller);
             _sceneController = controller;
             CurrentSceneControllerInstanceID = _sceneController != null ? _sceneController.gameObject.GetInstanceID() : -1;
-            SerializedObject.UpdateIfRequiredOrScript();
+
+            if (SerializedObject != null)
+            {
+                SerializedObject.UpdateIfRequiredOrScript();
+            }
         }
 
         public void UpdateSceneData()
