@@ -14,6 +14,11 @@ namespace Hooch.Waypoint.Editor
         private const string _ID_COLOR_KEY_B = "Varadia.WaypointSettings.IDColor_B";
         private const string _ID_COLOR_KEY_A = "Varadia.WaypointSettings.IDColor_A";
 
+        private const string _TAG_COLOR_KEY_R = "Varadia.WaypointSettings.TagColor_R";
+        private const string _TAG_COLOR_KEY_G = "Varadia.WaypointSettings.TagColor_G";
+        private const string _TAG_COLOR_KEY_B = "Varadia.WaypointSettings.TagColor_B";
+        private const string _TAG_COLOR_KEY_A = "Varadia.WaypointSettings.TagColor_A";
+
         private const string _RADIUS_COLOR_KEY_R = "Varadia.WaypointSettings.radiusColor_R";
         private const string _RADIUS_COLOR_KEY_G = "Varadia.WaypointSettings.radiusColor_G";
         private const string _RADIUS_COLOR_KEY_B = "Varadia.WaypointSettings.radiusColor_B";
@@ -39,6 +44,7 @@ namespace Hooch.Waypoint.Editor
         {
             public float DefaultRadius { get; set; }
             public Color IDColor { get; set; }
+            public Color TagColor { get; set; }
             public Color RadiusColor { get; set; }
             public Color ArrowHeadColor { get; set; }
             public Color LineColor { get; set; }
@@ -53,6 +59,11 @@ namespace Hooch.Waypoint.Editor
                                             EditorPrefs.GetFloat(_ID_COLOR_KEY_G, Color.cyan.g), 
                                             EditorPrefs.GetFloat(_ID_COLOR_KEY_B, Color.cyan.b), 
                                             EditorPrefs.GetFloat(_ID_COLOR_KEY_A, Color.cyan.a)),
+
+                TagColor = new Color(EditorPrefs.GetFloat(_TAG_COLOR_KEY_R, Color.green.r),
+                                            EditorPrefs.GetFloat(_TAG_COLOR_KEY_G, Color.green.g),
+                                            EditorPrefs.GetFloat(_TAG_COLOR_KEY_B, Color.green.b),
+                                            EditorPrefs.GetFloat(_TAG_COLOR_KEY_A, Color.green.a)),
 
                 RadiusColor = new Color(EditorPrefs.GetFloat(_RADIUS_COLOR_KEY_R, Color.cyan.r), 
                                             EditorPrefs.GetFloat(_RADIUS_COLOR_KEY_G, Color.cyan.g), 
@@ -83,6 +94,11 @@ namespace Hooch.Waypoint.Editor
             EditorPrefs.SetFloat(_ID_COLOR_KEY_B, settings.IDColor.b);
             EditorPrefs.SetFloat(_ID_COLOR_KEY_A, settings.IDColor.a);
 
+            EditorPrefs.SetFloat(_TAG_COLOR_KEY_R, settings.TagColor.r);
+            EditorPrefs.SetFloat(_TAG_COLOR_KEY_G, settings.TagColor.g);
+            EditorPrefs.SetFloat(_TAG_COLOR_KEY_B, settings.TagColor.b);
+            EditorPrefs.SetFloat(_TAG_COLOR_KEY_A, settings.TagColor.a);
+
             EditorPrefs.SetFloat(_RADIUS_COLOR_KEY_R, settings.RadiusColor.r);
             EditorPrefs.SetFloat(_RADIUS_COLOR_KEY_G, settings.RadiusColor.g);
             EditorPrefs.SetFloat(_RADIUS_COLOR_KEY_B, settings.RadiusColor.b);
@@ -108,6 +124,7 @@ namespace Hooch.Waypoint.Editor
     internal class WaypointPreferencesGUIContent
     {
         private static GUIContent _IDColorLabel = new GUIContent("ID Color", "The Color of the currently selectied waypoints ID.");
+        private static GUIContent _TagColorLabel = new GUIContent("Tag Color", "The Color of the currently selectied waypoints Tag.");
         private static GUIContent _radiusColorLabel = new GUIContent("Radius Color", "The Color of Radius around the currently selected waypoints.");  
         private static GUIContent _arrowHeadColorLabel = new GUIContent("Arrow Head Color", "The Color of the Arrow head of the connections between waypoints.");
         private static GUIContent _lineColorLabel = new GUIContent("Line Color", "The line color of the connection.");
@@ -131,6 +148,7 @@ namespace Hooch.Waypoint.Editor
             
             EditorGUILayout.LabelField("Colors", headerStyle);
             settings.IDColor = EditorGUILayout.ColorField(_IDColorLabel, settings.IDColor);
+            settings.TagColor = EditorGUILayout.ColorField(_TagColorLabel, settings.TagColor);
             settings.RadiusColor = EditorGUILayout.ColorField(_radiusColorLabel, settings.RadiusColor);
             settings.ArrowHeadColor = EditorGUILayout.ColorField(_arrowHeadColorLabel, settings.ArrowHeadColor);
             settings.LineColor = EditorGUILayout.ColorField(_lineColorLabel, settings.LineColor);

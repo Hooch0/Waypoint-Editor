@@ -94,6 +94,11 @@ namespace Hooch.Waypoint.Editor
             VisualElement indent = new VisualElement();
             indent.style.width = 30;
 
+            PropertyField propertyField = new PropertyField();
+            propertyField.style.flexGrow = 1.0f;
+            Label propLabel = propertyField.Q<Label>();
+
+
             VisualElement middle = new VisualElement();
             middle.style.flexGrow = 1;
 
@@ -106,7 +111,7 @@ namespace Hooch.Waypoint.Editor
 
 
             container.Add(indent);
-            container.Add(new PropertyField());
+            container.Add(propertyField);
             container.Add(middle);
             container.Add(deleteButton);
 
@@ -120,10 +125,12 @@ namespace Hooch.Waypoint.Editor
             SerializedProperty serilizedEvent = _serializedEvents.GetArrayElementAtIndex(index);
             propertyField.BindProperty(serilizedEvent);
 
+
             Label label = propertyField.Q<Label>();
             WaypointEvent evt = (WaypointEvent)serilizedEvent.managedReferenceValue;
+            label.RegisterValueChangedCallback(OnPropertyFieldLabelValueChanged);
+            label.userData = index;
             label.text = evt.GetType().Name;
-            propertyField.label = evt.GetType().Name;
 
             //Setup button
             Button deleteButton = element.Q<Button>();
@@ -137,5 +144,19 @@ namespace Hooch.Waypoint.Editor
 
             _propertyHandler.SetChangesDirty();
         }
+
+        private void OnPropertyFieldLabelValueChanged(ChangeEvent<string> evt)
+        {
+            Label label = (Label)evt.currentTarget;
+
+            SerializedProperty serilizedEvent = _serializedEvents.GetArrayElementAtIndex((int)label.userData);
+            WaypointEvent wevt = (WaypointEvent)serilizedEvent.managedReferenceValue;
+
+            string name = wevt.GetType().Name;
+
+            if (label.text == name) return;
+            label.text = name;
+        }
+
     }
 }

@@ -35,7 +35,6 @@
                     <ui:TextField picking-mode="Ignore" label="Tag" name="TagTextField" />
                     <ui:Label text="Event Properties" display-tooltip-when-elided="true" class="label-font" />
                     <ui:ListView focusable="true" name="EventListView" show-foldout-header="true" header-title="Events" show-bound-collection-size="false" show-border="true" virtualization-method="DynamicHeight" />
-                    <uie:PropertyField name="PropertyFieldTest" />
                     <ui:Button text="Add Event" display-tooltip-when-elided="true" name="AddEventButton" />
                 </ui:VisualElement>
                 <ui:VisualElement style="height: 15px;" />
