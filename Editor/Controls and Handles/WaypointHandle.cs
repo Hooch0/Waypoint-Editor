@@ -13,7 +13,6 @@ namespace Hooch.Waypoint.Editor
 
         public bool IsEditing { get; private set; }
         public bool IsAutolink { get; private set; }
-        public bool IsDirty { get; private set; }
 
         public WaypointIDHandler IDHandler { get; private set; }
 
@@ -37,12 +36,15 @@ namespace Hooch.Waypoint.Editor
         private WaypointDrawer _drawer;
         private WaypointSelectionBox _selectionBox;
 
-        private WaypointEditorWindow _controller;
+        private WaypointEditorWindow _editor;
+
+        private bool _isDirty;
+
 
 
         public WaypointHandle(WaypointEditorWindow controller)
         {
-            _controller = controller;
+            _editor = controller;
             IDHandler = new WaypointIDHandler();
             _selectionMove = new WaypointSelectionMove(this);
             _selectionMove.SelectionPositionChanged += OnSelectionPositionChanged;
@@ -53,9 +55,9 @@ namespace Hooch.Waypoint.Editor
 
         }
 
-        public void SetDirty(bool newValue)
+        public void SetDirty()
         {
-            IsDirty = newValue;
+            _isDirty = true;
         }
 
         public void HandleWaypoints(bool isEditing, bool isAutolink)
@@ -66,6 +68,11 @@ namespace Hooch.Waypoint.Editor
             {
                 OnSceneGUI();
                 EndHandle();
+            }
+
+            if (_isDirty == true)
+            {
+                ApplyDirty();
             }
         }
 
@@ -154,8 +161,6 @@ namespace Hooch.Waypoint.Editor
 
             List<Waypoint> selectedWaypoints = GetFilteredSelectedWaypoints();
 
-            bool isDirty = false;
-
             for (int i = 0; i < selectedWaypoints.Count; i++)
             {
                 Waypoint currentWaypoint = selectedWaypoints[i];
@@ -169,14 +174,7 @@ namespace Hooch.Waypoint.Editor
                 if (currentWaypoint == null || nextWaypoint == null || CurrentGroup.IsConnected(currentWaypoint, nextWaypoint) == true) continue;
 
                 LinkWaypoints(currentWaypoint, nextWaypoint);
-                isDirty = true;
             }
-
-            if (isDirty == true)
-            {
-                ApplyDirty();
-            }
-
         }
 
         public void UnlinkSelectedWaypoints()
@@ -185,7 +183,6 @@ namespace Hooch.Waypoint.Editor
 
             List<Waypoint> selectedWaypoints = GetFilteredSelectedWaypoints();
 
-            bool isDirty = false;
             for (int i = 0; i < selectedWaypoints.Count; i++)
             {
                 Waypoint currentWaypoint = selectedWaypoints[i];
@@ -202,26 +199,14 @@ namespace Hooch.Waypoint.Editor
                     if (CurrentGroup.IsConnected(currentWaypoint, nextWaypoint) == true)
                     {
                         UnlinkWaypoints(currentWaypoint, nextWaypoint);
-                        isDirty = true;
                     }
                 }
             }
-
-            if (isDirty == true)
-            {
-                ApplyDirty();
-            }
-        }
-
-        public void ApplyDirty()
-        {
-            _controller.SerializedObject.UpdateIfRequiredOrScript();
-            IsDirty = true;
         }
 
         public void RegisterUndo(string msg)
         {
-            Undo.RegisterCompleteObjectUndo(_controller.SceneController, msg);
+            Undo.RegisterCompleteObjectUndo(_editor.SceneController, msg);
         }
 
         public void ClearSelection()
@@ -256,6 +241,15 @@ namespace Hooch.Waypoint.Editor
             }
 
             _removingWaypoints.Clear();
+        }
+
+        private void ApplyDirty()
+        {
+            _editor.SerializedObject.SetIsDifferentCacheDirty();
+            _editor.SerializedObject.Update();
+            _editor.SerializedSceneController.SetIsDifferentCacheDirty();
+            _editor.SerializedSceneController.Update();
+            _isDirty = false;
         }
 
         private void UpdateData(List<Waypoint> waypoints, List<WaypointConnections> connections)
@@ -489,7 +483,8 @@ namespace Hooch.Waypoint.Editor
                 if (WaypointUtility.Raycast(ray, out hit))
                 {
                     Waypoint waypoint = CreateWaypoint(hit.point);
-                    
+
+
 
                     if (IsAutolink == true)
                     {
@@ -499,13 +494,15 @@ namespace Hooch.Waypoint.Editor
                         }
                     }
 
+                    //Need to apply the changes BEFORE adding the selected waypoint
+                    ApplyDirty();
                     ClearSelection();
                     AddSelectedWaypoint(waypoint);
 
                     //When a new wapoint is made, set it as the first selected waypoint
                     _firstSelectedWaypoint = waypoint;
 
-                    ApplyDirty();
+
                     current.Use();
                 }
             }
@@ -519,7 +516,7 @@ namespace Hooch.Waypoint.Editor
             
             CurrentGroup.AddWaypoint(waypoint);
             _waypointMap.Add(waypoint.ID, waypoint);
-            ApplyDirty();
+            _isDirty = true;
 
             return waypoint;
         }
@@ -531,17 +528,19 @@ namespace Hooch.Waypoint.Editor
             CurrentGroup.RemoveWaypoint(waypoint);
             _waypointMap.Remove(waypoint.ID);
             IDHandler.AddReuseID(waypoint.ID);
-            ApplyDirty();
+            _isDirty = true;
         }
 
         private void LinkWaypoints(Waypoint from, Waypoint to)
         {
             CurrentGroup.AddConnection(from, to);
+            _isDirty = true;
         }
 
         private void UnlinkWaypoints(Waypoint from, Waypoint to)
         {
             CurrentGroup.RemoveConnection(from, to);
+            _isDirty = true;
         }
 
         private void OnSelectionPositionChanged()

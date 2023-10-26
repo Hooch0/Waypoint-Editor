@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <EditorUI>k__BackingField: {fileID: 9197481963319205126, guid: 88d69df3e90917648a28d0a8e2d9c654, type: 3}
   <SettingsUI>k__BackingField: {fileID: 9197481963319205126, guid: 222800fb2d89a514bb6d1095cbfd0948, type: 3}
+  <EventDeleteButtonStyle>k__BackingField: {fileID: 7433441132597879392, guid: e0c2f880a99dc354e9dd0d298c7955b2, type: 3}
   <WaypointIcon>k__BackingField: {fileID: 2800000, guid: dc1064c8c6f7f5e44a246c8803c97121, type: 3}
   <ToolbarIcon>k__BackingField: {fileID: 2800000, guid: dc1064c8c6f7f5e44a246c8803c97121, type: 3}

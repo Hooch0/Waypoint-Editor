@@ -27,16 +27,18 @@
                 <ui:TextField picking-mode="Ignore" label="Selected ID&apos;s" readonly="true" focusable="false" name="SelectedIDsTextField" style="white-space: normal;" />
                 <ui:VisualElement style="height: 17px;" />
                 <ui:Label text="Selected Waypoint Properties" display-tooltip-when-elided="true" class="label-font" />
-                <ui:VisualElement name="PropertiesContainer" style="height: auto; background-color: rgb(94, 94, 94); visibility: visible;">
+                <ui:VisualElement name="PropertiesContainer" style="height: auto; background-color: rgb(94, 94, 94); visibility: visible; max-height: 300px;">
                     <ui:TextField picking-mode="Ignore" label="ID" name="IDTextField" readonly="true" />
                     <uie:Vector3Field label="Position" name="PositionVector3Field" />
                     <uie:FloatField label="Radius" value="10" name="RadiusFloatField" />
                     <uie:FloatField label="Height" value="0" name="HeightFloatField" />
                     <ui:TextField picking-mode="Ignore" label="Tag" name="TagTextField" />
                     <ui:Label text="Event Properties" display-tooltip-when-elided="true" class="label-font" />
-                    <ui:Toggle label="Is Event" name="IsEventToggle" />
+                    <ui:ListView focusable="true" name="EventListView" show-foldout-header="true" header-title="Events" show-bound-collection-size="false" show-border="true" virtualization-method="DynamicHeight" />
+                    <uie:PropertyField name="PropertyFieldTest" />
+                    <ui:Button text="Add Event" display-tooltip-when-elided="true" name="AddEventButton" />
                 </ui:VisualElement>
-                <ui:VisualElement style="height: 17px;" />
+                <ui:VisualElement style="height: 15px;" />
                 <ui:Label text="Selected Waypoint Connections" display-tooltip-when-elided="true" class="label-font" />
                 <ui:VisualElement />
                 <ui:VisualElement name="ConnectionsContainer" style="flex-direction: row;">
@@ -50,8 +52,5 @@
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement style="flex-grow: 1; display: none;" />
-        <ui:Toggle label="Auto Generate" name="AutoGenerateToggle" style="display: none;" />
-        <ui:Button text="Generate Runtime Map" display-tooltip-when-elided="true" name="GenerateRuntimeMapButton" style="display: none;" />
     </ui:VisualElement>
 </ui:UXML>

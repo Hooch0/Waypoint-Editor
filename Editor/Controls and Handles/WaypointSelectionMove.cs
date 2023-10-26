@@ -73,7 +73,7 @@ namespace Hooch.Waypoint.Editor
             if (isDirty == true)
             {
                 SelectionPositionChanged?.Invoke();
-                _handler.ApplyDirty();
+                _handler.SetDirty();
             }
         }
 

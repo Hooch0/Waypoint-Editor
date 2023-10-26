@@ -20,11 +20,8 @@ namespace Hooch.Waypoint.Editor
         private VisualElement _coreInspector;
         private ObjectField _waypointSceneDataField;
         private Button _createSceneData;
-        private Button _generateRuntimeMapButton;
-        private Toggle _autoGenerateToggle;
 
         private SerializedObject _serializedSceneData;
-        private SerializedProperty _autoGenProp; 
         private const string _AUTO_GENERATE_KEY = "Varadia.WaypointSettings.autoGenerate";
 
 
@@ -45,26 +42,11 @@ namespace Hooch.Waypoint.Editor
             _createSceneData = _root.Q<Button>(WaypointConstants.WaypointEditor.CreateSceneController);
             _createSceneData.clicked += OnCreateSceenData;
 
-            _generateRuntimeMapButton = _root.Q<Button>(WaypointConstants.WaypointEditor.GenerateRuntimeMapButton);
-            _generateRuntimeMapButton.clicked += OnGenerateRuntimeMap;
-
-            _autoGenerateToggle = _root.Q<Toggle>(WaypointConstants.WaypointEditor.AutoGenerateToggle);
-            _autoGenProp = editor.SerializedObject.FindProperty(WaypointConstants.WaypointEditor.AutogenerateBinding);
-            _autoGenProp.boolValue = EditorPrefs.GetBool(_AUTO_GENERATE_KEY, false);
             editor.SerializedObject.ApplyModifiedProperties();
-
-            _autoGenerateToggle.BindProperty(_autoGenProp);
-            _autoGenerateToggle.RegisterValueChangedCallback(OnAutoGenerateToggleChanged);
-
 
             _waypointSceneDataField = _root.Q<ObjectField>(WaypointConstants.WaypointEditor.WaypointSceneDataField);
             _waypointSceneDataField.RegisterValueChangedCallback(OnWaypointSceneDataFieldValueChanged);
             _waypointSceneDataField.BindProperty(editor.SerializedObject.FindProperty(WaypointConstants.WaypointEditor.SceneControllerBinding));
-        }
-
-        private void OnAutoGenerateToggleChanged(ChangeEvent<bool> evt)
-        {
-            EditorPrefs.SetBool(_AUTO_GENERATE_KEY, evt.newValue);
         }
 
         private void OnWaypointSceneDataFieldValueChanged(ChangeEvent<UnityEngine.Object> evt)
@@ -116,11 +98,6 @@ namespace Hooch.Waypoint.Editor
                     }
                 }
             }
-        }
-
-        private void OnGenerateRuntimeMap()
-        {
-            _editor.GenerateRuntimeMap();
         }
     }
 }

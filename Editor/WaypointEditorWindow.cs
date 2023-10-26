@@ -243,6 +243,8 @@ namespace Hooch.Waypoint.Editor
             return null;
         }
 
+
+
         private void ResetEditor()
         {
             _editingToggle = false;

@@ -39,15 +39,24 @@ namespace Hooch.Waypoint.Editor
             public const string RadiusFloatField = "RadiusFloatField";
             public const string HeightFloatField = "HeightFloatField";
             public const string TagTextField = "TagTextField";
-            public const string IsEventToggle = "IsEventToggle";
             public const string ConnectionListView = "ConnectionListView";
             public const string ConnectionsContainer = "ConnectionsContainer";
             public const string ProbabilityFloatField = "ProbabilityFloatField";
             public const string ProbabilityBinding = "_probability";
             public const string WaypointTransitionBinding = "_transitions";
-            public const string WaypointConnectionsBinding = "_connections";
+
+            //Waypoint Event Properties
+            public const string AddEventButton = "AddEventButton";
+
+
+            //Waypoint Group bindings
+            public const string WaypointGroupConnectionsBinding = "_connections";
+            public const string WaypointGroupWaypointListBinding = "_waypoints";
+
+            //Waypoint Bindings
+            public const string WaypointEventsBinding = "_events";
         }
-    
+
         public static class WaypointSettings
         {
             public const string DefaultRadiusFloatField = "DefaultRadiusFloatField";

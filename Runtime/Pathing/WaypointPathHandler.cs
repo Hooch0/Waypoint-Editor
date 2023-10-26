@@ -33,12 +33,13 @@ namespace Hooch.Waypoint
         /// </summary>
         public IReadOnlyWaypoint CurrentWaypoint { get; private set; }
 
+        [field: SerializeField] public bool IgnoreHeightDetection { get; set; }
 
         private WaypointSceneController _controller;
         private Transform _agentTransform;
 
         private Func<IReadOnlyList<IReadOnlyWaypointTransition>, IReadOnlyWaypoint> _nextWaypointHandle;
-        
+
 
         public WaypointPathHandler(WaypointSceneController controller, Transform agentTransform)
         {
@@ -97,13 +98,21 @@ namespace Hooch.Waypoint
         {
             if (SimulationRunning == false) return;
 
-            if (Vector3.Distance(_agentTransform.position, CurrentWaypoint.Position) < CurrentWaypoint.Radius)
+            Vector3 positon = _agentTransform.position;
+
+            if (IgnoreHeightDetection == true)
+            {
+                positon.y = CurrentWaypoint.Position.y;
+            }
+
+            if (Vector3.Distance(positon, CurrentWaypoint.Position) < CurrentWaypoint.Radius)
             {
                 WaypointReached?.Invoke(CurrentWaypoint);
 
-                if(CurrentWaypoint.IsEvent == true)
+                IReadOnlyInternalWaypointEvent internalEvent = (IReadOnlyInternalWaypointEvent)CurrentWaypoint;
+                if (internalEvent.HasEvents == true)
                 {
-                    _controller.Interanl_RaiseEventWaypointReached(CurrentWaypoint, this);
+                    _controller.Internal_RaiseEventWaypointReached(internalEvent, this);
                 }
                 
                 CurrentWaypoint = GetNextWaypoint();

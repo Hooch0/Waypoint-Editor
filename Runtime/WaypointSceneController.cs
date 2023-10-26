@@ -6,8 +6,6 @@ namespace Hooch.Waypoint
 {
     public class WaypointSceneController : MonoBehaviour
     {
-        public event Action<IReadOnlyWaypoint, WaypointPathHandler> EventWaypointReached;
-
         public IReadOnlyDictionary<uint, IReadOnlyWaypoint> RuntimeWaypointMap => _runtimeWaypointMap;
         public IReadOnlyDictionary<uint, IReadOnlyWaypointConnections> RuntimeConnectionMap => _runtimeConnectionMap;
 
@@ -16,10 +14,17 @@ namespace Hooch.Waypoint
         private Dictionary<uint, IReadOnlyWaypoint> _runtimeWaypointMap = new Dictionary<uint, IReadOnlyWaypoint>();
         private Dictionary<uint, IReadOnlyWaypointConnections> _runtimeConnectionMap = new Dictionary<uint, IReadOnlyWaypointConnections>();
         private Dictionary<string, List<IReadOnlyWaypoint>> _runtimeTagMap = new Dictionary<string, List<IReadOnlyWaypoint>>();
-        
+        private List<WaypointEvent> _activeEvents = new List<WaypointEvent>();
+
+
         private void Awake()
         {
             GenerateRuntimeMap();
+        }
+
+        private void Update()
+        {
+            CheckForEvents();
         }
 
         private void GenerateRuntimeMap()
@@ -86,10 +91,26 @@ namespace Hooch.Waypoint
 
             return waypoints;
         }
-    
-        internal void Interanl_RaiseEventWaypointReached(IReadOnlyWaypoint waypoint, WaypointPathHandler pathHandler)
+
+        internal void Internal_RaiseEventWaypointReached(IReadOnlyInternalWaypointEvent waypoint, WaypointPathHandler pathHandler)
         {
-            EventWaypointReached?.Invoke(waypoint, pathHandler);
+            foreach (WaypointEvent evt in waypoint.Events)
+            {
+                WaypointEvent clone = (WaypointEvent)evt.Clone();
+                _activeEvents.Add(clone);
+                clone.Activate((IReadOnlyWaypoint)waypoint, pathHandler);
+            }
+        }
+
+        private void CheckForEvents()
+        {
+            for (int i = _activeEvents.Count - 1; i >= 0; i--)
+            {
+                if (_activeEvents[i].Update() == WaypointEventStatus.Finished)
+                {
+                    _activeEvents.RemoveAt(i);
+                }
+            }
         }
     }
 }

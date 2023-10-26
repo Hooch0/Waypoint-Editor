@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Hooch.Waypoint
@@ -10,7 +11,6 @@ namespace Hooch.Waypoint
         float Radius { get; }
         float Height { get; }
         string Tag { get; }
-        bool IsEvent { get; }
     }
 }
 

@@ -13,31 +13,32 @@ namespace Hooch.Waypoint
     [Serializable]
     public class WaypointNavMeshAgentPathHandler : WaypointPathHandler
     {
-        private NavMeshAgent _agent;
+        public NavMeshAgent Agent { get; private set; }
 
         public WaypointNavMeshAgentPathHandler(WaypointSceneController controller, NavMeshAgent agent) : base(controller, agent.transform)
         {
-            _agent = agent;
+            Agent = agent;
+            IgnoreHeightDetection = true;
         }
 
         public override void SetPath(uint waypointID)
         {
             base.SetPath(waypointID);
-            _agent.ResetPath();
-            _agent.SetDestination(CurrentWaypoint.Position);
+            Agent.ResetPath();
+            Agent.SetDestination(CurrentWaypoint.Position);
         }
 
         public override void Cancelpath()
         {
             base.Cancelpath();
-            _agent.isStopped = true;
-            _agent.ResetPath();
+            Agent.isStopped = true;
+            Agent.ResetPath();
         }
 
         public override void SuspendPath()
         {
             base.SuspendPath();
-            _agent.isStopped = true;
+            Agent.isStopped = true;
         }
 
         public override void ResumePath()
@@ -45,14 +46,14 @@ namespace Hooch.Waypoint
             if (CurrentWaypoint != null)
             {
                 base.ResumePath();
-                _agent.isStopped = false;
-                _agent.SetDestination(CurrentWaypoint.Position);
+                Agent.isStopped = false;
+                Agent.SetDestination(CurrentWaypoint.Position);
             }
         }
 
         protected override void OnCurrentWaypointChanged()
         {
-            _agent.SetDestination(CurrentWaypoint.Position);
+            Agent.SetDestination(CurrentWaypoint.Position);
         }
     }
 }
