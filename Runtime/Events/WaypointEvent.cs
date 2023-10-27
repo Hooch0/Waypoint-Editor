@@ -15,6 +15,9 @@ namespace Hooch.Waypoint
         /// <param name="pathHandler"></param>
         public abstract void Activate(IReadOnlyWaypoint waypoint, WaypointPathHandler pathHandler);
 
+        public abstract bool CanActivate(IReadOnlyWaypoint waypoint, WaypointPathHandler pathHandler);
+        public abstract void Abort();
+
         /// <summary>
         /// Triggered each frame like Unity's Update.
         /// </summary>

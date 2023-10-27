@@ -43,8 +43,6 @@ namespace Hooch.Waypoint.Editor
             ItemPicked?.Invoke(evt);
         }
 
-
-
         private List<Type> GetAllWaypointEventTypes()
         {
             List<Type> objects = new List<Type>();

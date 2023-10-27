@@ -96,7 +96,6 @@ namespace Hooch.Waypoint.Editor
 
             PropertyField propertyField = new PropertyField();
             propertyField.style.flexGrow = 1.0f;
-            Label propLabel = propertyField.Q<Label>();
 
 
             VisualElement middle = new VisualElement();
