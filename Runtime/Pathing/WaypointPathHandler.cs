@@ -18,6 +18,8 @@ namespace Hooch.Waypoint
         /// </summary>
         public event Action<IReadOnlyWaypoint> WaypointReached;
 
+        public WaypointSceneController SceneController { get; private set; }
+
         /// <summary>
         /// Is the current simulation running? Not having a current waypoint or not having an active path status will return false.
         /// </summary>
@@ -35,7 +37,6 @@ namespace Hooch.Waypoint
 
         [field: SerializeField] public bool IgnoreHeightDetection { get; set; }
 
-        private WaypointSceneController _controller;
         private Transform _agentTransform;
 
         private Func<IReadOnlyList<IReadOnlyWaypointTransition>, IReadOnlyWaypoint> _nextWaypointHandle;
@@ -43,7 +44,7 @@ namespace Hooch.Waypoint
 
         public WaypointPathHandler(WaypointSceneController controller, Transform agentTransform)
         {
-            _controller = controller;
+            SceneController = controller;
             _agentTransform = agentTransform;
         }
 
@@ -53,14 +54,14 @@ namespace Hooch.Waypoint
         /// <param name="waypointID"></param>
         public virtual void SetPath(uint waypointID)
         {
-            if (_controller.RuntimeWaypointMap.ContainsKey(waypointID) == false)
+            if (SceneController.RuntimeWaypointMap.ContainsKey(waypointID) == false)
             {
                 Debug.LogError($"WaypointPathHandler -- Unable to set path. Provided waypoint ID {waypointID} does not exist in runtime map.");
                 return;
             }
 
             CurrentPathStatus = PathStatus.Active;
-            CurrentWaypoint = _controller.RuntimeWaypointMap[waypointID];
+            CurrentWaypoint = SceneController.RuntimeWaypointMap[waypointID];
         }
 
         /// <summary>
@@ -112,7 +113,7 @@ namespace Hooch.Waypoint
                 IReadOnlyInternalWaypointEvent internalEvent = (IReadOnlyInternalWaypointEvent)CurrentWaypoint;
                 if (internalEvent.HasEvents == true)
                 {
-                    _controller.Internal_RaiseEventWaypointReached(internalEvent, this);
+                    SceneController.Internal_RaiseEventWaypointReached(internalEvent, this);
                 }
                 
                 CurrentWaypoint = GetNextWaypoint();
@@ -156,9 +157,9 @@ namespace Hooch.Waypoint
 
             if (_nextWaypointHandle == null)
             {
-                IReadOnlyList<IReadOnlyWaypointTransition> transitions = _controller.RuntimeConnectionMap[CurrentWaypoint.ID].SortedTransitions(x => x.Probability);
-            
-                if(transitions.Count == 0) return null;
+                IReadOnlyList<IReadOnlyWaypointTransition> transitions = SceneController.RuntimeConnectionMap[CurrentWaypoint.ID].SortedTransitions(x => x.Probability);
+
+                if (transitions.Count == 0) return null;
 
                 int index = 0;
 
@@ -176,11 +177,11 @@ namespace Hooch.Waypoint
                     }
                 }
 
-                nextWaypoint = _controller.RuntimeWaypointMap[transitions[index].ID];
+                nextWaypoint = SceneController.RuntimeWaypointMap[transitions[index].ID];
             }
             else
             {
-                nextWaypoint = _nextWaypointHandle(_controller.RuntimeConnectionMap[CurrentWaypoint.ID].Transitions);
+                nextWaypoint = _nextWaypointHandle(SceneController.RuntimeConnectionMap[CurrentWaypoint.ID].Transitions);
             }
 
             return nextWaypoint;
