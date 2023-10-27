@@ -11,6 +11,7 @@ namespace Hooch.Waypoint.Editor
         private readonly Vector2 _waypointTexturScaleMinMax = new Vector2(5, 100);
         private readonly float _waypointConstantSize = 350;
         private GUIStyle _idLabelStyle = null;
+        private readonly Color32 _defualtWaypointColor = new Color32(255, 204, 63, 255);
 
 
         public WaypointDrawer(WaypointHandle handler)
@@ -82,7 +83,7 @@ namespace Hooch.Waypoint.Editor
                 GUILayout.EndHorizontal();
                 GUILayout.EndArea();
 
-                GUI.color = isSelected == true ? settings.SelectedWaypointColor : waypoint.HasEvents == true ? settings.HasEventColor : Color.white;
+                GUI.color = isSelected == true ? settings.SelectedWaypointColor : waypoint.HasEvents == true ? settings.HasEventColor : settings.DefaultWaypointColor;
                 GUI.DrawTexture(textureRect, WaypointResourceAsset.Instance.WaypointIcon);
 
                 GUI.color = Color.white;
