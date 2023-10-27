@@ -29,6 +29,7 @@ namespace Hooch.Waypoint.Editor
         {
             Vector3 position = waypoint.Position;
             WaypointPreferencesHandler.WaypointPreferences settings = WaypointPreferencesHandler.GetPreferencesSettings();
+            bool isSelected = false;
             //Only for selected.
             if (_handler.SelectedWaypoints.ContainsKey(waypoint.ID) && _handler.IsEditing == true)
             {
@@ -36,6 +37,7 @@ namespace Hooch.Waypoint.Editor
                 Handles.DrawWireDisc(position, Vector3.up, waypoint.Radius);
                 Handles.color = Color.white;
                 Handles.DrawWireDisc(position, Vector3.up, 0.05f, 2);
+                isSelected = true;
             }
             
 
@@ -76,12 +78,15 @@ namespace Hooch.Waypoint.Editor
                 GUILayout.Label(sb.ToString(), _idLabelStyle);
 
 
-                GUI.color = Color.white;
 
                 GUILayout.EndHorizontal();
                 GUILayout.EndArea();
 
+                GUI.color = isSelected == true ? settings.SelectedWaypointColor : waypoint.HasEvents == true ? settings.HasEventColor : Color.white;
                 GUI.DrawTexture(textureRect, WaypointResourceAsset.Instance.WaypointIcon);
+
+                GUI.color = Color.white;
+
                 Handles.EndGUI();
             }
 

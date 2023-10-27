@@ -39,6 +39,16 @@ namespace Hooch.Waypoint.Editor
         private const string _SELECTED_LINE_COLOR_KEY_B = "Varadia.WaypointSettings.selectedLineColor_B";
         private const string _SELECTED_LINE_COLOR_KEY_A = "Varadia.WaypointSettings.selectedLineColor_A";
 
+        private const string _SELECTED_WAYPOINT_COLOR_KEY_R = "Varadia.WaypointSettings.selectedWaypointColor_R";
+        private const string _SELECTED_WAYPOINT_COLOR_KEY_G = "Varadia.WaypointSettings.selectedWaypointColor_G";
+        private const string _SELECTED_WAYPOINT_COLOR_KEY_B = "Varadia.WaypointSettings.selectedWaypointColor_B";
+        private const string _SELECTED_WAYPOINT_COLOR_KEY_A = "Varadia.WaypointSettings.selectedWaypointColor_A";
+
+        private const string _HAS_EVENT_COLOR_KEY_R = "Varadia.WaypointSettings.hasEventColor_R";
+        private const string _HAS_EVENT_COLOR_KEY_G = "Varadia.WaypointSettings.hasEventColor_G";
+        private const string _HAS_EVENT_COLOR_KEY_B = "Varadia.WaypointSettings.hasEventColor_B";
+        private const string _HAS_EVENT_COLOR_KEY_A = "Varadia.WaypointSettings.hasEventColor_A";
+
 
         public class WaypointPreferences
         {
@@ -49,6 +59,8 @@ namespace Hooch.Waypoint.Editor
             public Color ArrowHeadColor { get; set; }
             public Color LineColor { get; set; }
             public Color SelectedLineColor { get; set; }
+            public Color SelectedWaypointColor { get; set; }
+            public Color HasEventColor { get; set; }
         }
 
         public static WaypointPreferences GetPreferencesSettings()
@@ -80,10 +92,20 @@ namespace Hooch.Waypoint.Editor
                                             EditorPrefs.GetFloat(_LINE_COLOR_KEY_B, Color.yellow.b), 
                                             EditorPrefs.GetFloat(_LINE_COLOR_KEY_A, Color.yellow.a)),
 
-                SelectedLineColor = new Color(EditorPrefs.GetFloat(_SELECTED_LINE_COLOR_KEY_R, Color.cyan.r), 
-                                            EditorPrefs.GetFloat(_SELECTED_LINE_COLOR_KEY_G, Color.cyan.g), 
-                                            EditorPrefs.GetFloat(_SELECTED_LINE_COLOR_KEY_B, Color.cyan.b), 
-                                            EditorPrefs.GetFloat(_SELECTED_LINE_COLOR_KEY_A, Color.cyan.a))
+                SelectedLineColor = new Color(EditorPrefs.GetFloat(_SELECTED_LINE_COLOR_KEY_R, Color.cyan.r),
+                                            EditorPrefs.GetFloat(_SELECTED_LINE_COLOR_KEY_G, Color.cyan.g),
+                                            EditorPrefs.GetFloat(_SELECTED_LINE_COLOR_KEY_B, Color.cyan.b),
+                                            EditorPrefs.GetFloat(_SELECTED_LINE_COLOR_KEY_A, Color.cyan.a)),
+
+                SelectedWaypointColor = new Color(EditorPrefs.GetFloat(_SELECTED_WAYPOINT_COLOR_KEY_A, Color.cyan.r),
+                                            EditorPrefs.GetFloat(_SELECTED_WAYPOINT_COLOR_KEY_G, Color.cyan.g),
+                                            EditorPrefs.GetFloat(_SELECTED_WAYPOINT_COLOR_KEY_B, Color.cyan.b),
+                                            EditorPrefs.GetFloat(_SELECTED_WAYPOINT_COLOR_KEY_A, Color.cyan.a)),
+
+                HasEventColor = new Color(EditorPrefs.GetFloat(_HAS_EVENT_COLOR_KEY_A, Color.magenta.r),
+                                            EditorPrefs.GetFloat(_HAS_EVENT_COLOR_KEY_G, Color.magenta.g),
+                                            EditorPrefs.GetFloat(_HAS_EVENT_COLOR_KEY_B, Color.magenta.b),
+                                            EditorPrefs.GetFloat(_HAS_EVENT_COLOR_KEY_A, Color.magenta.a))
             };
         }
 
@@ -118,6 +140,16 @@ namespace Hooch.Waypoint.Editor
             EditorPrefs.SetFloat(_SELECTED_LINE_COLOR_KEY_G, settings.SelectedLineColor.g);
             EditorPrefs.SetFloat(_SELECTED_LINE_COLOR_KEY_B, settings.SelectedLineColor.b);
             EditorPrefs.SetFloat(_SELECTED_LINE_COLOR_KEY_A, settings.SelectedLineColor.a);
+
+            EditorPrefs.SetFloat(_SELECTED_WAYPOINT_COLOR_KEY_R, settings.SelectedWaypointColor.r);
+            EditorPrefs.SetFloat(_SELECTED_WAYPOINT_COLOR_KEY_G, settings.SelectedWaypointColor.g);
+            EditorPrefs.SetFloat(_SELECTED_WAYPOINT_COLOR_KEY_B, settings.SelectedWaypointColor.b);
+            EditorPrefs.SetFloat(_SELECTED_WAYPOINT_COLOR_KEY_A, settings.SelectedWaypointColor.a);
+
+            EditorPrefs.SetFloat(_HAS_EVENT_COLOR_KEY_R, settings.HasEventColor.r);
+            EditorPrefs.SetFloat(_HAS_EVENT_COLOR_KEY_G, settings.HasEventColor.g);
+            EditorPrefs.SetFloat(_HAS_EVENT_COLOR_KEY_B, settings.HasEventColor.b);
+            EditorPrefs.SetFloat(_HAS_EVENT_COLOR_KEY_A, settings.HasEventColor.a);
         }
     }
 
@@ -129,6 +161,8 @@ namespace Hooch.Waypoint.Editor
         private static GUIContent _arrowHeadColorLabel = new GUIContent("Arrow Head Color", "The Color of the Arrow head of the connections between waypoints.");
         private static GUIContent _lineColorLabel = new GUIContent("Line Color", "The line color of the connection.");
         private static GUIContent _selectedLineColorLabel = new GUIContent("Selected Line Color", "The line color of the connection when a waypoint is selected.");
+        private static GUIContent _selectedWaypointColorLabel = new GUIContent("Selected Waypoint Color", "The waypoint icon color when a waypoint is selected.");
+        private static GUIContent _hasEventColorLabel = new GUIContent("Has Event Color", "The waypoint icon color when a waypoint has at least 1 event.");
 
 
 
@@ -153,6 +187,8 @@ namespace Hooch.Waypoint.Editor
             settings.ArrowHeadColor = EditorGUILayout.ColorField(_arrowHeadColorLabel, settings.ArrowHeadColor);
             settings.LineColor = EditorGUILayout.ColorField(_lineColorLabel, settings.LineColor);
             settings.SelectedLineColor = EditorGUILayout.ColorField(_selectedLineColorLabel, settings.SelectedLineColor);
+            settings.SelectedWaypointColor = EditorGUILayout.ColorField(_selectedWaypointColorLabel, settings.SelectedWaypointColor);
+            settings.HasEventColor = EditorGUILayout.ColorField(_hasEventColorLabel, settings.HasEventColor);
 
             EditorGUI.indentLevel -= 1;
         }
