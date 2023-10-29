@@ -5,7 +5,7 @@
     <ui:VisualElement style="flex-grow: 1;">
         <ui:VisualElement style="height: 15px;" />
         <ui:Label text="Scene Data" display-tooltip-when-elided="true" style="-unity-text-align: middle-center; -unity-font-style: bold; font-size: 18px;" />
-        <uie:ObjectField label="Waypoint Scene Data" name="WaypointSceneDataField" type="Hooch.Waypoint.WaypointSceneController, WaypointEditor" />
+        <uie:ObjectField label="Waypoint Scene Controller" name="WaypointSceneDataField" type="Hooch.Waypoint.WaypointSceneController, WaypointEditor" />
         <ui:Button text="Create Scene Controller" display-tooltip-when-elided="true" name="CreateSceneController" />
         <ui:VisualElement style="height: 25px;" />
         <ui:VisualElement name="CoreInspector">

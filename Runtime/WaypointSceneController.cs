@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Hooch.Waypoint
 {
-    public class WaypointSceneController : MonoBehaviour
+    public sealed class WaypointSceneController : MonoBehaviour
     {
         public IReadOnlyDictionary<uint, IReadOnlyWaypoint> RuntimeWaypointMap => _runtimeWaypointMap;
         public IReadOnlyDictionary<uint, IReadOnlyWaypointConnections> RuntimeConnectionMap => _runtimeConnectionMap;
