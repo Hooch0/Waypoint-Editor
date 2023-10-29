@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace Hooch.Waypoint
 {
@@ -15,7 +12,17 @@ namespace Hooch.Waypoint
         /// <param name="pathHandler"></param>
         public abstract void Activate(IReadOnlyWaypoint waypoint, WaypointPathHandler pathHandler);
 
+        /// <summary>
+        /// Use to check if this event can be triggerd.
+        /// </summary>
+        /// <param name="waypoint"></param>
+        /// <param name="pathHandler"></param>
+        /// <returns></returns>
         public abstract bool CanActivate(IReadOnlyWaypoint waypoint, WaypointPathHandler pathHandler);
+
+        /// <summary>
+        /// Called when an event is aborted. Used for cleaning up and stopping active events.
+        /// </summary>
         public abstract void Abort();
 
         /// <summary>

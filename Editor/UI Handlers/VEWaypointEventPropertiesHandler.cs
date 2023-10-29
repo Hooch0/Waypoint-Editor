@@ -36,7 +36,10 @@ namespace Hooch.Waypoint.Editor
 
             _dropdown = new WaypointEventsDropdown(new UnityEditor.IMGUI.Controls.AdvancedDropdownState());
             _dropdown.ItemPicked += OnItemPicked;
+            AssemblyReloadEvents.afterAssemblyReload += OnAfterAssemblyReload;
         }
+
+
 
         public void Bind(SerializedProperty serializedProperty)
         {
@@ -155,5 +158,9 @@ namespace Hooch.Waypoint.Editor
             label.text = name;
         }
 
+        private void OnAfterAssemblyReload()
+        {
+            _dropdown.GenerateTypeMap();
+        }
     }
 }

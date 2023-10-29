@@ -12,15 +12,24 @@ namespace Hooch.Waypoint.Editor
 
         private Dictionary<string, Type> _typeMap = new Dictionary<string, Type>();
 
-        public WaypointEventsDropdown(AdvancedDropdownState state) : base(state) { }
+        private List<Type> _eventTypes = new List<Type>();
+
+        public WaypointEventsDropdown(AdvancedDropdownState state) : base(state)
+        {
+            GenerateTypeMap();
+        }
+
+        public void GenerateTypeMap()
+        {
+            _eventTypes = GetAllWaypointEventTypes();
+        }
 
         protected override AdvancedDropdownItem BuildRoot()
         {
             AdvancedDropdownItem root = new AdvancedDropdownItem("Events");
 
-            List<Type> eventTypes = GetAllWaypointEventTypes();
             _typeMap.Clear();
-            foreach (Type type in eventTypes)
+            foreach (Type type in _eventTypes)
             {
                 _typeMap.Add(type.Name, type);
                 AdvancedDropdownItem newObject = new AdvancedDropdownItem(type.Name);
