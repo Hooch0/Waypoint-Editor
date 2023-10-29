@@ -43,7 +43,7 @@ namespace Hooch.Waypoint.Editor
             _root = root;
             _editor = editor;
 
-            _eventProperties = new VEWaypointEventPropertiesHandler(root, editor, this);
+            _eventProperties = new VEWaypointEventPropertiesHandler(root, this);
 
             _propertiesContainer = _root.Q<VisualElement>(WaypointConstants.WaypointEditor.PropertiesContainer);
             _idTextField = _root.Q<TextField>(WaypointConstants.WaypointEditor.IDTextField);
@@ -70,6 +70,7 @@ namespace Hooch.Waypoint.Editor
             _radiusFloatField.RegisterValueChangedCallback(OnRadiusValueChanged);
             _heightFloatField.RegisterValueChangedCallback(OnHeightValueChanged);
             _tagTextField.RegisterValueChangedCallback(OnTagValueChanged);
+            _probabilityFloatField.RegisterValueChangedCallback(OnProbabilityValueChanged);
 
 
             _connectionsListView.makeItem += OnMakeItemListView;
@@ -84,6 +85,8 @@ namespace Hooch.Waypoint.Editor
             editor.WaypointHandler.SelectionValuesChanged += OnSelectionValuesChanged;
 
         }
+
+
 
         public void UpdateSceneData(SerializedObject serializedSceneData)
         {
@@ -128,6 +131,7 @@ namespace Hooch.Waypoint.Editor
             //Single Select
             if (CurrentSelectedWaypoints.Count == 1)
             {
+                _eventProperties.Container.SetEnabled(true);
                 DisabledAllMixedValues();
                 Waypoint waypoint = CurrentSelectedWaypoints[0];
                 _idTextField.value = waypoint.ID.ToString();
@@ -164,6 +168,7 @@ namespace Hooch.Waypoint.Editor
             //Multi Select
             if (CurrentSelectedWaypoints.Count > 1)
             {
+                _eventProperties.Container.SetEnabled(false);
                 _idTextField.showMixedValue = true;
 
                 Waypoint startWaypoint = CurrentSelectedWaypoints[0];
@@ -336,8 +341,6 @@ namespace Hooch.Waypoint.Editor
             _probabilityFloatField.Unbind();
         }
 
-
-
         private void OnPositionXValueChanged(ChangeEvent<float> evt)
         {
             Undo.RegisterCompleteObjectUndo(_serializedSceneData.targetObject, "Changed Waypoint X Position");
@@ -435,6 +438,11 @@ namespace Hooch.Waypoint.Editor
             }
 
             SetChangesDirty();
+        }
+
+        private void OnProbabilityValueChanged(ChangeEvent<float> evt)
+        {
+            _probabilityFloatField.SetValueWithoutNotify(Mathf.Clamp(evt.newValue, 0.0f, 100.0f));
         }
 
         private void OnSelectionValuesChanged()

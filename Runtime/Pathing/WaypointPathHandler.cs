@@ -14,10 +14,18 @@ namespace Hooch.Waypoint
     public abstract class WaypointPathHandler
     {
         /// <summary>
+        /// Event triggered when the traversing agent has reached the end of the path.
+        /// </summary>
+        public event Action WaypointPathFinished;
+
+        /// <summary>
         /// Event triggered when traversing agent has the reached the next waypoint in its path.
         /// </summary>
         public event Action<IReadOnlyWaypoint> WaypointReached;
 
+        /// <summary>
+        /// The active waypoint scene controller this handler uses.
+        /// </summary>
         public WaypointSceneController SceneController { get; private set; }
 
         /// <summary>
@@ -35,6 +43,9 @@ namespace Hooch.Waypoint
         /// </summary>
         public IReadOnlyWaypoint CurrentWaypoint { get; private set; }
 
+        /// <summary>
+        /// Should detection care about height difference between the waypoint and the traversing agent?
+        /// </summary>
         [field: SerializeField] public bool IgnoreHeightDetection { get; set; }
 
         private Transform _agentTransform;
@@ -121,6 +132,7 @@ namespace Hooch.Waypoint
                 if (CurrentWaypoint == null)
                 {
                     Cancelpath();
+                    WaypointPathFinished?.Invoke();
                 }
                 else
                 {
@@ -165,8 +177,8 @@ namespace Hooch.Waypoint
 
                 if (transitions.Count > 1)
                 {
-                    float value = URandom.Range(0.0f, 1.0f);
-                    
+                    float value = URandom.Range(0.0f, 100.0f);
+
                     for (int i = 0; i < transitions.Count; i++)
                     {
                         if (value <= transitions[i].Probability)

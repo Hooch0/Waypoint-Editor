@@ -46,6 +46,8 @@ namespace Hooch.Waypoint.Editor
             public const string WaypointTransitionBinding = "_transitions";
 
             //Waypoint Event Properties
+            public const string EventsContainer = "EventsContainer";
+            public const string EventListView = "EventListView";
             public const string AddEventButton = "AddEventButton";
 
 

@@ -33,9 +33,11 @@
                     <uie:FloatField label="Radius" value="10" name="RadiusFloatField" />
                     <uie:FloatField label="Height" value="0" name="HeightFloatField" />
                     <ui:TextField picking-mode="Ignore" label="Tag" name="TagTextField" />
-                    <ui:Label text="Event Properties" display-tooltip-when-elided="true" class="label-font" />
-                    <ui:ListView focusable="true" name="EventListView" show-foldout-header="true" header-title="Events" show-bound-collection-size="false" show-border="true" virtualization-method="DynamicHeight" />
-                    <ui:Button text="Add Event" display-tooltip-when-elided="true" name="AddEventButton" />
+                    <ui:VisualElement name="EventsContainer">
+                        <ui:Label text="Event Properties" display-tooltip-when-elided="true" class="label-font" />
+                        <ui:ListView focusable="true" name="EventListView" show-foldout-header="true" header-title="Events" show-bound-collection-size="false" show-border="true" virtualization-method="DynamicHeight" />
+                        <ui:Button text="Add Event" display-tooltip-when-elided="true" name="AddEventButton" />
+                    </ui:VisualElement>
                 </ui:VisualElement>
                 <ui:VisualElement style="height: 15px;" />
                 <ui:Label text="Selected Waypoint Connections" display-tooltip-when-elided="true" class="label-font" />
@@ -45,7 +47,7 @@
                     <ui:VisualElement style="flex-grow: 1;" />
                     <ui:VisualElement style="width: 66%;">
                         <ui:VisualElement>
-                            <uie:FloatField label="Probability" value="0" name="ProbabilityFloatField" />
+                            <uie:FloatField label="Probability" value="0" name="ProbabilityFloatField" tooltip="A percentage value between 0-100." />
                         </ui:VisualElement>
                     </ui:VisualElement>
                 </ui:VisualElement>

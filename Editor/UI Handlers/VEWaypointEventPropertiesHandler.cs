@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -10,10 +8,10 @@ namespace Hooch.Waypoint.Editor
 {
     public class VEWaypointEventPropertiesHandler
     {
+        public VisualElement Container { get; private set; }
         private VisualElement _root;
         private Button _addEventButton;
         private ListView _eventListView;
-        private WaypointEditorWindow _editor;
         private VEWaypointPropertiesHandler _propertyHandler;
 
         private WaypointEventsDropdown _dropdown;
@@ -21,14 +19,14 @@ namespace Hooch.Waypoint.Editor
         private SerializedProperty _currentSerializedWaypoint;
         private SerializedProperty _serializedEvents;
 
-        public VEWaypointEventPropertiesHandler(VisualElement root, WaypointEditorWindow editor, VEWaypointPropertiesHandler propertiesHandler)
+        public VEWaypointEventPropertiesHandler(VisualElement root, VEWaypointPropertiesHandler propertiesHandler)
         {
             _root = root;
-            _editor = editor;
             _propertyHandler = propertiesHandler;
 
+            Container = root.Q<VisualElement>(WaypointConstants.WaypointEditor.EventsContainer);
             _addEventButton = _root.Q<Button>(WaypointConstants.WaypointEditor.AddEventButton);
-            _eventListView = _root.Q<ListView>("EventListView");
+            _eventListView = _root.Q<ListView>(WaypointConstants.WaypointEditor.EventListView);
 
             _addEventButton.clicked += OnAddEventButtonClicked;
 

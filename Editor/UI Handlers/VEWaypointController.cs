@@ -1,10 +1,6 @@
 using UnityEngine.UIElements;
-using UnityEngine;
 using UnityEditor;
 using UnityEditor.UIElements;
-using UnityEditor.SceneManagement;
-using UnityEngine.SceneManagement;
-using System;
 
 namespace Hooch.Waypoint.Editor
 {
