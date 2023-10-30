@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -34,14 +35,10 @@ namespace Hooch.Waypoint.Editor
 
             _eventListView.bindItem += OnBindItemListView;
 
-            _eventListView.unbindItem += OnUnbindItem;
-
             _dropdown = new WaypointEventsDropdown(new UnityEditor.IMGUI.Controls.AdvancedDropdownState());
             _dropdown.ItemPicked += OnItemPicked;
             AssemblyReloadEvents.afterAssemblyReload += OnAfterAssemblyReload;
         }
-
-
 
         public void Bind(SerializedProperty serializedProperty)
         {
@@ -108,6 +105,8 @@ namespace Hooch.Waypoint.Editor
             PropertyField propertyField = new PropertyField();
             propertyField.style.flexGrow = 1.0f;
 
+            Label label = propertyField.Q<Label>();
+            label.RegisterValueChangedCallback(OnPropertyFieldLabelValueChanged);
 
             VisualElement middle = new VisualElement();
             middle.style.flexGrow = 1;
@@ -138,7 +137,6 @@ namespace Hooch.Waypoint.Editor
 
             Label label = propertyField.Q<Label>();
             WaypointEvent evt = (WaypointEvent)serilizedEvent.managedReferenceValue;
-            label.RegisterValueChangedCallback(OnPropertyFieldLabelValueChanged);
             label.userData = index;
             label.text = evt.GetType().Name;
 
@@ -147,13 +145,6 @@ namespace Hooch.Waypoint.Editor
             deleteButton.userData = index;
         }
 
-        private void OnUnbindItem(VisualElement element, int index)
-        {
-            PropertyField propertyField = element.Q<PropertyField>();
-            Label label = propertyField.Q<Label>();
-            label.UnregisterValueChangedCallback(OnPropertyFieldLabelValueChanged);
-            label.userData = null;
-        }
 
         private void OnDeleteClicked(EventBase evt)
         {
