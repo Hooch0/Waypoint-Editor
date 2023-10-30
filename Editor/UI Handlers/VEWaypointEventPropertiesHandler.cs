@@ -34,6 +34,8 @@ namespace Hooch.Waypoint.Editor
 
             _eventListView.bindItem += OnBindItemListView;
 
+            _eventListView.unbindItem += OnUnbindItem;
+
             _dropdown = new WaypointEventsDropdown(new UnityEditor.IMGUI.Controls.AdvancedDropdownState());
             _dropdown.ItemPicked += OnItemPicked;
             AssemblyReloadEvents.afterAssemblyReload += OnAfterAssemblyReload;
@@ -143,6 +145,14 @@ namespace Hooch.Waypoint.Editor
             //Setup button
             Button deleteButton = element.Q<Button>();
             deleteButton.userData = index;
+        }
+
+        private void OnUnbindItem(VisualElement element, int index)
+        {
+            PropertyField propertyField = element.Q<PropertyField>();
+            Label label = propertyField.Q<Label>();
+            label.UnregisterValueChangedCallback(OnPropertyFieldLabelValueChanged);
+            label.userData = null;
         }
 
         private void OnDeleteClicked(EventBase evt)
