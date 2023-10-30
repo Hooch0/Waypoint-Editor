@@ -132,6 +132,7 @@ namespace Hooch.Waypoint.Editor
             if (CurrentSelectedWaypoints.Count == 1)
             {
                 _eventProperties.Container.SetEnabled(true);
+                _eventProperties.Unbind();
                 DisabledAllMixedValues();
                 Waypoint waypoint = CurrentSelectedWaypoints[0];
                 _idTextField.value = waypoint.ID.ToString();
