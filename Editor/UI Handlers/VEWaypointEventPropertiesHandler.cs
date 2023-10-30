@@ -43,6 +43,11 @@ namespace Hooch.Waypoint.Editor
 
         public void Bind(SerializedProperty serializedProperty)
         {
+            if (_eventListView.itemsSource != null || _eventListView.itemsSource.Count > 0)
+            {
+                Unbind();
+            }
+
             _currentSerializedWaypoint = serializedProperty;
             _serializedEvents = _currentSerializedWaypoint.FindPropertyRelative(WaypointConstants.WaypointEditor.WaypointEventsBinding);
 
@@ -72,6 +77,9 @@ namespace Hooch.Waypoint.Editor
 
         public void Unbind()
         {
+            _currentSerializedWaypoint = null;
+            _serializedEvents = null;
+
             _eventListView.Unbind();
             _eventListView.itemsSource = new List<object>(); ;
         }
@@ -149,7 +157,11 @@ namespace Hooch.Waypoint.Editor
         {
             Label label = (Label)evt.currentTarget;
 
-            SerializedProperty serilizedEvent = _serializedEvents.GetArrayElementAtIndex((int)label.userData);
+            int index = (int)label.userData;
+
+            if (index > _serializedEvents.arraySize) return;
+
+            SerializedProperty serilizedEvent = _serializedEvents.GetArrayElementAtIndex(index);
             WaypointEvent wevt = (WaypointEvent)serilizedEvent.managedReferenceValue;
 
             string name = wevt.GetType().Name;
