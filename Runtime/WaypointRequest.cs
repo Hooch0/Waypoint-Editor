@@ -1,9 +1,13 @@
+using System;
+using UnityEngine;
+
 namespace Hooch.Waypoint
 {
+    [Serializable]
     public class WaypointRequest
     {
-        public string Tag { get; private set; }
-        public uint ID { get; private set; }
+        [field: SerializeField] public string Tag { get; private set; }
+        [field: SerializeField] public uint ID { get; private set; }
 
         public WaypointRequest(string tag)
         {
