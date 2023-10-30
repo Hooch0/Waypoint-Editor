@@ -7,50 +7,50 @@ namespace Hooch.Waypoint.Editor
     [InitializeOnLoad]
     public class WaypointPreferencesHandler
     {
-        private const string _ID_COLOR_KEY_R = "Varadia.WaypointSettings.IDColor_R";
-        private const string _ID_COLOR_KEY_G = "Varadia.WaypointSettings.IDColor_G";
-        private const string _ID_COLOR_KEY_B = "Varadia.WaypointSettings.IDColor_B";
-        private const string _ID_COLOR_KEY_A = "Varadia.WaypointSettings.IDColor_A";
+        private const string _ID_COLOR_KEY_R = "Hooch.WaypointSettings.IDColor_R";
+        private const string _ID_COLOR_KEY_G = "Hooch.WaypointSettings.IDColor_G";
+        private const string _ID_COLOR_KEY_B = "Hooch.WaypointSettings.IDColor_B";
+        private const string _ID_COLOR_KEY_A = "Hooch.WaypointSettings.IDColor_A";
 
-        private const string _TAG_COLOR_KEY_R = "Varadia.WaypointSettings.TagColor_R";
-        private const string _TAG_COLOR_KEY_G = "Varadia.WaypointSettings.TagColor_G";
-        private const string _TAG_COLOR_KEY_B = "Varadia.WaypointSettings.TagColor_B";
-        private const string _TAG_COLOR_KEY_A = "Varadia.WaypointSettings.TagColor_A";
+        private const string _TAG_COLOR_KEY_R = "Hooch.WaypointSettings.TagColor_R";
+        private const string _TAG_COLOR_KEY_G = "Hooch.WaypointSettings.TagColor_G";
+        private const string _TAG_COLOR_KEY_B = "Hooch.WaypointSettings.TagColor_B";
+        private const string _TAG_COLOR_KEY_A = "Hooch.WaypointSettings.TagColor_A";
 
-        private const string _RADIUS_COLOR_KEY_R = "Varadia.WaypointSettings.radiusColor_R";
-        private const string _RADIUS_COLOR_KEY_G = "Varadia.WaypointSettings.radiusColor_G";
-        private const string _RADIUS_COLOR_KEY_B = "Varadia.WaypointSettings.radiusColor_B";
-        private const string _RADIUS_COLOR_KEY_A = "Varadia.WaypointSettings.radiusColor_A";
+        private const string _RADIUS_COLOR_KEY_R = "Hooch.WaypointSettings.radiusColor_R";
+        private const string _RADIUS_COLOR_KEY_G = "Hooch.WaypointSettings.radiusColor_G";
+        private const string _RADIUS_COLOR_KEY_B = "Hooch.WaypointSettings.radiusColor_B";
+        private const string _RADIUS_COLOR_KEY_A = "Hooch.WaypointSettings.radiusColor_A";
 
-        private const string _ARROW_HEAD_COLOR_KEY_R = "Varadia.WaypointSettings.arrowHeadColor_R";
-        private const string _ARROW_HEAD_COLOR_KEY_G = "Varadia.WaypointSettings.arrowHeadColor_G";
-        private const string _ARROW_HEAD_COLOR_KEY_B = "Varadia.WaypointSettings.arrowHeadColor_B";
-        private const string _ARROW_HEAD_COLOR_KEY_A = "Varadia.WaypointSettings.arrowHeadColor_A";
+        private const string _ARROW_HEAD_COLOR_KEY_R = "Hooch.WaypointSettings.arrowHeadColor_R";
+        private const string _ARROW_HEAD_COLOR_KEY_G = "Hooch.WaypointSettings.arrowHeadColor_G";
+        private const string _ARROW_HEAD_COLOR_KEY_B = "Hooch.WaypointSettings.arrowHeadColor_B";
+        private const string _ARROW_HEAD_COLOR_KEY_A = "Hooch.WaypointSettings.arrowHeadColor_A";
 
-        private const string _LINE_COLOR_KEY_R = "Varadia.WaypointSettings.lineColor_R";
-        private const string _LINE_COLOR_KEY_G = "Varadia.WaypointSettings.lineColor_G";
-        private const string _LINE_COLOR_KEY_B = "Varadia.WaypointSettings.lineColor_B";
-        private const string _LINE_COLOR_KEY_A = "Varadia.WaypointSettings.lineColor_A";
+        private const string _LINE_COLOR_KEY_R = "Hooch.WaypointSettings.lineColor_R";
+        private const string _LINE_COLOR_KEY_G = "Hooch.WaypointSettings.lineColor_G";
+        private const string _LINE_COLOR_KEY_B = "Hooch.WaypointSettings.lineColor_B";
+        private const string _LINE_COLOR_KEY_A = "Hooch.WaypointSettings.lineColor_A";
 
-        private const string _SELECTED_LINE_COLOR_KEY_R = "Varadia.WaypointSettings.selectedLineColor_R";
-        private const string _SELECTED_LINE_COLOR_KEY_G = "Varadia.WaypointSettings.selectedLineColor_G";
-        private const string _SELECTED_LINE_COLOR_KEY_B = "Varadia.WaypointSettings.selectedLineColor_B";
-        private const string _SELECTED_LINE_COLOR_KEY_A = "Varadia.WaypointSettings.selectedLineColor_A";
+        private const string _SELECTED_LINE_COLOR_KEY_R = "Hooch.WaypointSettings.selectedLineColor_R";
+        private const string _SELECTED_LINE_COLOR_KEY_G = "Hooch.WaypointSettings.selectedLineColor_G";
+        private const string _SELECTED_LINE_COLOR_KEY_B = "Hooch.WaypointSettings.selectedLineColor_B";
+        private const string _SELECTED_LINE_COLOR_KEY_A = "Hooch.WaypointSettings.selectedLineColor_A";
 
-        private const string _SELECTED_WAYPOINT_COLOR_KEY_R = "Varadia.WaypointSettings.selectedWaypointColor_R";
-        private const string _SELECTED_WAYPOINT_COLOR_KEY_G = "Varadia.WaypointSettings.selectedWaypointColor_G";
-        private const string _SELECTED_WAYPOINT_COLOR_KEY_B = "Varadia.WaypointSettings.selectedWaypointColor_B";
-        private const string _SELECTED_WAYPOINT_COLOR_KEY_A = "Varadia.WaypointSettings.selectedWaypointColor_A";
+        private const string _SELECTED_WAYPOINT_COLOR_KEY_R = "Hooch.WaypointSettings.selectedWaypointColor_R";
+        private const string _SELECTED_WAYPOINT_COLOR_KEY_G = "Hooch.WaypointSettings.selectedWaypointColor_G";
+        private const string _SELECTED_WAYPOINT_COLOR_KEY_B = "Hooch.WaypointSettings.selectedWaypointColor_B";
+        private const string _SELECTED_WAYPOINT_COLOR_KEY_A = "Hooch.WaypointSettings.selectedWaypointColor_A";
 
-        private const string _HAS_EVENT_COLOR_KEY_R = "Varadia.WaypointSettings.hasEventColor_R";
-        private const string _HAS_EVENT_COLOR_KEY_G = "Varadia.WaypointSettings.hasEventColor_G";
-        private const string _HAS_EVENT_COLOR_KEY_B = "Varadia.WaypointSettings.hasEventColor_B";
-        private const string _HAS_EVENT_COLOR_KEY_A = "Varadia.WaypointSettings.hasEventColor_A";
+        private const string _HAS_EVENT_COLOR_KEY_R = "Hooch.WaypointSettings.hasEventColor_R";
+        private const string _HAS_EVENT_COLOR_KEY_G = "Hooch.WaypointSettings.hasEventColor_G";
+        private const string _HAS_EVENT_COLOR_KEY_B = "Hooch.WaypointSettings.hasEventColor_B";
+        private const string _HAS_EVENT_COLOR_KEY_A = "Hooch.WaypointSettings.hasEventColor_A";
 
-        private const string _DEFAULT_WAYPOINT_COLOR_KEY_R = "Varadia.WaypointSettings.defaultWaypointColor_R";
-        private const string _DEFAULT_WAYPOINT_COLOR_KEY_G = "Varadia.WaypointSettings.defaultWaypointColor_G";
-        private const string _DEFAULT_WAYPOINT_COLOR_KEY_B = "Varadia.WaypointSettings.defaultWaypointColor_B";
-        private const string _DEFAULT_WAYPOINT_COLOR_KEY_A = "Varadia.WaypointSettings.defaultWaypointColor_A";
+        private const string _DEFAULT_WAYPOINT_COLOR_KEY_R = "Hooch.WaypointSettings.defaultWaypointColor_R";
+        private const string _DEFAULT_WAYPOINT_COLOR_KEY_G = "Hooch.WaypointSettings.defaultWaypointColor_G";
+        private const string _DEFAULT_WAYPOINT_COLOR_KEY_B = "Hooch.WaypointSettings.defaultWaypointColor_B";
+        private const string _DEFAULT_WAYPOINT_COLOR_KEY_A = "Hooch.WaypointSettings.defaultWaypointColor_A";
 
 
         public class WaypointPreferences
@@ -238,7 +238,7 @@ namespace Hooch.Waypoint.Editor
         [SettingsProvider]
         public static SettingsProvider CreateSettingsProvider()
         {
-            var provider = new SettingsProvider("Preferences/Varadia/Waypoint Settings", SettingsScope.User)
+            var provider = new SettingsProvider("Preferences/Waypoint Settings", SettingsScope.User)
             {
                 label = "Waypoint System Settings",
 
