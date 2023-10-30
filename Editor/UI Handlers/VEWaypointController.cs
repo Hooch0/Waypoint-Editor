@@ -18,7 +18,6 @@ namespace Hooch.Waypoint.Editor
         private Button _createSceneData;
 
         private SerializedObject _serializedSceneData;
-        private const string _AUTO_GENERATE_KEY = "Varadia.WaypointSettings.autoGenerate";
 
 
         public VEWaypointController(VisualElement root, WaypointEditorWindow editor)
