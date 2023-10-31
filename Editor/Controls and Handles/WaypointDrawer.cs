@@ -72,8 +72,7 @@ namespace Hooch.Waypoint.Editor
 
                 Rect labelRect = new Rect(guiPoint.x - (labelSize.x / 2), guiPoint.y - labelOffset - offset - labelSize.y, labelSize.x, labelSize.y);
                 Rect textureRect = new Rect(guiPoint.x - (textureSize / 2), guiPoint.y - offset - textureSize, textureSize, textureSize);
-
-                if (Event.current.type == EventType.Layout)
+                if (Event.current.type != EventType.Repaint || Event.current.type != EventType.Layout)
                 {
                     GUILayout.BeginArea(labelRect);
                     GUILayout.BeginHorizontal();

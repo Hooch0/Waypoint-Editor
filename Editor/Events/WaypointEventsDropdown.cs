@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 
 namespace Hooch.Waypoint.Editor
@@ -31,8 +32,9 @@ namespace Hooch.Waypoint.Editor
             _typeMap.Clear();
             foreach (Type type in _eventTypes)
             {
-                _typeMap.Add(type.Name, type);
-                AdvancedDropdownItem newObject = new AdvancedDropdownItem(type.Name);
+                string name = ObjectNames.NicifyVariableName(type.Name);
+                _typeMap.Add(name, type);
+                AdvancedDropdownItem newObject = new AdvancedDropdownItem(name);
                 root.AddChild(newObject);
             }
 

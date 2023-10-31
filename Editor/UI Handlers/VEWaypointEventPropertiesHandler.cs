@@ -138,7 +138,7 @@ namespace Hooch.Waypoint.Editor
             Label label = propertyField.Q<Label>();
             WaypointEvent evt = (WaypointEvent)serilizedEvent.managedReferenceValue;
             label.userData = index;
-            label.text = evt.GetType().Name;
+            label.text = ObjectNames.NicifyVariableName(evt.GetType().Name);
 
             //Setup button
             Button deleteButton = element.Q<Button>();
@@ -165,7 +165,7 @@ namespace Hooch.Waypoint.Editor
             SerializedProperty serilizedEvent = _serializedEvents.GetArrayElementAtIndex(index);
             WaypointEvent wevt = (WaypointEvent)serilizedEvent.managedReferenceValue;
 
-            string name = wevt.GetType().Name;
+            string name = ObjectNames.NicifyVariableName(wevt.GetType().Name);
 
             if (label.text == name) return;
             label.text = name;
