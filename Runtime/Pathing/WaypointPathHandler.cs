@@ -174,14 +174,18 @@ namespace Hooch.Waypoint
 
                 if (transitions.Count == 0) return null;
 
-                IReadOnlyWaypointTransition selectedTransition = null;
-                float value = URandom.Range(0.0f, 100.0f);
-                foreach (IReadOnlyWaypointTransition trans in transitions)
+                IReadOnlyWaypointTransition selectedTransition = transitions[0];
+
+                if (transitions.Count > 1)
                 {
-                    if (trans.ProbabilityNumber >= value)
+                    float value = URandom.Range(0.0f, 100.0f);
+                    foreach (IReadOnlyWaypointTransition trans in transitions)
                     {
-                        selectedTransition = trans;
-                        break;
+                        if (trans.ProbabilityNumber >= value)
+                        {
+                            selectedTransition = trans;
+                            break;
+                        }
                     }
                 }
 
