@@ -73,15 +73,16 @@ namespace Hooch.Waypoint.Editor
                 Rect labelRect = new Rect(guiPoint.x - (labelSize.x / 2), guiPoint.y - labelOffset - offset - labelSize.y, labelSize.x, labelSize.y);
                 Rect textureRect = new Rect(guiPoint.x - (textureSize / 2), guiPoint.y - offset - textureSize, textureSize, textureSize);
 
-                GUILayout.BeginArea(labelRect);
-                GUILayout.BeginHorizontal();
+                if (Event.current.type == EventType.Layout)
+                {
+                    GUILayout.BeginArea(labelRect);
+                    GUILayout.BeginHorizontal();
 
-                GUILayout.Label(sb.ToString(), _idLabelStyle);
+                    GUILayout.Label(sb.ToString(), _idLabelStyle);
 
-
-
-                GUILayout.EndHorizontal();
-                GUILayout.EndArea();
+                    GUILayout.EndHorizontal();
+                    GUILayout.EndArea();
+                }
 
                 GUI.color = isSelected == true ? settings.SelectedWaypointColor : waypoint.HasEvents == true ? settings.HasEventColor : settings.DefaultWaypointColor;
                 GUI.DrawTexture(textureRect, WaypointResourceAsset.Instance.WaypointIcon);
