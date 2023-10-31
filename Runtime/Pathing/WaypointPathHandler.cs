@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using URandom = UnityEngine.Random;
 
@@ -168,27 +169,23 @@ namespace Hooch.Waypoint
 
             if (_nextWaypointHandle == null)
             {
-                IReadOnlyList<IReadOnlyWaypointTransition> transitions = SceneController.RuntimeConnectionMap[CurrentWaypoint.ID].SortedTransitions(x => x.Probability);
+                IReadOnlyList<IReadOnlyWaypointTransition> transitions = SceneController.RuntimeConnectionMap[CurrentWaypoint.ID]
+                    .SortedTransitions(x => x.ID);
 
                 if (transitions.Count == 0) return null;
 
-                int index = 0;
-
-                if (transitions.Count > 1)
+                IReadOnlyWaypointTransition selectedTransition = null;
+                float value = URandom.Range(0.0f, 100.0f);
+                foreach (IReadOnlyWaypointTransition trans in transitions)
                 {
-                    float value = URandom.Range(0.0f, 100.0f);
-
-                    for (int i = 0; i < transitions.Count; i++)
+                    if (trans.ProbabilityNumber >= value)
                     {
-                        if (value <= transitions[i].Probability)
-                        {
-                            index = i;
-                            break;
-                        }
+                        selectedTransition = trans;
+                        break;
                     }
                 }
 
-                nextWaypoint = SceneController.RuntimeWaypointMap[transitions[index].ID];
+                nextWaypoint = SceneController.RuntimeWaypointMap[selectedTransition.ID];
             }
             else
             {
@@ -196,9 +193,8 @@ namespace Hooch.Waypoint
             }
 
             return nextWaypoint;
-            
+
         }
-    
     }
 }
 

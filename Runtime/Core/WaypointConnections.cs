@@ -19,6 +19,27 @@ namespace Hooch.Waypoint
             ID = id;
         }
 
+        public void GenerateWeight()
+        {
+
+            if (_transitions.Count <= 1) return;
+
+            int totalWeight = 0;
+
+            foreach (WaypointTransition trans in _transitions)
+            {
+                totalWeight += trans.Weight;
+            }
+
+            int holdingNumber = 0;
+            foreach (WaypointTransition trans in _transitions)
+            {
+                float prob = (float)trans.Weight / (float)totalWeight;
+                trans.ProbabilityNumber = (int)(prob * 100) + holdingNumber;
+                holdingNumber = trans.ProbabilityNumber;
+            }
+        }
+
         public IReadOnlyList<IReadOnlyWaypointTransition> SortedTransitions<TKey>(Func<IReadOnlyWaypointTransition, TKey> comparison)
         {
             return _transitions.OrderBy(comparison).ToList();

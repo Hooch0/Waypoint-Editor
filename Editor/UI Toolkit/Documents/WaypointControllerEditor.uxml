@@ -47,7 +47,7 @@
                     <ui:VisualElement style="flex-grow: 1;" />
                     <ui:VisualElement style="width: 66%;">
                         <ui:VisualElement>
-                            <uie:FloatField label="Probability" value="0" name="ProbabilityFloatField" tooltip="A percentage value between 0-100." />
+                            <uie:IntegerField label="Weight" value="0" name="WeightIntField" />
                         </ui:VisualElement>
                     </ui:VisualElement>
                 </ui:VisualElement>

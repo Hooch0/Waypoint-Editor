@@ -27,7 +27,7 @@ namespace Hooch.Waypoint.Editor
 
         private VisualElement _connectionsContainer;
         private ListView _connectionsListView;
-        private FloatField _probabilityFloatField;
+        private IntegerField _weightIntField;
 
         private SerializedObject _serializedSceneData;
         private SerializedProperty _currentSerializedConnections;
@@ -54,7 +54,7 @@ namespace Hooch.Waypoint.Editor
 
             _connectionsContainer = _root.Q<VisualElement>(WaypointConstants.WaypointEditor.ConnectionsContainer);
             _connectionsListView = _root.Q<ListView>(WaypointConstants.WaypointEditor.ConnectionListView);
-            _probabilityFloatField = _root.Q<FloatField>(WaypointConstants.WaypointEditor.ProbabilityFloatField);
+            _weightIntField = _root.Q<IntegerField>(WaypointConstants.WaypointEditor.WeightIntField);
 
 
             _idTextField.SetEnabled(false);
@@ -70,7 +70,7 @@ namespace Hooch.Waypoint.Editor
             _radiusFloatField.RegisterValueChangedCallback(OnRadiusValueChanged);
             _heightFloatField.RegisterValueChangedCallback(OnHeightValueChanged);
             _tagTextField.RegisterValueChangedCallback(OnTagValueChanged);
-            _probabilityFloatField.RegisterValueChangedCallback(OnProbabilityValueChanged);
+            _weightIntField.RegisterValueChangedCallback(OnWeightValueChanged);
 
 
             _connectionsListView.makeItem += OnMakeItemListView;
@@ -112,7 +112,7 @@ namespace Hooch.Waypoint.Editor
                 _connectionsListView.Unbind();
                 _connectionsListView.itemsSource = new List<object>();
 
-                _probabilityFloatField.Unbind();
+                _weightIntField.Unbind();
                 _eventProperties.Unbind();
             }
 
@@ -162,7 +162,7 @@ namespace Hooch.Waypoint.Editor
                     _eventProperties.Bind(currentSerializedWaypoint);
                 }
 
-                _probabilityFloatField.SetValueWithoutNotify(0);
+                _weightIntField.SetValueWithoutNotify(0);
                 _connectionsContainer.SetEnabled(true);
             }
 
@@ -185,7 +185,7 @@ namespace Hooch.Waypoint.Editor
 
                 _eventProperties.Unbind();
 
-                _probabilityFloatField.Unbind();
+                _weightIntField.Unbind();
                 _connectionsContainer.SetEnabled(false);
             }
 
@@ -339,7 +339,7 @@ namespace Hooch.Waypoint.Editor
             _connectionsListView.Unbind();
             _connectionsListView.itemsSource = new List<object>();
             _eventProperties.Unbind();
-            _probabilityFloatField.Unbind();
+            _weightIntField.Unbind();
         }
 
         private void OnPositionXValueChanged(ChangeEvent<float> evt)
@@ -441,9 +441,12 @@ namespace Hooch.Waypoint.Editor
             SetChangesDirty();
         }
 
-        private void OnProbabilityValueChanged(ChangeEvent<float> evt)
+        private void OnWeightValueChanged(ChangeEvent<int> evt)
         {
-            _probabilityFloatField.SetValueWithoutNotify(Mathf.Clamp(evt.newValue, 0.0f, 100.0f));
+            if (evt.newValue < 0)
+            {
+                _weightIntField.SetValueWithoutNotify(0);
+            }
         }
 
         private void OnSelectionValuesChanged()
@@ -464,7 +467,7 @@ namespace Hooch.Waypoint.Editor
             if (_connectionsListView.selectedItem == null) return;
 
             SerializedProperty currentSerializedTransitions = (SerializedProperty)_connectionsListView.selectedItem;
-            _probabilityFloatField.BindProperty(currentSerializedTransitions.FindPropertyRelative(WaypointConstants.WaypointEditor.ProbabilityBinding));
+            _weightIntField.BindProperty(currentSerializedTransitions.FindPropertyRelative(WaypointConstants.WaypointEditor.WeightBinding));
         }
 
         private void OnBindItemListView(VisualElement element, int arg2)

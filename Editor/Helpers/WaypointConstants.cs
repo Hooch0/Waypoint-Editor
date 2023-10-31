@@ -41,8 +41,9 @@ namespace Hooch.Waypoint.Editor
             public const string TagTextField = "TagTextField";
             public const string ConnectionListView = "ConnectionListView";
             public const string ConnectionsContainer = "ConnectionsContainer";
-            public const string ProbabilityFloatField = "ProbabilityFloatField";
-            public const string ProbabilityBinding = "_probability";
+            public const string WeightIntField = "WeightIntField";
+
+            public const string WeightBinding = "_weight";
             public const string WaypointTransitionBinding = "_transitions";
 
             //Waypoint Event Properties
