@@ -39,6 +39,12 @@ namespace Hooch.Waypoint.Editor
             public const string RadiusFloatField = "RadiusFloatField";
             public const string HeightFloatField = "HeightFloatField";
             public const string TagTextField = "TagTextField";
+
+            //Waypoint Connections
+            public const string TransitionLogicLabel = "TransitionLogicLabel";
+            public const string TransitionLogicBinding = "_transitionLogic";
+            public const string TransitionLogicPropertyField = "TransitionLogicPropertyField";
+            public const string SetTransitionLogicButton = "SetTransitionLogicButton";
             public const string ConnectionListView = "ConnectionListView";
             public const string ConnectionsContainer = "ConnectionsContainer";
             public const string WeightIntField = "WeightIntField";

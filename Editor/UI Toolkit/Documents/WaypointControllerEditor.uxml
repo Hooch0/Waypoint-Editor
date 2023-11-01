@@ -8,7 +8,7 @@
         <uie:ObjectField label="Waypoint Scene Controller" name="WaypointSceneDataField" type="Hooch.Waypoint.WaypointSceneController, WaypointEditor" />
         <ui:Button text="Create Scene Controller" display-tooltip-when-elided="true" name="CreateSceneController" />
         <ui:VisualElement style="height: 25px;" />
-        <ui:VisualElement name="CoreInspector">
+        <ui:VisualElement name="CoreInspector" style="flex-grow: 1;">
             <ui:VisualElement style="height: 21px;" />
             <ui:Label text="Groups" display-tooltip-when-elided="true" class="label-font" />
             <ui:ListView focusable="true" name="GroupListView" virtualization-method="DynamicHeight" show-bound-collection-size="false" show-border="true" style="height: 116px;" />
@@ -18,7 +18,7 @@
             </ui:VisualElement>
             <ui:VisualElement style="height: 50px;" />
             <ui:Label text="Waypoints" display-tooltip-when-elided="true" class="label-font" />
-            <ui:VisualElement style="height: auto;">
+            <ui:VisualElement>
                 <ui:Toggle label="Autolink" name="AutolinkToggle" />
                 <ui:VisualElement style="flex-direction: row;">
                     <ui:Button text="Link" display-tooltip-when-elided="true" name="LinkButton" />
@@ -39,17 +39,26 @@
                         <ui:Button text="Add Event" display-tooltip-when-elided="true" name="AddEventButton" />
                     </ui:VisualElement>
                 </ui:VisualElement>
-                <ui:VisualElement style="height: 15px;" />
-                <ui:Label text="Selected Waypoint Connections" display-tooltip-when-elided="true" class="label-font" />
-                <ui:VisualElement />
-                <ui:VisualElement name="ConnectionsContainer" style="flex-direction: row;">
-                    <ui:ListView focusable="true" name="ConnectionListView" virtualization-method="DynamicHeight" show-bound-collection-size="false" show-border="true" style="height: 100px; min-width: 80px;" />
-                    <ui:VisualElement style="flex-grow: 1;" />
-                    <ui:VisualElement style="width: 66%;">
-                        <ui:VisualElement>
-                            <uie:IntegerField label="Weight" value="0" name="WeightIntField" />
+            </ui:VisualElement>
+            <ui:VisualElement name="ConnectionsContainer" style="flex-grow: 1;">
+                <ui:VisualElement style="flex-direction: column-reverse; flex-grow: 1;">
+                    <ui:VisualElement>
+                        <ui:Label text="Selected Waypoint Connections" display-tooltip-when-elided="true" class="label-font" />
+                        <ui:Label text="No Transition Logic Override Set" display-tooltip-when-elided="true" name="TransitionLogicLabel" style="-unity-text-align: upper-center;" />
+                        <uie:PropertyField label="Transition Logic Override" name="TransitionLogicPropertyField" style="display: none;" />
+                        <ui:Button text="Set" display-tooltip-when-elided="true" name="SetTransitionLogicButton" />
+                        <ui:VisualElement />
+                        <ui:VisualElement name="Transitions" style="flex-direction: row;">
+                            <ui:ListView focusable="true" name="ConnectionListView" virtualization-method="DynamicHeight" show-bound-collection-size="false" show-border="true" style="height: 100px; min-width: 80px;" />
+                            <ui:VisualElement style="flex-grow: 1;" />
+                            <ui:VisualElement style="width: 66%;">
+                                <ui:VisualElement>
+                                    <uie:IntegerField label="Weight" value="0" name="WeightIntField" />
+                                </ui:VisualElement>
+                            </ui:VisualElement>
                         </ui:VisualElement>
                     </ui:VisualElement>
+                    <ui:VisualElement style="height: 15px;" />
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>

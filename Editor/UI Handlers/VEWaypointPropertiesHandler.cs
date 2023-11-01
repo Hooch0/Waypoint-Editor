@@ -26,6 +26,9 @@ namespace Hooch.Waypoint.Editor
         private TextField _tagTextField;
 
         private VisualElement _connectionsContainer;
+        private Label _transitionLogicLabel;
+        private PropertyField _transitionLogicPropertyField;
+        private Button _setTransitionLogicButton;
         private ListView _connectionsListView;
         private IntegerField _weightIntField;
 
@@ -37,6 +40,10 @@ namespace Hooch.Waypoint.Editor
 
         private VEWaypointEventPropertiesHandler _eventProperties;
 
+        private WaypointTypeDropdown<WaypointTransitionLogic> _dropdown;
+
+        private const string SetTransitionButtonLabel = "Set Transition Logic";
+        private const string UnsetTransitionButtonLabel = "Unset";
 
         public VEWaypointPropertiesHandler(VisualElement root, WaypointEditorWindow editor)
         {
@@ -53,6 +60,9 @@ namespace Hooch.Waypoint.Editor
             _tagTextField = _root.Q<TextField>(WaypointConstants.WaypointEditor.TagTextField);
 
             _connectionsContainer = _root.Q<VisualElement>(WaypointConstants.WaypointEditor.ConnectionsContainer);
+            _transitionLogicLabel = _root.Q<Label>(WaypointConstants.WaypointEditor.TransitionLogicLabel);
+            _transitionLogicPropertyField = _root.Q<PropertyField>(WaypointConstants.WaypointEditor.TransitionLogicPropertyField);
+            _setTransitionLogicButton = _root.Q<Button>(WaypointConstants.WaypointEditor.SetTransitionLogicButton);
             _connectionsListView = _root.Q<ListView>(WaypointConstants.WaypointEditor.ConnectionListView);
             _weightIntField = _root.Q<IntegerField>(WaypointConstants.WaypointEditor.WeightIntField);
 
@@ -72,6 +82,10 @@ namespace Hooch.Waypoint.Editor
             _tagTextField.RegisterValueChangedCallback(OnTagValueChanged);
             _weightIntField.RegisterValueChangedCallback(OnWeightValueChanged);
 
+            _setTransitionLogicButton.text = SetTransitionButtonLabel;
+
+            _setTransitionLogicButton.clicked += OnSetTransitionButtonClicked;
+
 
             _connectionsListView.makeItem += OnMakeItemListView;
 
@@ -84,8 +98,10 @@ namespace Hooch.Waypoint.Editor
             editor.WaypointHandler.SelectionChanged += OnWaypointSelectionChanged;
             editor.WaypointHandler.SelectionValuesChanged += OnSelectionValuesChanged;
 
-        }
+            _dropdown = new WaypointTypeDropdown<WaypointTransitionLogic>("Transition Logic Overrides", new UnityEditor.IMGUI.Controls.AdvancedDropdownState());
+            _dropdown.ItemPicked += OnItemPicked;
 
+        }
 
 
         public void UpdateSceneData(SerializedObject serializedSceneData)
@@ -148,6 +164,8 @@ namespace Hooch.Waypoint.Editor
 
                 if (_currentSerializedConnections != null)
                 {
+
+
                     //Set first connection as the selected
                     _connectionsListView.RegisterCallback<GeometryChangedEvent>((x) =>
                     {
@@ -155,6 +173,21 @@ namespace Hooch.Waypoint.Editor
                     });
                     _currentSerializedTransitions = _currentSerializedConnections.FindPropertyRelative(WaypointConstants.WaypointEditor.WaypointTransitionBinding);
                     _connectionsListView.BindProperty(_currentSerializedTransitions);
+
+                    WaypointConnections connections = (WaypointConnections)_currentSerializedConnections.managedReferenceValue;
+                    if (connections.TransitionLogic != null)
+                    {
+                        _setTransitionLogicButton.text = $"{UnsetTransitionButtonLabel} {ObjectNames.NicifyVariableName(connections.TransitionLogic.GetType().Name)}";
+                        _transitionLogicLabel.style.display = DisplayStyle.None;
+                        _transitionLogicPropertyField.style.display = DisplayStyle.Flex;
+                        _transitionLogicPropertyField.BindProperty(_currentSerializedConnections.FindPropertyRelative(WaypointConstants.WaypointEditor.TransitionLogicBinding));
+                    }
+                    else
+                    {
+                        _setTransitionLogicButton.text = SetTransitionButtonLabel;
+                        _transitionLogicLabel.style.display = DisplayStyle.Flex;
+                        _transitionLogicPropertyField.style.display = DisplayStyle.None;
+                    }
                 }
 
                 if (currentSerializedWaypoint != null)
@@ -179,14 +212,7 @@ namespace Hooch.Waypoint.Editor
                 CheckHeightMulti(startWaypoint);
                 CheckTagMulti(startWaypoint);
 
-                //This clears the listview
-                _connectionsListView.Unbind();
-                _connectionsListView.itemsSource = new List<object>();
-
-                _eventProperties.Unbind();
-
-                _weightIntField.Unbind();
-                _connectionsContainer.SetEnabled(false);
+                ResetSingleSelectProperties();
             }
 
         }
@@ -334,12 +360,24 @@ namespace Hooch.Waypoint.Editor
             _heightFloatField.SetValueWithoutNotify(0);
             _tagTextField.SetValueWithoutNotify("");
 
+            ResetSingleSelectProperties();
+        }
+
+        private void ResetSingleSelectProperties()
+        {
+            _setTransitionLogicButton.Unbind();
+
+            _transitionLogicLabel.style.display = DisplayStyle.Flex;
+            _transitionLogicPropertyField.style.display = DisplayStyle.None;
 
             //This clears the listview
             _connectionsListView.Unbind();
             _connectionsListView.itemsSource = new List<object>();
+
             _eventProperties.Unbind();
+
             _weightIntField.Unbind();
+            _connectionsContainer.SetEnabled(false);
         }
 
         private void OnPositionXValueChanged(ChangeEvent<float> evt)
@@ -485,6 +523,40 @@ namespace Hooch.Waypoint.Editor
             Label label = new Label();
             label.style.unityTextAlign = TextAnchor.MiddleCenter;
             return label;
+        }
+
+
+        private void OnSetTransitionButtonClicked()
+        {
+            WaypointConnections connections = (WaypointConnections)_currentSerializedConnections.managedReferenceValue;
+
+            if (connections.TransitionLogic == null)
+            {
+                _dropdown.Show(new Rect(_setTransitionLogicButton.worldBound.position, _setTransitionLogicButton.worldBound.size));
+            }
+            else
+            {
+                connections.SetTransitionLogic(null);
+
+                _transitionLogicLabel.style.display = DisplayStyle.Flex;
+                _transitionLogicPropertyField.style.display = DisplayStyle.None;
+
+                _setTransitionLogicButton.text = SetTransitionButtonLabel;
+            }
+
+            SetChangesDirty();
+        }
+
+        private void OnItemPicked(WaypointTransitionLogic logic)
+        {
+            WaypointConnections connections = (WaypointConnections)_currentSerializedConnections.managedReferenceValue;
+
+            connections.SetTransitionLogic(logic);
+
+            _transitionLogicLabel.style.display = DisplayStyle.None;
+            _transitionLogicPropertyField.style.display = DisplayStyle.Flex;
+
+            _setTransitionLogicButton.text = $"{UnsetTransitionButtonLabel} {ObjectNames.NicifyVariableName(logic.GetType().Name)}";
         }
 
     }

@@ -50,9 +50,6 @@ namespace Hooch.Waypoint
 
         private Transform _agentTransform;
 
-        private Func<IReadOnlyList<IReadOnlyWaypointTransition>, IReadOnlyWaypoint> _nextWaypointHandle;
-
-
         public WaypointPathHandler(WaypointSceneController controller, Transform agentTransform)
         {
             SceneController = controller;
@@ -142,39 +139,23 @@ namespace Hooch.Waypoint
         }
 
         /// <summary>
-        /// Set the handle used to determine and get the next waypoint in the path. Only 1 handle can be set at a time.
-        /// </summary>
-        /// <param name="handle"></param>
-        public void SetNextWaypointHandle(Func<IReadOnlyList<IReadOnlyWaypointTransition>, IReadOnlyWaypoint> handle)
-        {
-            _nextWaypointHandle = handle;
-        }
-
-        /// <summary>
-        /// Reset the handle back to the default handle.
-        /// </summary>
-        public void ResetNextWaypointHandle()
-        {
-            _nextWaypointHandle = null;
-        }
-
-        /// <summary>
         /// Called when the current waypoint has changed. Can be used to set a new destination.
         /// </summary>
         protected abstract void OnCurrentWaypointChanged();
 
         private IReadOnlyWaypoint GetNextWaypoint()
         {
-            IReadOnlyWaypoint nextWaypoint = null;
+            IReadOnlyWaypointConnections connections = SceneController.RuntimeConnectionMap[CurrentWaypoint.ID];
+            IReadOnlyList<IReadOnlyWaypointTransition> transitions = connections.SortedTransitions(x => x.ID);
 
-            if (_nextWaypointHandle == null)
+            if (transitions.Count == 0) return null;
+
+            IReadOnlyWaypointTransition selectedTransition = null;
+
+            if (connections.TransitionLogic == null)
             {
-                IReadOnlyList<IReadOnlyWaypointTransition> transitions = SceneController.RuntimeConnectionMap[CurrentWaypoint.ID]
-                    .SortedTransitions(x => x.ID);
 
-                if (transitions.Count == 0) return null;
-
-                IReadOnlyWaypointTransition selectedTransition = transitions[0];
+                selectedTransition = transitions[0];
 
                 if (transitions.Count > 1)
                 {
@@ -188,16 +169,14 @@ namespace Hooch.Waypoint
                         }
                     }
                 }
-
-                nextWaypoint = SceneController.RuntimeWaypointMap[selectedTransition.ID];
             }
             else
             {
-                nextWaypoint = _nextWaypointHandle(SceneController.RuntimeConnectionMap[CurrentWaypoint.ID].Transitions);
+                selectedTransition = connections.TransitionLogic.Activate(this);
             }
 
-            return nextWaypoint;
 
+            return SceneController.RuntimeWaypointMap[selectedTransition.ID]; ;
         }
     }
 }

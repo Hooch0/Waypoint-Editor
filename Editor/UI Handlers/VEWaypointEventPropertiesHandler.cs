@@ -15,7 +15,7 @@ namespace Hooch.Waypoint.Editor
         private ListView _eventListView;
         private VEWaypointPropertiesHandler _propertyHandler;
 
-        private WaypointEventsDropdown _dropdown;
+        private WaypointTypeDropdown<WaypointEvent> _dropdown;
 
         private SerializedProperty _currentSerializedWaypoint;
         private SerializedProperty _serializedEvents;
@@ -35,7 +35,7 @@ namespace Hooch.Waypoint.Editor
 
             _eventListView.bindItem += OnBindItemListView;
 
-            _dropdown = new WaypointEventsDropdown(new UnityEditor.IMGUI.Controls.AdvancedDropdownState());
+            _dropdown = new WaypointTypeDropdown<WaypointEvent>("Events", new UnityEditor.IMGUI.Controls.AdvancedDropdownState());
             _dropdown.ItemPicked += OnItemPicked;
             AssemblyReloadEvents.afterAssemblyReload += OnAfterAssemblyReload;
         }

@@ -80,7 +80,7 @@ namespace Hooch.Waypoint
 
                 foreach (WaypointConnections connections in group.Connections)
                 {
-                    connections.GenerateWeight();
+                    connections.Setup();
                     _runtimeConnectionMap.Add(connections.ID, connections);
                 }
             }

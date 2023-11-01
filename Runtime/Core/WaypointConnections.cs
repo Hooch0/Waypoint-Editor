@@ -10,33 +10,24 @@ namespace Hooch.Waypoint
     public class WaypointConnections : IReadOnlyWaypointConnections
     {
         [field: SerializeField] public uint ID { get; private set; }
+        public WaypointTransitionLogic TransitionLogic => _transitionLogic;
         public IReadOnlyList<IReadOnlyWaypointTransition> Transitions => _transitions;
 
         [SerializeReference] private List<WaypointTransition> _transitions = new List<WaypointTransition>();
+        [SerializeReference] private WaypointTransitionLogic _transitionLogic;
 
         public WaypointConnections(uint id)
         {
             ID = id;
         }
 
-        public void GenerateWeight()
+        public void Setup()
         {
+            GenerateWeight();
 
-            if (_transitions.Count <= 1) return;
-
-            int totalWeight = 0;
-
-            foreach (WaypointTransition trans in _transitions)
+            if (_transitionLogic != null)
             {
-                totalWeight += trans.Weight;
-            }
-
-            int holdingNumber = 0;
-            foreach (WaypointTransition trans in _transitions)
-            {
-                float prob = (float)trans.Weight / (float)totalWeight;
-                trans.ProbabilityNumber = (int)(prob * 100) + holdingNumber;
-                holdingNumber = trans.ProbabilityNumber;
+                _transitionLogic.Intialize(this, _transitions);
             }
         }
 
@@ -58,6 +49,32 @@ namespace Hooch.Waypoint
         public bool Contains(uint id)
         {
             return _transitions.FirstOrDefault(x => x.ID == id) != null;
+        }
+
+        public void SetTransitionLogic(WaypointTransitionLogic transitionLogic)
+        {
+            _transitionLogic = transitionLogic;
+        }
+
+        private void GenerateWeight()
+        {
+
+            if (_transitions.Count <= 1) return;
+
+            int totalWeight = 0;
+
+            foreach (WaypointTransition trans in _transitions)
+            {
+                totalWeight += trans.Weight;
+            }
+
+            int holdingNumber = 0;
+            foreach (WaypointTransition trans in _transitions)
+            {
+                float prob = (float)trans.Weight / (float)totalWeight;
+                trans.ProbabilityNumber = (int)(prob * 100) + holdingNumber;
+                holdingNumber = trans.ProbabilityNumber;
+            }
         }
 
     }

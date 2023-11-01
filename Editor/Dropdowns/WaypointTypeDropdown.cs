@@ -7,30 +7,33 @@ using UnityEditor.IMGUI.Controls;
 
 namespace Hooch.Waypoint.Editor
 {
-    public class WaypointEventsDropdown : AdvancedDropdown
+    public class WaypointTypeDropdown<T> : AdvancedDropdown where T : class
     {
-        public event Action<WaypointEvent> ItemPicked;
+        public event Action<T> ItemPicked;
 
         private Dictionary<string, Type> _typeMap = new Dictionary<string, Type>();
 
-        private List<Type> _eventTypes = new List<Type>();
+        private List<Type> _types = new List<Type>();
 
-        public WaypointEventsDropdown(AdvancedDropdownState state) : base(state)
+        private string _categoryName;
+
+        public WaypointTypeDropdown(string categoryName, AdvancedDropdownState state) : base(state)
         {
+            _categoryName = categoryName;
             GenerateTypeMap();
         }
 
         public void GenerateTypeMap()
         {
-            _eventTypes = GetAllWaypointEventTypes();
+            _types = GetAllTypes();
         }
 
         protected override AdvancedDropdownItem BuildRoot()
         {
-            AdvancedDropdownItem root = new AdvancedDropdownItem("Events");
+            AdvancedDropdownItem root = new AdvancedDropdownItem(_categoryName);
 
             _typeMap.Clear();
-            foreach (Type type in _eventTypes)
+            foreach (Type type in _types)
             {
                 string name = ObjectNames.NicifyVariableName(type.Name);
                 _typeMap.Add(name, type);
@@ -46,17 +49,17 @@ namespace Hooch.Waypoint.Editor
         {
             base.ItemSelected(item);
 
-            WaypointEvent evt = (WaypointEvent)Activator.CreateInstance(_typeMap[item.name]);
+            T evt = (T)Activator.CreateInstance(_typeMap[item.name]);
             ItemPicked?.Invoke(evt);
         }
 
-        private List<Type> GetAllWaypointEventTypes()
+        private List<Type> GetAllTypes()
         {
             List<Type> objects = new List<Type>();
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
                 foreach (Type type in assembly.GetTypes()
-                    .Where(myType => myType.IsClass && !myType.IsAbstract && myType.IsSubclassOf(typeof(WaypointEvent))))
+                    .Where(myType => myType.IsClass && !myType.IsAbstract && myType.IsSubclassOf(typeof(T))))
                 {
                     objects.Add(type);
                 }
