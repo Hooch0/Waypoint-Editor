@@ -62,14 +62,14 @@ namespace Hooch.Waypoint
         /// <param name="waypointID"></param>
         public virtual void SetPath(uint waypointID)
         {
-            if (SceneController.RuntimeWaypointMap.ContainsKey(waypointID) == false)
+            if (SceneController.TryGetWaypoint(waypointID, out IReadOnlyWaypoint waypoint) == false)
             {
                 Debug.LogError($"WaypointPathHandler -- Unable to set path. Provided waypoint ID {waypointID} does not exist in runtime map.");
                 return;
             }
 
             CurrentPathStatus = PathStatus.Active;
-            CurrentWaypoint = SceneController.RuntimeWaypointMap[waypointID];
+            CurrentWaypoint = waypoint;
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace Hooch.Waypoint
 
         private IReadOnlyWaypoint GetNextWaypoint()
         {
-            IReadOnlyWaypointConnections connections = SceneController.RuntimeConnectionMap[CurrentWaypoint.ID];
+            IReadOnlyWaypointConnections connections = SceneController.GetConnection(CurrentWaypoint.ID);
             IReadOnlyList<IReadOnlyWaypointTransition> transitions = connections.SortedTransitions(x => x.ID);
 
             if (transitions.Count == 0) return null;
@@ -176,7 +176,7 @@ namespace Hooch.Waypoint
             }
 
 
-            return SceneController.RuntimeWaypointMap[selectedTransition.ID]; ;
+            return SceneController.GetWaypoint(selectedTransition.ID);
         }
     }
 }

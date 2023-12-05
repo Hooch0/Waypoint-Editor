@@ -245,8 +245,8 @@ namespace Hooch.Waypoint.Editor
 
         private void ApplyDirty()
         {
-            _editor.SerializedObject.SetIsDifferentCacheDirty();
-            _editor.SerializedObject.Update();
+            _editor.SerializedWaypointEditor.SetIsDifferentCacheDirty();
+            _editor.SerializedWaypointEditor.Update();
             _editor.SerializedSceneController.SetIsDifferentCacheDirty();
             _editor.SerializedSceneController.Update();
             _isDirty = false;

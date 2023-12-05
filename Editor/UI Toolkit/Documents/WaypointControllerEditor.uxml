@@ -3,6 +3,9 @@
     <Style src="project://database/Packages/dev.hooch.waypoint/Editor/UI%20Toolkit/Styles/FloatFieldStyle.uss?fileID=7433441132597879392&amp;guid=b34ff77030fb2d84594c9a7082ef8680&amp;type=3#FloatFieldStyle" />
     <Style src="project://database/Packages/dev.hooch.waypoint/Editor/UI%20Toolkit/Styles/WaypointHeaderStyle.uss?fileID=7433441132597879392&amp;guid=82738805e5d509c458e2cb106229a9c3&amp;type=3#WaypointHeaderStyle" />
     <ui:VisualElement style="flex-grow: 1;">
+        <uie:Toolbar>
+            <uie:ToolbarButton text="Generate" display-tooltip-when-elided="true" name="GenerateToolbarButton" />
+        </uie:Toolbar>
         <ui:VisualElement style="height: 15px;" />
         <ui:Label text="Scene Data" display-tooltip-when-elided="true" style="-unity-text-align: middle-center; -unity-font-style: bold; font-size: 18px;" />
         <uie:ObjectField label="Waypoint Scene Controller" name="WaypointSceneDataField" type="Hooch.Waypoint.WaypointSceneController, WaypointEditor" />

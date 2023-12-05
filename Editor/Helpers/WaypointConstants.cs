@@ -10,10 +10,8 @@ namespace Hooch.Waypoint.Editor
             public const string CoreInspector = "CoreInspector";
             public const string WaypointSceneDataField = "WaypointSceneDataField";
             public const string CreateSceneController = "CreateSceneController";
-            public const string GenerateRuntimeMapButton = "GenerateRuntimeMapButton";
-            public const string AutoGenerateToggle = "AutoGenerateToggle";
             public const string SceneControllerBinding = "_sceneController";
-            public const string AutogenerateBinding = "_autoGenerate";
+            public const string GenerateToolbarButton = "GenerateToolbarButton";
 
             //Waypoint Group
             public const string GroupListView = "GroupListView";
@@ -23,12 +21,10 @@ namespace Hooch.Waypoint.Editor
             public const string WaypointGroupNameBinding = "_groupName";
 
             //Waypoint Options
-            public const string EditingToggle = "EditingToggle";
             public const string AutolinkToggle = "AutolinkToggle";
             public const string LinkButton = "LinkButton";
             public const string UnlinkButton = "UnlinkButton";
             public const string SelectedIDsTextField = "SelectedIDsTextField";
-            public const string EditingToggleBindingPath = "_editingToggle";
             public const string AutolinkBindingPath = "_autolinkToggle";
 
 

@@ -14,7 +14,18 @@ namespace Hooch.Waypoint.Editor
         public event Action<WaypointGroup> CurrentGroupChanged;
         public int CurrentSceneControllerInstanceID { get; private set; }
 
-        public SerializedObject SerializedObject { get; private set; }
+        public SerializedObject SerializedWaypointEditor
+        {
+            get
+            {
+                if (_serializedWaypointEditor == null)
+                {
+                    _serializedWaypointEditor = new SerializedObject(this);
+                }
+
+                return _serializedWaypointEditor;
+            }
+        }
         public SerializedObject SerializedSceneController { get; private set;}
         public SerializedProperty SerializedWaypointGroups { get; private set; }
 
@@ -28,12 +39,12 @@ namespace Hooch.Waypoint.Editor
         private bool _editingToggle;
         [SerializeField] private bool _autolinkToggle;
         [SerializeField] private bool _autoGenerate;
-        
+
         private Vector2 _windowSize = new Vector2(600, 800);
-        private int? _generationProgressID;
         private int _id;
 
         private SceneView _currentView;
+        private SerializedObject _serializedWaypointEditor;
 
 
         [MenuItem("Tools/Waypoint System/Waypoint Editor", priority = 20)]
@@ -98,7 +109,6 @@ namespace Hooch.Waypoint.Editor
 
         public void CreateGUI()
         {
-            SerializedObject = new SerializedObject(this);
             if (_sceneController == null)
             {
                 LoadWaypointSceneController();
@@ -124,10 +134,8 @@ namespace Hooch.Waypoint.Editor
             _sceneController = controller;
             CurrentSceneControllerInstanceID = _sceneController != null ? _sceneController.gameObject.GetInstanceID() : -1;
 
-            if (SerializedObject != null)
-            {
-                SerializedObject.UpdateIfRequiredOrScript();
-            }
+            SerializedWaypointEditor.UpdateIfRequiredOrScript();
+            SerializedWaypointEditor.ApplyModifiedProperties();
         }
 
         public void UpdateSceneData()
@@ -215,12 +223,8 @@ namespace Hooch.Waypoint.Editor
 
         public void GenerateRuntimeMap()
         {
-            if(_generationProgressID != null)
-            {
-                Progress.Cancel(_generationProgressID.Value);
-            }
-
-            //_sceneController.StartCoroutine(RunGenerateRuntimeMap());
+            if (SceneController == null) return;
+            SceneController.GenerateRuntimeMap();
         }
 
         public SerializedProperty GetCurrentSerializedGroup()
@@ -255,10 +259,7 @@ namespace Hooch.Waypoint.Editor
             SerializedSceneController = null;
             SerializedWaypointGroups = null;
 
-            if (SerializedObject != null && SerializedObject.targetObject != null)
-            {
-                SerializedObject.UpdateIfRequiredOrScript();
-            }
+            SerializedWaypointEditor.UpdateIfRequiredOrScript();
         }
 
         private void UpdateSceneDataIntenral(WaypointSceneController sceneController)
@@ -347,7 +348,6 @@ namespace Hooch.Waypoint.Editor
                 WaypointSceneController controller = (WaypointSceneController)EditorUtility.InstanceIDToObject(_id);
                 SetSceneData(controller);
             }
-
         }
 
         private void OnSceneOpened(Scene scene, OpenSceneMode mode)
@@ -362,57 +362,5 @@ namespace Hooch.Waypoint.Editor
                 }
             }
         }
-
-    
-        /*
-        Disbaled until a suitable replacement can be found for generating dicitonary/hashmaps in editor without losing performance.
-        private System.Collections.IEnumerator RunGenerateRuntimeMap()
-        {
-            SerializedProperty groupsProp = SerializedSceneController.FindProperty(WaypointConstants.WaypointEditor.WaypointGroupsBinding);
-
-            int groupsCnt = groupsProp.arraySize;
-            int waypointsCnt = 0;
-            int connectionsCnt = 0;
-
-
-            for (int i = 0; i < groupsCnt; i++)
-            {
-                WaypointGroup group = (WaypointGroup)groupsProp.GetArrayElementAtIndex(i).managedReferenceValue;
-
-                waypointsCnt += group.Waypoints.Count;
-                connectionsCnt += group.Connections.Count;
-            }
-
-
-            int total = groupsCnt + waypointsCnt + connectionsCnt;
-            int current = 0;
-
-            WaypointSerializableDictionary runtimeWaypointMap = new WaypointSerializableDictionary();
-            WaypointConnectionSerializableDictionary runtimeConnectionMap = new WaypointConnectionSerializableDictionary();
-            _generationProgressID = UnityEditor.Progress.Start("Generating Runtime Map");
-            for (int i = 0; i <  groupsProp.arraySize; i++)
-            {
-                WaypointGroup group = (WaypointGroup)groupsProp.GetArrayElementAtIndex(i).managedReferenceValue;;
-                foreach (Waypoint waypoint in group.Waypoints)
-                {
-                    runtimeWaypointMap.Add(waypoint.ID, waypoint);
-                    UnityEditor.Progress.Report(_generationProgressID.Value, ++current / total);
-                }
-
-                foreach (WaypointConnections connections in group.Connections)
-                {
-                    runtimeConnectionMap.Add(connections.ID, connections);
-                    UnityEditor.Progress.Report(_generationProgressID.Value, ++current / total);
-                }
-                UnityEditor.Progress.Report(_generationProgressID.Value, ++current / total, $"Finished Generating ({i + 1}/{groupsCnt})");
-                yield return new WaitForSeconds(0.1f);
-            }
-            UnityEditor.Progress.Report(_generationProgressID.Value, 1.0f, "Finished");
-            UnityEditor.Progress.Remove(_generationProgressID.Value);
-
-            //_sceneController.SetRuntimeMaps(runtimeWaypointMap, runtimeConnectionMap);
-            _generationProgressID = null;
-        }
-        */
     }
 }

@@ -1,6 +1,7 @@
 using UnityEngine.UIElements;
 using UnityEditor;
 using UnityEditor.UIElements;
+using System;
 
 namespace Hooch.Waypoint.Editor
 {
@@ -16,6 +17,7 @@ namespace Hooch.Waypoint.Editor
         private VisualElement _coreInspector;
         private ObjectField _waypointSceneDataField;
         private Button _createSceneData;
+        private ToolbarButton _generateToolbarButton;
 
         private SerializedObject _serializedSceneData;
 
@@ -37,12 +39,15 @@ namespace Hooch.Waypoint.Editor
             _createSceneData = _root.Q<Button>(WaypointConstants.WaypointEditor.CreateSceneController);
             _createSceneData.clicked += OnCreateSceenData;
 
-            editor.SerializedObject.ApplyModifiedProperties();
-
             _waypointSceneDataField = _root.Q<ObjectField>(WaypointConstants.WaypointEditor.WaypointSceneDataField);
             _waypointSceneDataField.RegisterValueChangedCallback(OnWaypointSceneDataFieldValueChanged);
-            _waypointSceneDataField.BindProperty(editor.SerializedObject.FindProperty(WaypointConstants.WaypointEditor.SceneControllerBinding));
+            _waypointSceneDataField.BindProperty(editor.SerializedWaypointEditor.FindProperty(WaypointConstants.WaypointEditor.SceneControllerBinding));
+
+            _generateToolbarButton = _root.Q<ToolbarButton>(WaypointConstants.WaypointEditor.GenerateToolbarButton);
+            _generateToolbarButton.clicked += OnGenerateToolbarButtonClicked;
         }
+
+
 
         private void OnWaypointSceneDataFieldValueChanged(ChangeEvent<UnityEngine.Object> evt)
         {
@@ -93,6 +98,11 @@ namespace Hooch.Waypoint.Editor
                     }
                 }
             }
+        }
+
+        private void OnGenerateToolbarButtonClicked()
+        {
+            _editor.GenerateRuntimeMap();
         }
     }
 }

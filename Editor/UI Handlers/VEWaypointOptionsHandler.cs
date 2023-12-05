@@ -31,7 +31,7 @@ namespace Hooch.Waypoint.Editor
             _linkButton.clicked += OnLinkButtonClicked;
             _unlinkButton.clicked += OnUnlinkButtonClicked;
 
-            SerializedProperty autolinkProp = _editor.SerializedObject.FindProperty(WaypointConstants.WaypointEditor.AutolinkBindingPath);
+            SerializedProperty autolinkProp = _editor.SerializedWaypointEditor.FindProperty(WaypointConstants.WaypointEditor.AutolinkBindingPath);
 
             _autolinkToggle.BindProperty(autolinkProp);
             

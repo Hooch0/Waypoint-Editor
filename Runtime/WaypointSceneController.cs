@@ -1,18 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Hooch.Waypoint
 {
     public sealed class WaypointSceneController : MonoBehaviour
     {
-        public IReadOnlyDictionary<uint, IReadOnlyWaypoint> RuntimeWaypointMap => _runtimeWaypointMap;
-        public IReadOnlyDictionary<uint, IReadOnlyWaypointConnections> RuntimeConnectionMap => _runtimeConnectionMap;
-
         [SerializeReference] private List<WaypointGroup> _waypointGroups = new List<WaypointGroup>();
 
-        private Dictionary<uint, IReadOnlyWaypoint> _runtimeWaypointMap = new Dictionary<uint, IReadOnlyWaypoint>();
-        private Dictionary<uint, IReadOnlyWaypointConnections> _runtimeConnectionMap = new Dictionary<uint, IReadOnlyWaypointConnections>();
+        [SerializeField] private Waypoint[] _runtimeWaypointMap;
+        [SerializeField] private WaypointConnections[] _runtimeConnectionMap;
+        [SerializeField] private Waypoint[] _tagCacheMap;
+
         private Dictionary<string, List<IReadOnlyWaypoint>> _runtimeTagMap = new Dictionary<string, List<IReadOnlyWaypoint>>();
         private Dictionary<WaypointPathHandler, HandlerEventPair> _activeEvents = new Dictionary<WaypointPathHandler, HandlerEventPair>();
 
@@ -47,7 +47,12 @@ namespace Hooch.Waypoint
 
         private void Awake()
         {
-            GenerateRuntimeMap();
+            foreach (Waypoint waypoint in _tagCacheMap)
+            {
+                if (_runtimeTagMap.TryAdd(waypoint.Tag, new List<IReadOnlyWaypoint>() { waypoint }) == true) continue;
+
+                _runtimeTagMap[waypoint.Tag].Add(waypoint);
+            }
         }
 
         private void Update()
@@ -55,37 +60,42 @@ namespace Hooch.Waypoint
             CheckForEvents();
         }
 
-        private void GenerateRuntimeMap()
+        public void GenerateRuntimeMap()
         {
-            _runtimeWaypointMap.Clear();
-            _runtimeConnectionMap.Clear();
             _runtimeTagMap.Clear();
 
-            foreach(WaypointGroup group in _waypointGroups)
+            List<Waypoint> waypoints = GetAllWaypoints();
+            List<WaypointConnections> connections = GetAllConnections();
+
+
+            uint maxID = waypoints.Max(x => x.ID);
+
+            _runtimeWaypointMap = new Waypoint[maxID + 1];
+            _runtimeConnectionMap = new WaypointConnections[maxID + 1];
+
+            List<Waypoint> tagcache = new List<Waypoint>();
+
+
+            foreach (Waypoint waypoint in waypoints)
             {
-                foreach (Waypoint waypoint in group.Waypoints)
+                _runtimeWaypointMap[waypoint.ID] = waypoint;
+
+                if (waypoint.HasTag == true)
                 {
-                    _runtimeWaypointMap.Add(waypoint.ID, waypoint);
-
-                    if (waypoint.HasTag == true)
-                    {
-                        if (_runtimeTagMap.ContainsKey(waypoint.Tag) == false)
-                        {
-                            _runtimeTagMap.Add(waypoint.Tag, new List<IReadOnlyWaypoint>());
-                        }
-
-                        _runtimeTagMap[waypoint.Tag].Add(waypoint);
-                    }
-                }
-
-                foreach (WaypointConnections connections in group.Connections)
-                {
-                    connections.Setup();
-                    _runtimeConnectionMap.Add(connections.ID, connections);
+                    tagcache.Add(waypoint);
                 }
             }
+
+            foreach (WaypointConnections connection in connections)
+            {
+                connection?.Setup();
+
+                _runtimeConnectionMap[connection.ID] = connection;
+            }
+
+            _tagCacheMap = tagcache.ToArray();
         }
-    
+
         public IList<IReadOnlyWaypoint> GetWaypoint(WaypointRequest request)
         {
             if (_runtimeWaypointMap == null || _runtimeWaypointMap == null || _runtimeTagMap == null)
@@ -106,7 +116,7 @@ namespace Hooch.Waypoint
             else
             {
                 IReadOnlyWaypoint waypoint;
-                if (_runtimeWaypointMap.TryGetValue(request.ID, out waypoint) == false)
+                if (TryGetWaypoint(request.ID, out waypoint) == false)
                 {
                     Debug.LogError($"Waypoint Editor -- Unable to get waypoint by provided ID \"{request.ID}\".");
                 }
@@ -114,11 +124,55 @@ namespace Hooch.Waypoint
                 {
                     waypoints = new List<IReadOnlyWaypoint>() { waypoint };
                 }
-
-
             }
 
             return waypoints;
+        }
+
+        public IReadOnlyWaypoint GetWaypoint(uint id)
+        {
+            if (TryGetWaypoint(id, out IReadOnlyWaypoint waypoint) == false)
+            {
+                Debug.LogError("Waypoint Editor -- Unable to Get Waypoint with ID \"{id}\". Either the runtime map is empty/null or the provided ID does not exist.");
+            }
+
+            return waypoint;
+        }
+
+        public bool TryGetWaypoint(uint id, out IReadOnlyWaypoint waypoint)
+        {
+            waypoint = null;
+            if (_runtimeWaypointMap == null) return false;
+
+            bool invalidID = _runtimeWaypointMap.Length < id;
+            waypoint = invalidID == false ? _runtimeWaypointMap[id] : null;
+
+            if (invalidID == true || waypoint == null) return false;
+
+            return true;
+        }
+
+        public IReadOnlyWaypointConnections GetConnection(uint id)
+        {
+            if (TryGetConnetion(id, out IReadOnlyWaypointConnections connection) == false)
+            {
+                Debug.LogError("Waypoint Editor -- Unable to Get Waypoint connection with ID \"{id}\". Either the runtime map is empty/null or the provided ID does not exist.");
+            }
+
+            return connection;
+        }
+
+        public bool TryGetConnetion(uint id, out IReadOnlyWaypointConnections waypoint)
+        {
+            waypoint = null;
+            if (_runtimeWaypointMap == null) return false;
+
+            bool invalidID = _runtimeWaypointMap.Length < id;
+            waypoint = invalidID == false ? _runtimeConnectionMap[id] : null;
+
+            if (invalidID == true || waypoint == null) return false;
+
+            return true;
         }
 
         public void ClearEvents(WaypointPathHandler handler)
@@ -192,6 +246,30 @@ namespace Hooch.Waypoint
 
                 _handlersToRemove.Clear();
             }
+        }
+
+        private List<Waypoint> GetAllWaypoints()
+        {
+            List<Waypoint> waypoints = new List<Waypoint>();
+
+            foreach (WaypointGroup group in _waypointGroups)
+            {
+                waypoints.AddRange(group.Waypoints);
+            }
+
+            return waypoints.OrderBy(x => x.ID).ToList();
+        }
+
+        private List<WaypointConnections> GetAllConnections()
+        {
+            List<WaypointConnections> connections = new List<WaypointConnections>();
+
+            foreach (WaypointGroup group in _waypointGroups)
+            {
+                connections.AddRange(group.Connections);
+            }
+
+            return connections.OrderBy(x => x.ID).ToList();
         }
     }
 }

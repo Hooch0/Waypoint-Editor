@@ -4,10 +4,10 @@ namespace Hooch.Waypoint.Editor
 {
     public class WaypointIDHandler
     {
-        
+        public uint CurrentID { get; private set; }
+
         private List<uint> _reuseIDs = new List<uint>();
-        private uint _currentID = 0;
-        
+
         public void SetupUniqueID(List<WaypointGroup> groups)
         {
             _reuseIDs.Clear();
@@ -46,12 +46,12 @@ namespace Hooch.Waypoint.Editor
                 }
 
                 //Current ID will always be our last used ID + 1
-                _currentID = allIDs[allIDs.Count - 1] + 1;
+                CurrentID = allIDs[allIDs.Count - 1] + 1;
                 _reuseIDs = missingIds;
             }
             else
             {
-                _currentID = 0;
+                CurrentID = 0;
             }
         }
 
@@ -65,8 +65,8 @@ namespace Hooch.Waypoint.Editor
                 _reuseIDs.Remove(id);
                 return id;
             }
-            
-            return _currentID++;
+
+            return CurrentID++;
         }
 
         public void AddReuseID(uint id)
