@@ -10,7 +10,7 @@ namespace Hooch.Waypoint.Editor
             public const string CoreInspector = "CoreInspector";
             public const string WaypointSceneDataField = "WaypointSceneDataField";
             public const string CreateSceneController = "CreateSceneController";
-            public const string SceneControllerBinding = "_sceneController";
+            public const string SceneAssetBinding = "_sceneAsset";
             public const string GenerateToolbarButton = "GenerateToolbarButton";
 
             //Waypoint Group

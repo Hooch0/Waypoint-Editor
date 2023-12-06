@@ -15,11 +15,11 @@ namespace Hooch.Waypoint.Editor
 
         private VisualElement _root;
         private VisualElement _coreInspector;
-        private ObjectField _waypointSceneDataField;
+        private ObjectField _waypointSceneAssetField;
         private Button _createSceneData;
         private ToolbarButton _generateToolbarButton;
 
-        private SerializedObject _serializedSceneData;
+        private SerializedObject _serializedSceneAsset;
 
 
         public VEWaypointController(VisualElement root, WaypointEditorWindow editor)
@@ -34,14 +34,12 @@ namespace Hooch.Waypoint.Editor
             _coreInspector = _root.Q<VisualElement>(WaypointConstants.WaypointEditor.CoreInspector);
             _coreInspector.SetEnabled(false);
 
-            ObjectChangeEvents.changesPublished += OnChangesPublished;
-
             _createSceneData = _root.Q<Button>(WaypointConstants.WaypointEditor.CreateSceneController);
-            _createSceneData.clicked += OnCreateSceenData;
+            _createSceneData.clicked += OnCreateSceenController;
 
-            _waypointSceneDataField = _root.Q<ObjectField>(WaypointConstants.WaypointEditor.WaypointSceneDataField);
-            _waypointSceneDataField.RegisterValueChangedCallback(OnWaypointSceneDataFieldValueChanged);
-            _waypointSceneDataField.BindProperty(editor.SerializedWaypointEditor.FindProperty(WaypointConstants.WaypointEditor.SceneControllerBinding));
+            _waypointSceneAssetField = _root.Q<ObjectField>(WaypointConstants.WaypointEditor.WaypointSceneDataField);
+            _waypointSceneAssetField.RegisterValueChangedCallback(OnWaypointSceneAssetFieldValueChanged);
+            _waypointSceneAssetField.BindProperty(editor.SerializedWaypointEditor.FindProperty(WaypointConstants.WaypointEditor.SceneAssetBinding));
 
             _generateToolbarButton = _root.Q<ToolbarButton>(WaypointConstants.WaypointEditor.GenerateToolbarButton);
             _generateToolbarButton.clicked += OnGenerateToolbarButtonClicked;
@@ -49,17 +47,17 @@ namespace Hooch.Waypoint.Editor
 
 
 
-        private void OnWaypointSceneDataFieldValueChanged(ChangeEvent<UnityEngine.Object> evt)
+        private void OnWaypointSceneAssetFieldValueChanged(ChangeEvent<UnityEngine.Object> evt)
         {
             _editor.UpdateSceneData();
-            ChangeSceneData((WaypointSceneController)evt.newValue);
+            ChangeSceneData((WaypointSceneAsset)evt.newValue);
         }
 
-        private void ChangeSceneData(WaypointSceneController sceneData)
+        private void ChangeSceneData(WaypointSceneAsset sceneAsset)
         {
-            if (sceneData == null)
+            if (sceneAsset == null)
             {
-                _serializedSceneData = null;
+                _serializedSceneAsset = null;
 
                 _groupHandler.UpdateSceneData(null);
                 _propertiesHandler.UpdateSceneData(null);
@@ -69,35 +67,21 @@ namespace Hooch.Waypoint.Editor
             }
             else
             {
-                _serializedSceneData = _editor.SerializedSceneController;
+                _serializedSceneAsset = _editor.SerializedSceneAsset;
 
                 _coreInspector.SetEnabled(true);
                 _createSceneData.SetEnabled(false);
 
-                _groupHandler.UpdateSceneData(_serializedSceneData);
-                _propertiesHandler.UpdateSceneData(_serializedSceneData);
+                _groupHandler.UpdateSceneData(_serializedSceneAsset);
+                _propertiesHandler.UpdateSceneData(_serializedSceneAsset);
             }
         }
 
-        private void OnCreateSceenData()
+        private void OnCreateSceenController()
         {
-            _editor.SetSceneData(WaypointUtility.CreateSceenData());
-        }
-
-        private void OnChangesPublished(ref ObjectChangeEventStream stream)
-        {
-            for (int i = 0; i < stream.length; i++)
-            {
-                if (stream.GetEventType(i) == ObjectChangeKind.DestroyGameObjectHierarchy)
-                {
-                    stream.GetDestroyGameObjectHierarchyEvent(i, out DestroyGameObjectHierarchyEventArgs data);
-
-                    if (data.instanceId == _editor.CurrentSceneControllerInstanceID)
-                    {
-                        _editor.SetSceneData(null);
-                    }
-                }
-            }
+            WaypointSceneController controller = WaypointUtility.CreateSceenController();
+            controller.SceneAsset = WaypointUtility.GetAndCreateSceneAsset();
+            _editor.SetSceneData(controller.SceneAsset);
         }
 
         private void OnGenerateToolbarButtonClicked()

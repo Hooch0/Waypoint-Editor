@@ -1,10 +1,15 @@
+using System.IO;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Hooch.Waypoint.Editor
 {
     public static class WaypointUtility
     {
+        private const string _WAYPOINT_SCENE_ASSET_FILE_NAME = "WaypointSceneAsset.asset";
+
         public static void DrawLineArrow(Vector3 start, Vector3 end, Color lineColor, Color arrowHeadColor, float arrowHeadLength = 0.25f, float arrowHeadAngle = 20.0f, float arrowHeadThickness = 1)
         {
             Color cachedColor = Handles.color;
@@ -36,7 +41,7 @@ namespace Hooch.Waypoint.Editor
 
         public static void DebugLog_WaypointControl(int controlID, uint id, string log) => Debug.Log($"ControlID: {controlID} -- ID: {id}\nLog: {log}");
 
-        public static WaypointSceneController CreateSceenData()
+        public static WaypointSceneController CreateSceenController()
         {
             GameObject go = new GameObject("Waypoint Controller", typeof(WaypointSceneController));
 
@@ -44,5 +49,35 @@ namespace Hooch.Waypoint.Editor
             return sceneData;
         }
 
-    }   
+        public static WaypointSceneAsset GetAndCreateSceneAsset()
+        {
+            WaypointSceneAsset asset = null;
+
+            Scene currentScene = EditorSceneManager.GetActiveScene();
+
+            string parentPath = Path.GetDirectoryName(currentScene.path);
+
+            string folderName = $"{currentScene.name}";
+            string folderPath = Path.Combine(parentPath, folderName);
+            string filePath = Path.Combine(folderPath, _WAYPOINT_SCENE_ASSET_FILE_NAME);
+
+
+
+            if (AssetDatabase.IsValidFolder(folderPath) == false)
+            {
+                AssetDatabase.CreateFolder(parentPath, folderPath);
+            }
+
+            asset = (WaypointSceneAsset)AssetDatabase.LoadAssetAtPath(filePath, typeof(WaypointSceneAsset));
+            if (asset == null)
+            {
+                asset = ScriptableObject.CreateInstance<WaypointSceneAsset>();
+                AssetDatabase.CreateAsset(asset, filePath);
+                AssetDatabase.SaveAssets();
+            }
+
+            return asset;
+        }
+
+    }
 }

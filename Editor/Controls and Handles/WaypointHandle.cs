@@ -206,7 +206,7 @@ namespace Hooch.Waypoint.Editor
 
         public void RegisterUndo(string msg)
         {
-            Undo.RegisterCompleteObjectUndo(_editor.SceneController, msg);
+            Undo.RegisterCompleteObjectUndo(_editor.SceneAsset, msg);
         }
 
         public void ClearSelection()
@@ -247,8 +247,8 @@ namespace Hooch.Waypoint.Editor
         {
             _editor.SerializedWaypointEditor.SetIsDifferentCacheDirty();
             _editor.SerializedWaypointEditor.Update();
-            _editor.SerializedSceneController.SetIsDifferentCacheDirty();
-            _editor.SerializedSceneController.Update();
+            _editor.SerializedSceneAsset.SetIsDifferentCacheDirty();
+            _editor.SerializedSceneAsset.Update();
             _isDirty = false;
         }
 

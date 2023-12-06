@@ -1,22 +1,19 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Hooch.Waypoint
 {
     public sealed class WaypointSceneController : MonoBehaviour
     {
-        [SerializeReference] private List<WaypointGroup> _waypointGroups = new List<WaypointGroup>();
-
-        [SerializeField] private Waypoint[] _runtimeWaypointMap;
-        [SerializeField] private WaypointConnections[] _runtimeConnectionMap;
-        [SerializeField] private Waypoint[] _tagCacheMap;
+        [field: SerializeField] public WaypointSceneAsset SceneAsset { get; set; }
 
         private Dictionary<string, List<IReadOnlyWaypoint>> _runtimeTagMap = new Dictionary<string, List<IReadOnlyWaypoint>>();
         private Dictionary<WaypointPathHandler, HandlerEventPair> _activeEvents = new Dictionary<WaypointPathHandler, HandlerEventPair>();
 
         private List<WaypointPathHandler> _handlersToRemove = new List<WaypointPathHandler>();
+
+        private bool _isValid => SceneAsset != null && SceneAsset.RuntimeWaypointMap != null && SceneAsset.RuntimeWaypointMap != null && _runtimeTagMap != null;
 
 
         private class HandlerEventPair
@@ -47,12 +44,7 @@ namespace Hooch.Waypoint
 
         private void Awake()
         {
-            foreach (Waypoint waypoint in _tagCacheMap)
-            {
-                if (_runtimeTagMap.TryAdd(waypoint.Tag, new List<IReadOnlyWaypoint>() { waypoint }) == true) continue;
-
-                _runtimeTagMap[waypoint.Tag].Add(waypoint);
-            }
+            GenerateTagMap();
         }
 
         private void Update()
@@ -60,45 +52,29 @@ namespace Hooch.Waypoint
             CheckForEvents();
         }
 
-        public void GenerateRuntimeMap()
+        internal void Internal_RaiseEventWaypointReached(IReadOnlyInternalWaypointEvent waypoint, WaypointPathHandler pathHandler)
         {
-            _runtimeTagMap.Clear();
+            IReadOnlyWaypoint readOnlyWaypoint = (IReadOnlyWaypoint)waypoint;
 
-            List<Waypoint> waypoints = GetAllWaypoints();
-            List<WaypointConnections> connections = GetAllConnections();
-
-
-            uint maxID = waypoints.Max(x => x.ID);
-
-            _runtimeWaypointMap = new Waypoint[maxID + 1];
-            _runtimeConnectionMap = new WaypointConnections[maxID + 1];
-
-            List<Waypoint> tagcache = new List<Waypoint>();
-
-
-            foreach (Waypoint waypoint in waypoints)
+            foreach (WaypointEvent evt in waypoint.Events)
             {
-                _runtimeWaypointMap[waypoint.ID] = waypoint;
+                if (evt.CanActivate(readOnlyWaypoint, pathHandler) == false) continue;
 
-                if (waypoint.HasTag == true)
+                WaypointEvent clone = (WaypointEvent)evt.Clone();
+
+                bool tryAddMap = _activeEvents.TryAdd(pathHandler, new HandlerEventPair(pathHandler, new List<WaypointEvent>() { clone }));
+                if (tryAddMap == false)
                 {
-                    tagcache.Add(waypoint);
+                    _activeEvents[pathHandler].Events.Add(clone);
                 }
+
+                clone.Activate((IReadOnlyWaypoint)waypoint, pathHandler);
             }
-
-            foreach (WaypointConnections connection in connections)
-            {
-                connection?.Setup();
-
-                _runtimeConnectionMap[connection.ID] = connection;
-            }
-
-            _tagCacheMap = tagcache.ToArray();
         }
 
         public IList<IReadOnlyWaypoint> GetWaypoint(WaypointRequest request)
         {
-            if (_runtimeWaypointMap == null || _runtimeWaypointMap == null || _runtimeTagMap == null)
+            if (_isValid == false)
             {
                 Debug.LogError("Waypoint Editor -- Runtime maps have not generated! Unable to get waypoint.");
                 return null;
@@ -131,48 +107,32 @@ namespace Hooch.Waypoint
 
         public IReadOnlyWaypoint GetWaypoint(uint id)
         {
-            if (TryGetWaypoint(id, out IReadOnlyWaypoint waypoint) == false)
-            {
-                Debug.LogError("Waypoint Editor -- Unable to Get Waypoint with ID \"{id}\". Either the runtime map is empty/null or the provided ID does not exist.");
-            }
+            if (_isValid == false) return null;
 
-            return waypoint;
+            return SceneAsset.GetWaypoint(id);
         }
 
         public bool TryGetWaypoint(uint id, out IReadOnlyWaypoint waypoint)
         {
             waypoint = null;
-            if (_runtimeWaypointMap == null) return false;
+            if (_isValid == false) return false;
 
-            bool invalidID = _runtimeWaypointMap.Length < id;
-            waypoint = invalidID == false ? _runtimeWaypointMap[id] : null;
-
-            if (invalidID == true || waypoint == null) return false;
-
-            return true;
+            return SceneAsset.TryGetWaypoint(id, out waypoint);
         }
 
         public IReadOnlyWaypointConnections GetConnection(uint id)
         {
-            if (TryGetConnetion(id, out IReadOnlyWaypointConnections connection) == false)
-            {
-                Debug.LogError("Waypoint Editor -- Unable to Get Waypoint connection with ID \"{id}\". Either the runtime map is empty/null or the provided ID does not exist.");
-            }
+            if (_isValid == false) return null;
 
-            return connection;
+            return SceneAsset.GetConnection(id);
         }
 
-        public bool TryGetConnetion(uint id, out IReadOnlyWaypointConnections waypoint)
+        public bool TryGetConnetion(uint id, out IReadOnlyWaypointConnections connections)
         {
-            waypoint = null;
-            if (_runtimeWaypointMap == null) return false;
+            connections = null;
+            if (_isValid == false) return false;
 
-            bool invalidID = _runtimeWaypointMap.Length < id;
-            waypoint = invalidID == false ? _runtimeConnectionMap[id] : null;
-
-            if (invalidID == true || waypoint == null) return false;
-
-            return true;
+            return SceneAsset.TryGetConnetion(id, out connections);
         }
 
         public void ClearEvents(WaypointPathHandler handler)
@@ -206,26 +166,6 @@ namespace Hooch.Waypoint
             }
         }
 
-        internal void Internal_RaiseEventWaypointReached(IReadOnlyInternalWaypointEvent waypoint, WaypointPathHandler pathHandler)
-        {
-            IReadOnlyWaypoint readOnlyWaypoint = (IReadOnlyWaypoint)waypoint;
-
-            foreach (WaypointEvent evt in waypoint.Events)
-            {
-                if (evt.CanActivate(readOnlyWaypoint, pathHandler) == false) continue;
-
-                WaypointEvent clone = (WaypointEvent)evt.Clone();
-
-                bool tryAddMap = _activeEvents.TryAdd(pathHandler, new HandlerEventPair(pathHandler, new List<WaypointEvent>() { clone }));
-                if (tryAddMap == false)
-                {
-                    _activeEvents[pathHandler].Events.Add(clone);
-                }
-
-                clone.Activate((IReadOnlyWaypoint)waypoint, pathHandler);
-            }
-        }
-
         private void CheckForEvents()
         {
             foreach (WaypointPathHandler handler in _activeEvents.Keys)
@@ -248,28 +188,18 @@ namespace Hooch.Waypoint
             }
         }
 
-        private List<Waypoint> GetAllWaypoints()
+        private void GenerateTagMap()
         {
-            List<Waypoint> waypoints = new List<Waypoint>();
+            if (_isValid == false) return;
 
-            foreach (WaypointGroup group in _waypointGroups)
+            _runtimeTagMap.Clear();
+
+            foreach (Waypoint waypoint in SceneAsset.TagCacheMap)
             {
-                waypoints.AddRange(group.Waypoints);
+                if (_runtimeTagMap.TryAdd(waypoint.Tag, new List<IReadOnlyWaypoint>() { waypoint }) == true) continue;
+
+                _runtimeTagMap[waypoint.Tag].Add(waypoint);
             }
-
-            return waypoints.OrderBy(x => x.ID).ToList();
-        }
-
-        private List<WaypointConnections> GetAllConnections()
-        {
-            List<WaypointConnections> connections = new List<WaypointConnections>();
-
-            foreach (WaypointGroup group in _waypointGroups)
-            {
-                connections.AddRange(group.Connections);
-            }
-
-            return connections.OrderBy(x => x.ID).ToList();
         }
     }
 }
