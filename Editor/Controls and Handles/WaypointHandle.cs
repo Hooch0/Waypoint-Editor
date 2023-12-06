@@ -40,8 +40,6 @@ namespace Hooch.Waypoint.Editor
 
         private bool _isDirty;
 
-
-
         public WaypointHandle(WaypointEditorWindow controller)
         {
             _editor = controller;
@@ -52,12 +50,12 @@ namespace Hooch.Waypoint.Editor
             _drawer = new WaypointDrawer(this);
             _selectionBox = new WaypointSelectionBox(this, _selectionMove);
             _selectionBox.SelectionBoxUpdate += OnSelectionBoxUpdated;
-
         }
 
         public void SetDirty()
         {
             _isDirty = true;
+
         }
 
         public void HandleWaypoints(bool isEditing, bool isAutolink)
@@ -152,6 +150,11 @@ namespace Hooch.Waypoint.Editor
             foreach(Waypoint waypoint in group.Waypoints)
             {
                 IDHandler.AddReuseID(waypoint.ID);
+            }
+
+            if (group.Waypoints.Count > 0)
+            {
+                _editor.MarkDirty();
             }
         }
 
@@ -517,6 +520,7 @@ namespace Hooch.Waypoint.Editor
             CurrentGroup.AddWaypoint(waypoint);
             _waypointMap.Add(waypoint.ID, waypoint);
             _isDirty = true;
+            _editor.MarkDirty();
 
             return waypoint;
         }
@@ -529,18 +533,21 @@ namespace Hooch.Waypoint.Editor
             _waypointMap.Remove(waypoint.ID);
             IDHandler.AddReuseID(waypoint.ID);
             _isDirty = true;
+            _editor.MarkDirty();
         }
 
         private void LinkWaypoints(Waypoint from, Waypoint to)
         {
             CurrentGroup.AddConnection(from, to);
             _isDirty = true;
+            _editor.MarkDirty();
         }
 
         private void UnlinkWaypoints(Waypoint from, Waypoint to)
         {
             CurrentGroup.RemoveConnection(from, to);
             _isDirty = true;
+            _editor.MarkDirty();
         }
 
         private void OnSelectionPositionChanged()

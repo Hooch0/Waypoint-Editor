@@ -14,6 +14,7 @@ namespace Hooch.Waypoint.Editor
     public class WaypointEditorWindow : EditorWindow
     {
         public event Action<WaypointGroup> CurrentGroupChanged;
+        public event Action<bool> IsDirtyChanged;
         public SerializedObject SerializedWaypointEditor
         {
             get
@@ -32,16 +33,18 @@ namespace Hooch.Waypoint.Editor
         public WaypointSceneAsset SceneAsset => _sceneAsset;
         public WaypointHandle WaypointHandler { get; private set; }
         public bool AutolinkToggle => _autolinkToggle;
+        public bool EditingToggle => _editingToggle;
 
 
         private VEWaypointController _veController;
         [SerializeField] private WaypointSceneAsset _sceneAsset;
         private bool _editingToggle;
         [SerializeField] private bool _autolinkToggle;
-        [SerializeField] private bool _autoGenerate;
+
+        private bool _isDirty = false;
+
 
         private Vector2 _windowSize = new Vector2(600, 800);
-        private int _id;
 
         private SceneView _currentView;
         private SerializedObject _serializedWaypointEditor;
@@ -124,6 +127,7 @@ namespace Hooch.Waypoint.Editor
         public void DisableEditing()
         {
             _editingToggle = false;
+            WaypointHandler.ClearSelection();
         }
 
         public void SetSceneData(WaypointSceneAsset controller)
@@ -221,6 +225,9 @@ namespace Hooch.Waypoint.Editor
         {
             if (SceneAsset == null) return;
             SceneAsset.Internal_GenerateRuntimeMap();
+
+            _isDirty = false;
+            IsDirtyChanged?.Invoke(_isDirty);
         }
 
         public SerializedProperty GetCurrentSerializedGroup()
@@ -241,6 +248,12 @@ namespace Hooch.Waypoint.Editor
             }
 
             return null;
+        }
+
+        public void MarkDirty()
+        {
+            _isDirty = true;
+            IsDirtyChanged?.Invoke(_isDirty);
         }
 
         private void ResetEditor()
@@ -328,6 +341,7 @@ namespace Hooch.Waypoint.Editor
             if (_sceneAsset == null) return;
             WaypointHandler.SetSelectedGroup(WaypointHandler.CurrentGroup, true);
             WaypointHandler.IDHandler.SetupUniqueID(GetCurrentWaypointGroupList());
+            MarkDirty();
         }
 
         private void OnSceneOpened(Scene scene, OpenSceneMode mode)

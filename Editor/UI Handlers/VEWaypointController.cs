@@ -43,8 +43,10 @@ namespace Hooch.Waypoint.Editor
 
             _generateToolbarButton = _root.Q<ToolbarButton>(WaypointConstants.WaypointEditor.GenerateToolbarButton);
             _generateToolbarButton.clicked += OnGenerateToolbarButtonClicked;
-        }
 
+            _editor.IsDirtyChanged += OnDirtyChanged;
+
+        }
 
 
         private void OnWaypointSceneAssetFieldValueChanged(ChangeEvent<UnityEngine.Object> evt)
@@ -87,6 +89,12 @@ namespace Hooch.Waypoint.Editor
         private void OnGenerateToolbarButtonClicked()
         {
             _editor.GenerateRuntimeMap();
+        }
+
+
+        private void OnDirtyChanged(bool val)
+        {
+            _generateToolbarButton.text = val == false ? "Generate" : "*Generate";
         }
     }
 }

@@ -58,12 +58,6 @@ namespace Hooch.Waypoint.Editor
             _window.EnableEditing();
         }
 
-        public override void OnToolGUI(EditorWindow window)
-        {
-            if (_window == null || _window.SceneAsset == null) return;
-            Selection.objects = new Object[1] { target };
-        }
-
         public override void OnWillBeDeactivated()
         {
             _window.DisableEditing();
