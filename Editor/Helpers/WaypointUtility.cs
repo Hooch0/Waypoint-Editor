@@ -49,18 +49,11 @@ namespace Hooch.Waypoint.Editor
             return sceneData;
         }
 
-        public static WaypointSceneAsset GetAndCreateSceneAsset()
+        public static WaypointSceneAsset GetOrCreateSceneAsset()
         {
             WaypointSceneAsset asset = null;
 
-            Scene currentScene = EditorSceneManager.GetActiveScene();
-
-            string parentPath = Path.GetDirectoryName(currentScene.path);
-
-            string folderName = $"{currentScene.name}";
-            string folderPath = Path.Combine(parentPath, folderName);
-            string filePath = Path.Combine(folderPath, _WAYPOINT_SCENE_ASSET_FILE_NAME);
-
+            (string parentPath, string folderName, string folderPath, string filePath) = GetScenePathInfo();
 
 
             if (AssetDatabase.IsValidFolder(folderPath) == false)
@@ -77,6 +70,36 @@ namespace Hooch.Waypoint.Editor
             }
 
             return asset;
+        }
+
+        public static WaypointSceneAsset GetSceneAsset()
+        {
+            WaypointSceneAsset asset = null;
+
+            (string parentPath, string folderName, string folderPath, string filePath) = GetScenePathInfo();
+
+
+            if (AssetDatabase.IsValidFolder(folderPath) == false)
+            {
+                AssetDatabase.CreateFolder(parentPath, folderPath);
+            }
+
+            asset = (WaypointSceneAsset)AssetDatabase.LoadAssetAtPath(filePath, typeof(WaypointSceneAsset));
+
+            return asset;
+        }
+
+        private static (string parentPath, string folderName, string folderPath, string filePath) GetScenePathInfo()
+        {
+            Scene currentScene = EditorSceneManager.GetActiveScene();
+
+            string parentPath = Path.GetDirectoryName(currentScene.path);
+
+            string folderName = $"{currentScene.name}";
+            string folderPath = Path.Combine(parentPath, folderName);
+            string filePath = Path.Combine(folderPath, _WAYPOINT_SCENE_ASSET_FILE_NAME);
+
+            return (parentPath, folderName, folderPath, filePath);
         }
 
     }

@@ -40,6 +40,7 @@ namespace Hooch.Waypoint.Editor
         [SerializeField] private WaypointSceneAsset _sceneAsset;
         private bool _editingToggle;
         [SerializeField] private bool _autolinkToggle;
+        [SerializeField] private bool _autoGenerate;
 
         private bool _isDirty = false;
 
@@ -102,10 +103,6 @@ namespace Hooch.Waypoint.Editor
             if (_currentView == null || _editingToggle == false) return;
 
             _currentView.Repaint();
-            /*if (_autoGenerate == false || WaypointHandler.IsDirty == false) return;
-
-            WaypointHandler.SetDirty(false);
-            GenerateRuntimeMap();*/
         }
 
         public void CreateGUI()
@@ -254,6 +251,11 @@ namespace Hooch.Waypoint.Editor
         {
             _isDirty = true;
             IsDirtyChanged?.Invoke(_isDirty);
+
+            if (_autoGenerate == true)
+            {
+                GenerateRuntimeMap();
+            }
         }
 
         private void ResetEditor()

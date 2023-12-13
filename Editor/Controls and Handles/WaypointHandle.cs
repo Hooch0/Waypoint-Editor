@@ -55,7 +55,6 @@ namespace Hooch.Waypoint.Editor
         public void SetDirty()
         {
             _isDirty = true;
-
         }
 
         public void HandleWaypoints(bool isEditing, bool isAutolink)
@@ -372,7 +371,7 @@ namespace Hooch.Waypoint.Editor
             if (IsEditing == false) return;
 
             int controlID = GUIUtility.GetControlID(FocusType.Passive);
-            switch (current.type)
+            switch (Event.current.GetTypeForControl(controlID))
             {
                 case EventType.MouseDown:
                     PlaceWaypoint(current);

@@ -18,6 +18,7 @@ namespace Hooch.Waypoint.Editor
         private ObjectField _waypointSceneAssetField;
         private Button _createSceneData;
         private ToolbarButton _generateToolbarButton;
+        private ToolbarToggle _autoGenerateToolbarToggle;
 
         private SerializedObject _serializedSceneAsset;
 
@@ -43,6 +44,9 @@ namespace Hooch.Waypoint.Editor
 
             _generateToolbarButton = _root.Q<ToolbarButton>(WaypointConstants.WaypointEditor.GenerateToolbarButton);
             _generateToolbarButton.clicked += OnGenerateToolbarButtonClicked;
+
+            _autoGenerateToolbarToggle = _root.Q<ToolbarToggle>(WaypointConstants.WaypointEditor.AutoGenerateToolbarToggle);
+            _autoGenerateToolbarToggle.BindProperty(editor.SerializedWaypointEditor.FindProperty(WaypointConstants.WaypointEditor.AutoGenerateBinding));
 
             _editor.IsDirtyChanged += OnDirtyChanged;
 
@@ -82,7 +86,7 @@ namespace Hooch.Waypoint.Editor
         private void OnCreateSceenController()
         {
             WaypointSceneController controller = WaypointUtility.CreateSceenController();
-            controller.SceneAsset = WaypointUtility.GetAndCreateSceneAsset();
+            controller.SceneAsset = WaypointUtility.GetOrCreateSceneAsset();
             _editor.SetSceneData(controller.SceneAsset);
         }
 

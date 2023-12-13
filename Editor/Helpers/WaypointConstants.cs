@@ -12,6 +12,9 @@ namespace Hooch.Waypoint.Editor
             public const string CreateSceneController = "CreateSceneController";
             public const string SceneAssetBinding = "_sceneAsset";
             public const string GenerateToolbarButton = "GenerateToolbarButton";
+            public const string AutoGenerateToolbarToggle = "AutoGenerateToolbarToggle";
+            public const string AutoGenerateBinding = "_autoGenerate";
+
 
             //Waypoint Group
             public const string GroupListView = "GroupListView";

@@ -22,11 +22,17 @@ namespace Hooch.Waypoint.Editor
             if (controller == null)
             {
                 controller = WaypointUtility.CreateSceenController();
-                controller.SceneAsset = WaypointUtility.GetAndCreateSceneAsset();
-                if (EditorWindow.HasOpenInstances<WaypointEditorWindow>() == true)
-                {
-                    EditorWindow.GetWindow<WaypointEditorWindow>().SetSceneData(controller.SceneAsset);
-                }
+                controller.SceneAsset = WaypointUtility.GetOrCreateSceneAsset();
+            }
+
+            if (controller.SceneAsset == null)
+            {
+                controller.SceneAsset = WaypointUtility.GetSceneAsset();
+            }
+
+            if (EditorWindow.HasOpenInstances<WaypointEditorWindow>() == true)
+            {
+                EditorWindow.GetWindow<WaypointEditorWindow>().SetSceneData(controller.SceneAsset);
             }
 
             if (Selection.GetFiltered<WaypointSceneController>(SelectionMode.TopLevel).Length > 0)
@@ -50,17 +56,29 @@ namespace Hooch.Waypoint.Editor
         private void OnEnable()
         {
             _toolbarIcon = new GUIContent(WaypointResourceAsset.Instance.ToolbarIcon);
+            ToolManager.activeToolChanged += OnActiveToolChanged;
+        }
+
+
+        private void OnDisable()
+        {
+            ToolManager.activeToolChanged -= OnActiveToolChanged;
+        }
+
+
+        private void OnActiveToolChanged()
+        {
+            if (ToolManager.IsActiveTool(this) == false && _window != null && _window.EditingToggle == true)
+            {
+                _window.DisableEditing();
+            }
         }
 
         public override void OnActivated()
         {
             _window = WaypointEditorWindow.ShowWindow();
             _window.EnableEditing();
-        }
-
-        public override void OnWillBeDeactivated()
-        {
-            _window.DisableEditing();
+            Selection.SetActiveObjectWithContext(target, target);
         }
 
     }

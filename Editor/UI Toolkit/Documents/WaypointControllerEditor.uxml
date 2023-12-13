@@ -5,6 +5,8 @@
     <ui:VisualElement style="flex-grow: 1;">
         <uie:Toolbar>
             <uie:ToolbarButton text="Generate" display-tooltip-when-elided="true" name="GenerateToolbarButton" />
+            <uie:ToolbarSpacer style="width: 32px; flex-grow: 1;" />
+            <uie:ToolbarToggle focusable="false" label="Auto Generate" name="AutoGenerateToolbarToggle" style="width: 94px;" />
         </uie:Toolbar>
         <ui:VisualElement style="height: 15px;" />
         <ui:Label text="Scene Data" display-tooltip-when-elided="true" style="-unity-text-align: middle-center; -unity-font-style: bold; font-size: 18px;" />

@@ -22,10 +22,18 @@ namespace Hooch.Waypoint
             List<Waypoint> waypoints = GetAllWaypoints();
             List<WaypointConnections> connections = GetAllConnections();
 
-            uint maxID = waypoints.Max(x => x.ID);
+            if (waypoints.Count == 0)
+            {
+                RuntimeWaypointMap = null;
+                RuntimeConnectionMap = null;
+                TagCacheMap = null;
+                return;
+            }
 
-            RuntimeWaypointMap = new Waypoint[maxID + 1];
-            RuntimeConnectionMap = new WaypointConnections[maxID + 1];
+            uint maxID = waypoints.Max(x => x.ID) + 1;
+
+            RuntimeWaypointMap = new Waypoint[maxID];
+            RuntimeConnectionMap = new WaypointConnections[maxID];
 
             List<Waypoint> tagcache = new List<Waypoint>();
 
