@@ -9,8 +9,6 @@ using UnityEditor.EditorTools;
 
 namespace Hooch.Waypoint.Editor
 {
-    //TODO: Cleanup how we generate the asset. Maybe adda new button?
-
     public class WaypointEditorWindow : EditorWindow
     {
         public event Action<WaypointGroup> CurrentGroupChanged;
