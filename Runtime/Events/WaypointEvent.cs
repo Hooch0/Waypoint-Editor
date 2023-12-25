@@ -3,7 +3,7 @@ using System;
 namespace Hooch.Waypoint
 {
     [Serializable]
-    public abstract class WaypointEvent : ICloneable
+    public abstract class WaypointEvent : ICloneable, IDisposable
     {
         /// <summary>
         /// Triggered the first time this event is activated.
@@ -35,5 +35,8 @@ namespace Hooch.Waypoint
         {
             return this.MemberwiseClone();
         }
+
+        public virtual void Dispose() { }
+
     }
 }

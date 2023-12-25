@@ -52,6 +52,17 @@ namespace Hooch.Waypoint
             CheckForEvents();
         }
 
+        private void OnDestroy()
+        {
+            foreach (HandlerEventPair eventPair in _activeEvents.Values)
+            {
+                foreach (WaypointEvent evt in eventPair.Events)
+                {
+                    evt.Dispose();
+                }
+            }
+        }
+
         internal void Internal_RaiseEventWaypointReached(IReadOnlyInternalWaypointEvent waypoint, WaypointPathHandler pathHandler)
         {
             IReadOnlyWaypoint readOnlyWaypoint = (IReadOnlyWaypoint)waypoint;
