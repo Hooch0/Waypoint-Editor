@@ -58,7 +58,7 @@ namespace Hooch.Waypoint
             {
                 foreach (WaypointEvent evt in eventPair.Events)
                 {
-                    evt.Dispose();
+                    evt.Cleanup();
                 }
             }
         }
