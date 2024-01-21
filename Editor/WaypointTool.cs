@@ -22,12 +22,11 @@ namespace Hooch.Waypoint.Editor
             if (controller == null)
             {
                 controller = WaypointUtility.CreateSceenController();
-                controller.SceneAsset = WaypointUtility.GetOrCreateSceneAsset();
             }
 
             if (controller.SceneAsset == null)
             {
-                controller.SceneAsset = WaypointUtility.GetSceneAsset();
+                controller.SceneAsset = WaypointUtility.GetOrCreateSceneAsset();
             }
 
             if (EditorWindow.HasOpenInstances<WaypointEditorWindow>() == true)
@@ -76,9 +75,13 @@ namespace Hooch.Waypoint.Editor
 
         public override void OnActivated()
         {
+            WaypointSceneController controller = FindObjectOfType<WaypointSceneController>();
+
+
             _window = WaypointEditorWindow.ShowWindow();
             _window.EnableEditing();
             Selection.SetActiveObjectWithContext(target, target);
+            EditorWindow.GetWindow<WaypointEditorWindow>().SetSceneData(controller.SceneAsset);
         }
 
     }

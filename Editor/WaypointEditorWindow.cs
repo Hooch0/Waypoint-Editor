@@ -220,6 +220,8 @@ namespace Hooch.Waypoint.Editor
         {
             if (SceneAsset == null) return;
             SceneAsset.Internal_GenerateRuntimeMap();
+            EditorUtility.SetDirty(SceneAsset);
+            AssetDatabase.SaveAssetIfDirty(SceneAsset);
 
             _isDirty = false;
             IsDirtyChanged?.Invoke(_isDirty);

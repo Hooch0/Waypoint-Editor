@@ -58,7 +58,7 @@ namespace Hooch.Waypoint.Editor
 
             if (AssetDatabase.IsValidFolder(folderPath) == false)
             {
-                AssetDatabase.CreateFolder(parentPath, folderPath);
+                AssetDatabase.CreateFolder(parentPath, folderName);
             }
 
             asset = (WaypointSceneAsset)AssetDatabase.LoadAssetAtPath(filePath, typeof(WaypointSceneAsset));
