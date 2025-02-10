@@ -16,6 +16,8 @@ To create a waypoint event inherit from the class ```WaypointEvent.cs``` and imp
 public class WaypointEventWait : WaypointEvent
 {
     public float timeToWait;
+
+    //Used to show serialized value appear in inspector.
     [field: SerializeField] public Vector2 RandomTimeToStay { get; private set; }
 
     private Timer _timer;
@@ -27,7 +29,7 @@ public class WaypointEventWait : WaypointEvent
     {
         _pathHandler = pathHandler;
 
-        //Custom Timer not included in this package that runs until x amount of time has passed, then triggered a callback. Time is calucalted using Unity's Time.DeltaTime. 
+        //Custom Timer not included in this package that runs until x amount of time has passed, then triggers a callback. Time is calculated using Unity's Time.DeltaTime. 
         _timer = new Timer(timeToWait, OnTimerFinished);
         _timer.Start();
         _pathHandler.SuspendPath();
