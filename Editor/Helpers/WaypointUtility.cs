@@ -51,17 +51,15 @@ namespace Hooch.Waypoint.Editor
 
         public static WaypointSceneAsset GetOrCreateSceneAsset()
         {
-            WaypointSceneAsset asset = null;
-
-            (string parentPath, string folderName, string folderPath, string filePath) = GetScenePathInfo();
-
-
-            if (AssetDatabase.IsValidFolder(folderPath) == false)
+            if (CheckScenePath(out Scene scene) == false)
             {
-                AssetDatabase.CreateFolder(parentPath, folderName);
+                return null;
             }
 
-            asset = (WaypointSceneAsset)AssetDatabase.LoadAssetAtPath(filePath, typeof(WaypointSceneAsset));
+            (string parentPath, string folderName, string folderPath, string filePath) = GetScenePathInfo(scene);
+
+
+            WaypointSceneAsset asset = GetAsset(parentPath, folderName, folderPath, filePath);
             if (asset == null)
             {
                 asset = ScriptableObject.CreateInstance<WaypointSceneAsset>();
@@ -74,32 +72,54 @@ namespace Hooch.Waypoint.Editor
 
         public static WaypointSceneAsset GetSceneAsset()
         {
-            WaypointSceneAsset asset = null;
-
-            (string parentPath, string folderName, string folderPath, string filePath) = GetScenePathInfo();
-
-
-            if (AssetDatabase.IsValidFolder(folderPath) == false)
+            if (CheckScenePath(out Scene scene) == false)
             {
-                AssetDatabase.CreateFolder(parentPath, folderPath);
+                return null;
             }
 
-            asset = (WaypointSceneAsset)AssetDatabase.LoadAssetAtPath(filePath, typeof(WaypointSceneAsset));
+            (string parentPath, string folderName, string folderPath, string filePath) = GetScenePathInfo(scene);
 
-            return asset;
+
+            return GetAsset(parentPath, folderName, folderPath, filePath);
         }
 
-        private static (string parentPath, string folderName, string folderPath, string filePath) GetScenePathInfo()
+        private static (string parentPath, string folderName, string folderPath, string filePath) GetScenePathInfo(Scene scene)
         {
-            Scene currentScene = EditorSceneManager.GetActiveScene();
 
-            string parentPath = Path.GetDirectoryName(currentScene.path);
+            string parentPath = Path.GetDirectoryName(scene.path);
 
-            string folderName = $"{currentScene.name}";
+            string folderName = $"{scene.name}";
             string folderPath = Path.Combine(parentPath, folderName);
             string filePath = Path.Combine(folderPath, _WAYPOINT_SCENE_ASSET_FILE_NAME);
 
             return (parentPath, folderName, folderPath, filePath);
+        }
+
+        private static WaypointSceneAsset GetAsset(string parentPath, string folderName, string folderPath, string filePath)
+        {
+            if (AssetDatabase.IsValidFolder(folderPath) == false)
+            {
+                AssetDatabase.CreateFolder(parentPath, folderName);
+            }
+
+            return (WaypointSceneAsset)AssetDatabase.LoadAssetAtPath(filePath, typeof(WaypointSceneAsset));
+
+        }
+
+        private static bool CheckScenePath(out Scene scene, bool errorMessage = true)
+        {
+            scene = EditorSceneManager.GetActiveScene();
+
+            if (string.IsNullOrEmpty(scene.path) == true)
+            {
+                if (errorMessage == true)
+                {
+                    Debug.LogError("WaypointUtility -- Unable to validate current scene due to the path being null or empty. Check if the scene is saved in the project directory.");
+                }
+
+                return false;
+            }
+            return true;
         }
 
     }

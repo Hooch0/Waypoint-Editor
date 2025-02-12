@@ -19,21 +19,27 @@ namespace Hooch.Waypoint.Editor
         {
             WaypointSceneController controller = FindObjectOfType<WaypointSceneController>();
 
+
+            //Check if we have a controller, if not make one.
             if (controller == null)
             {
                 controller = WaypointUtility.CreateSceenController();
             }
 
+            //Check if we have a scene asset, if not etiher get or make one.
             if (controller.SceneAsset == null)
             {
                 controller.SceneAsset = WaypointUtility.GetOrCreateSceneAsset();
             }
 
+            //Check if we have a waypoint editor instance opne, if not open one and set the scene data.
             if (EditorWindow.HasOpenInstances<WaypointEditorWindow>() == true)
             {
-                EditorWindow.GetWindow<WaypointEditorWindow>().SetSceneData(controller.SceneAsset);
+                WaypointEditorWindow window = EditorWindow.GetWindow<WaypointEditorWindow>();
+                window.SetSceneData(controller.SceneAsset);
             }
 
+            //Check if have a waypoint scene controller selected, if not then
             if (Selection.GetFiltered<WaypointSceneController>(SelectionMode.TopLevel).Length > 0)
             {
                 ToolManager.SetActiveTool<WaypointTool>();
@@ -41,48 +47,55 @@ namespace Hooch.Waypoint.Editor
             else
             {
                 Selection.selectionChanged += OnSelectionChanged;
-
-                Selection.objects = new Object[1] { controller.gameObject };
+                Selection.SetActiveObjectWithContext(controller.gameObject, controller.gameObject);
             }
         }
 
         private static void OnSelectionChanged()
         {
-            Selection.selectionChanged -= Selection.selectionChanged;
+            Selection.selectionChanged -= OnSelectionChanged;
             ToolManager.SetActiveTool<WaypointTool>();
+        }
+
+        private void OnActiveToolChanged()
+        {
+            if (ToolManager.IsActiveTool(this) == false && _window != null && _window.EditingToggle == true)
+            {
+                Debug.Log("Disable");
+                SceneVisibilityManager.instance.EnableAllPicking();
+                _window.DisableEditing();
+            }
         }
 
         private void OnEnable()
         {
-            _toolbarIcon = new GUIContent(WaypointResourceAsset.Instance.ToolbarIcon);
             ToolManager.activeToolChanged += OnActiveToolChanged;
-        }
 
+            if (_toolbarIcon != null) return;
+
+            _toolbarIcon = new GUIContent(WaypointResourceAsset.Instance.ToolbarIcon);
+        }
 
         private void OnDisable()
         {
             ToolManager.activeToolChanged -= OnActiveToolChanged;
         }
 
-
-        private void OnActiveToolChanged()
-        {
-            if (ToolManager.IsActiveTool(this) == false && _window != null && _window.EditingToggle == true)
-            {
-                _window.DisableEditing();
-            }
-        }
-
         public override void OnActivated()
         {
+
             WaypointSceneController controller = FindObjectOfType<WaypointSceneController>();
 
 
             _window = WaypointEditorWindow.ShowWindow();
-            _window.EnableEditing();
-            Selection.SetActiveObjectWithContext(target, target);
-            EditorWindow.GetWindow<WaypointEditorWindow>().SetSceneData(controller.SceneAsset);
-        }
 
+            if (_window.EditingToggle == true) return;
+
+            Debug.Log("Activate");
+            _window.EnableEditing();
+            _window.SetSceneData(controller.SceneAsset);
+            Selection.SetActiveObjectWithContext(target, target);
+            SceneVisibilityManager.instance.DisableAllPicking();
+        }
     }
 }
