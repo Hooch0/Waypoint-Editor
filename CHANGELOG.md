@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.1.2] - 2025-02-12
+### Fixed
+- An issue where a scene is open but not currently saved on the Computer (can happen when a new scene is made) and attemping to make a asset file will cause an error.
+
+### Changed
+- Changed how disabling selection of scene objects when in waypoint edit mode is handled.
+
 ## [1.1.1] - 2023-12-24
 
 ### Fixed
