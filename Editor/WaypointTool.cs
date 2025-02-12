@@ -61,7 +61,6 @@ namespace Hooch.Waypoint.Editor
         {
             if (ToolManager.IsActiveTool(this) == false && _window != null && _window.EditingToggle == true)
             {
-                Debug.Log("Disable");
                 SceneVisibilityManager.instance.EnableAllPicking();
                 _window.DisableEditing();
             }
@@ -91,7 +90,6 @@ namespace Hooch.Waypoint.Editor
 
             if (_window.EditingToggle == true) return;
 
-            Debug.Log("Activate");
             _window.EnableEditing();
             _window.SetSceneData(controller.SceneAsset);
             Selection.SetActiveObjectWithContext(target, target);
