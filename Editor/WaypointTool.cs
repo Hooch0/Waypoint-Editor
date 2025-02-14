@@ -49,7 +49,7 @@ namespace Hooch.Waypoint.Editor
             Selection.SetActiveObjectWithContext(controller.gameObject, controller.gameObject);
         }
 
-        private static void OnSelectionChanged()
+        private void OnSelectionChanged()
         {
 
             //Check if have a waypoint scene controller selected, if not then
@@ -82,6 +82,7 @@ namespace Hooch.Waypoint.Editor
         {
             ToolManager.activeToolChanged -= OnActiveToolChanged;
             Selection.selectionChanged -= OnSelectionChanged;
+            _window.DisableEditing();
         }
 
         public override void OnActivated()
