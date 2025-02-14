@@ -1,5 +1,7 @@
+using System.CodeDom;
 using UnityEditor;
 using UnityEditor.EditorTools;
+using UnityEditor.SceneManagement;
 using UnityEditor.ShortcutManagement;
 using UnityEngine;
 
@@ -9,6 +11,7 @@ namespace Hooch.Waypoint.Editor
     public class WaypointTool : EditorTool
     {
         public override GUIContent toolbarIcon => _toolbarIcon;
+        public static WaypointTool Instance { get; private set; }
 
         private WaypointEditorWindow _window;
 
@@ -38,37 +41,37 @@ namespace Hooch.Waypoint.Editor
                 WaypointEditorWindow window = EditorWindow.GetWindow<WaypointEditorWindow>();
                 window.SetSceneData(controller.SceneAsset);
             }
+            if (Selection.GetFiltered<WaypointSceneController>(SelectionMode.TopLevel).Length > 0)
+            {
+                ToolManager.SetActiveTool<WaypointTool>();
+            }
+
+            Selection.SetActiveObjectWithContext(controller.gameObject, controller.gameObject);
+        }
+
+        private static void OnSelectionChanged()
+        {
 
             //Check if have a waypoint scene controller selected, if not then
             if (Selection.GetFiltered<WaypointSceneController>(SelectionMode.TopLevel).Length > 0)
             {
                 ToolManager.SetActiveTool<WaypointTool>();
             }
-            else
-            {
-                Selection.selectionChanged += OnSelectionChanged;
-                Selection.SetActiveObjectWithContext(controller.gameObject, controller.gameObject);
-            }
-        }
-
-        private static void OnSelectionChanged()
-        {
-            Selection.selectionChanged -= OnSelectionChanged;
-            ToolManager.SetActiveTool<WaypointTool>();
         }
 
         private void OnActiveToolChanged()
         {
             if (ToolManager.IsActiveTool(this) == false && _window != null && _window.EditingToggle == true)
             {
-                SceneVisibilityManager.instance.EnableAllPicking();
                 _window.DisableEditing();
             }
         }
 
         private void OnEnable()
         {
+            Instance = this;
             ToolManager.activeToolChanged += OnActiveToolChanged;
+            Selection.selectionChanged += OnSelectionChanged;
 
             if (_toolbarIcon != null) return;
 
@@ -78,6 +81,7 @@ namespace Hooch.Waypoint.Editor
         private void OnDisable()
         {
             ToolManager.activeToolChanged -= OnActiveToolChanged;
+            Selection.selectionChanged -= OnSelectionChanged;
         }
 
         public override void OnActivated()
@@ -93,7 +97,6 @@ namespace Hooch.Waypoint.Editor
             _window.EnableEditing();
             _window.SetSceneData(controller.SceneAsset);
             Selection.SetActiveObjectWithContext(target, target);
-            SceneVisibilityManager.instance.DisableAllPicking();
         }
     }
 }

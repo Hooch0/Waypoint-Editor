@@ -222,10 +222,31 @@ namespace Hooch.Waypoint.Editor
         {
             _drawer.SetupGUI();
 
-            HandleWaypointIterationEvents();
+            //Gets a control ID for waypoints
+            int waypointControlID = GUIUtility.GetControlID(FocusType.Passive);
+
+            bool iterationBailed = false;
+            Event current = Event.current;
+            foreach (Waypoint waypoint in _waypoints)
+            {
+                //Handle drawing waypoint 
+                _drawer.DrawWaypoints(waypoint);
+
+                if (IsEditing == true && iterationBailed == false && current.control == false && _selectionBox.IsSelectionBoxDragging == false)
+                {
+
+                    //detecting input on waypoints.
+                    iterationBailed = HandleWaypointIterationEvents(waypoint);
+                }
+            }
 
             if (IsEditing == true)
             {
+                HandleSceneSelection();
+                HandleWaypointDeletionEvent(waypointControlID);
+                HandleWaypointDeselectionEvent(waypointControlID);
+
+
                 HandleWaypointPlacement();
                 _selectionBox.HandleSelectionBox();
                 _selectionMove.HandleFreeMove();
@@ -284,16 +305,22 @@ namespace Hooch.Waypoint.Editor
             }
         }
 
-        private void HandleWaypointIterationEvents()
+        private void HandleSceneSelection()
         {
+            Event current = Event.current;
+            if (current.type == EventType.Layout)
+            {
+                // Prevent selection
+                HandleUtility.AddDefaultControl(0);
+            }
+        }
 
+        private void HandleWaypointDeletionEvent(int waypointControlID)
+        {
             Event current = Event.current;
 
-            //Gets a control ID for the waypoint iteration
-            int waypointsIteraionControlID = GUIUtility.GetControlID(FocusType.Passive);
-            
             //Handles delete key event
-            switch (Event.current.GetTypeForControl(waypointsIteraionControlID))
+            switch (Event.current.GetTypeForControl(waypointControlID))
             {
                 case EventType.KeyDown:
                     //Delete Waypoint
@@ -309,49 +336,13 @@ namespace Hooch.Waypoint.Editor
                     }
                     break;
             }
+        }
 
-            //Handle drawing waypoint and detecting input on them.
-            foreach (Waypoint waypoint in _waypoints)
-            {
-                _drawer.DrawWaypoints(waypoint);
+        private void HandleWaypointDeselectionEvent(int waypointControlID)
+        {
+            Event current = Event.current;
 
-                //Conflicts with placement
-                if (current.control == true || IsEditing == false || _selectionBox.IsSelectionBoxDragging == true) continue;
-
-                //Get a control ID for a waypoint
-                int controlID = GUIUtility.GetControlID(waypoint.GetHashCode(), FocusType.Passive);
-
-                //Get the position of the waypoint convereted to handles space.
-                Vector3 position = Handles.matrix.MultiplyPoint(waypoint.Position);
-
-                //Switch state based on the current event being processed by the IMGUI system.
-                switch (Event.current.GetTypeForControl(controlID))
-                {
-                    //This adds the ability for our Handle to be detected based on mouse distance to the Control.
-                    case EventType.Layout:
-                        HandleUtility.AddControl(controlID, HandleUtility.DistanceToCircle(position, 1));
-                        break;
-                    case EventType.MouseDown:
-                        if (_selectionMove.DetectSelection(waypoint, controlID) == true)
-                        {
-                            _hasAnySelectedWaypoints = true;
-                            return;
-                        }
-                        break;
-
-                    case EventType.MouseUp:
-                        if (_selectionMove.FreeMoveDrag == false && (WaypointInput.GetSelectionInput(current) == true || WaypointInput.GetDeselectionInput(current) == true))
-                        {
-                            _hasAnySelectedWaypoints = HandleSelection(waypoint, controlID);
-                            GUIUtility.hotControl = 0;
-                            break;
-                        }
-                        _hasAnySelectedWaypoints = false;
-                        break;
-                }
-            }
-
-            switch (Event.current.GetTypeForControl(waypointsIteraionControlID))
+            switch (Event.current.GetTypeForControl(waypointControlID))
             {
                 case EventType.MouseUp:
                     if (WaypointInput.GetDeselectionInput(current) == true && _selectedWaypoints.Count > 0 && _hasAnySelectedWaypoints == false && _selectionMove.FreeMoveDrag == false)
@@ -362,6 +353,48 @@ namespace Hooch.Waypoint.Editor
                     }
                     break;
             }
+        }
+
+        private bool HandleWaypointIterationEvents(Waypoint waypoint)
+        {
+            Event current = Event.current;
+
+            _drawer.DrawWaypoints(waypoint);
+
+
+            //Get a control ID for a waypoint
+            int controlID = GUIUtility.GetControlID(waypoint.GetHashCode(), FocusType.Passive);
+
+            //Get the position of the waypoint convereted to handles space.
+            Vector3 position = Handles.matrix.MultiplyPoint(waypoint.Position);
+
+            //Switch state based on the current event being processed by the IMGUI system.
+            switch (Event.current.GetTypeForControl(controlID))
+            {
+                //This adds the ability for our Handle to be detected based on mouse distance to the Control.
+                case EventType.Layout:
+                    HandleUtility.AddControl(controlID, HandleUtility.DistanceToCircle(position, 1));
+                    break;
+                case EventType.MouseDown:
+                    if (_selectionMove.DetectSelection(waypoint, controlID) == true)
+                    {
+                        _hasAnySelectedWaypoints = true;
+                        return true;
+                    }
+                    break;
+
+                case EventType.MouseUp:
+                    if (_selectionMove.FreeMoveDrag == false && (WaypointInput.GetSelectionInput(current) == true || WaypointInput.GetDeselectionInput(current) == true))
+                    {
+                        _hasAnySelectedWaypoints = HandleSelection(waypoint, controlID);
+                        GUIUtility.hotControl = 0;
+                        break;
+                    }
+                    _hasAnySelectedWaypoints = false;
+                    break;
+            }
+
+            return false;
         }
 
         private void HandleWaypointPlacement()
