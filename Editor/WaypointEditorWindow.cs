@@ -62,17 +62,12 @@ namespace Hooch.Waypoint.Editor
         {
             WaypointEditorWindow wnd = ShowWindow();
             wnd.SetSceneData(controller);
-
-            if (wnd._veController != null && wnd._sceneAsset == null)
-            {
-                wnd.LoadWaypointSceneAsset();
-            }
         }
 
-        private void OnEnable() 
+        private void OnEnable()
         {
-            WaypointHandler = new WaypointHandle(this);
-            
+            WaypointHandler ??= new WaypointHandle(this);
+
             SceneView.duringSceneGui += OnDuringSceneGUI;
             Undo.undoRedoPerformed += OnUndoRedoPerformed;
             EditorSceneManager.sceneOpened += OnSceneOpened;
@@ -105,30 +100,30 @@ namespace Hooch.Waypoint.Editor
 
         public void CreateGUI()
         {
-            if (_sceneAsset == null)
-            {
-                LoadWaypointSceneAsset();
-            }
             VisualTreeAsset tree = WaypointResourceAsset.Instance.EditorUI;
             tree.CloneTree(rootVisualElement);
             _veController = new VEWaypointController(rootVisualElement, this);
         }
 
         public void EnableEditing()
-        {   
+        {
+            WaypointHandler ??= new WaypointHandle(this);
+
             _editingToggle = true;
         }
 
         public void DisableEditing()
         {
+            WaypointHandler ??= new WaypointHandle(this);
+
             _editingToggle = false;
             WaypointHandler.ClearSelection();
         }
 
         public void SetSceneData(WaypointSceneAsset controller)
         {
-            UpdateSceneDataIntenral(controller);
             _sceneAsset = controller;
+            UpdateSceneDataIntenral(controller);
             SerializedWaypointEditor.UpdateIfRequiredOrScript();
             SerializedWaypointEditor.ApplyModifiedProperties();
         }
@@ -141,7 +136,7 @@ namespace Hooch.Waypoint.Editor
         public void AddWaypointGroup(WaypointGroup group)
         {
             SerializedWaypointGroups.arraySize++;
-            SerializedWaypointGroups.GetArrayElementAtIndex(SerializedWaypointGroups.arraySize-1).managedReferenceValue = group;
+            SerializedWaypointGroups.GetArrayElementAtIndex(SerializedWaypointGroups.arraySize - 1).managedReferenceValue = group;
             EditorUtility.SetDirty(SerializedSceneAsset.targetObject);
             SerializedSceneAsset.ApplyModifiedProperties();
 
@@ -155,7 +150,7 @@ namespace Hooch.Waypoint.Editor
             for (int i = 0; i < SerializedWaypointGroups.arraySize; i++)
             {
                 WaypointGroup groupProp = (WaypointGroup)SerializedWaypointGroups.GetArrayElementAtIndex(i).managedReferenceValue;
-                
+
                 if (groupProp == group)
                 {
                     index = i;
@@ -165,7 +160,7 @@ namespace Hooch.Waypoint.Editor
 
             if (IsSelectedGroup((WaypointGroup)SerializedWaypointGroups.GetArrayElementAtIndex(index).managedReferenceValue))
             {
-                SetSelectedGroup((WaypointGroup)SerializedWaypointGroups.GetArrayElementAtIndex(index-1).managedReferenceValue);
+                SetSelectedGroup((WaypointGroup)SerializedWaypointGroups.GetArrayElementAtIndex(index - 1).managedReferenceValue);
             }
 
             WaypointHandler.WaypointGroupCleanup(group);
@@ -238,7 +233,7 @@ namespace Hooch.Waypoint.Editor
 
                     if (WaypointHandler.CurrentGroup == group)
                     {
-                        
+
                         return groupProp;
                     }
                 }
@@ -320,15 +315,6 @@ namespace Hooch.Waypoint.Editor
             return groups;
         }
 
-        private void LoadWaypointSceneAsset()
-        {
-            /*WaypointSceneController controller = FindObjectOfType<WaypointSceneController>();
-
-            if (controller != null)
-            {
-                SetSceneData(controller);
-            }*/
-        }
 
         private void OnDuringSceneGUI(SceneView view)
         {
@@ -351,11 +337,6 @@ namespace Hooch.Waypoint.Editor
             if (mode == OpenSceneMode.Single)
             {
                 ResetEditor();
-
-                if (_sceneAsset == null)
-                {
-                    LoadWaypointSceneAsset();
-                }
             }
         }
     }

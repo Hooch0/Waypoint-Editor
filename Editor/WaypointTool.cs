@@ -46,6 +46,8 @@ namespace Hooch.Waypoint.Editor
                 ToolManager.SetActiveTool<WaypointTool>();
             }
 
+            WaypointEditorWindow.ShowWindow();
+
             Selection.SetActiveObjectWithContext(controller.gameObject, controller.gameObject);
         }
 
@@ -82,7 +84,7 @@ namespace Hooch.Waypoint.Editor
         {
             ToolManager.activeToolChanged -= OnActiveToolChanged;
             Selection.selectionChanged -= OnSelectionChanged;
-            _window.DisableEditing();
+            _window?.DisableEditing();
         }
 
         public override void OnActivated()
@@ -90,10 +92,12 @@ namespace Hooch.Waypoint.Editor
 
             WaypointSceneController controller = FindObjectOfType<WaypointSceneController>();
 
+            if (EditorWindow.HasOpenInstances<WaypointEditorWindow>() == true)
+            {
+                _window = EditorWindow.GetWindow<WaypointEditorWindow>();
+            }
 
-            _window = WaypointEditorWindow.ShowWindow();
-
-            if (_window.EditingToggle == true) return;
+            if (_window == null || _window.EditingToggle == true) return;
 
             _window.EnableEditing();
             _window.SetSceneData(controller.SceneAsset);
