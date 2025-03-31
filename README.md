@@ -1,6 +1,18 @@
 # Waypoint Editor (Package)
 
-The Waypoint Editor provides a system to create, manage, add functionality to waypoints that allow AI agents to follow and perform unique actions upon reaching destinations. This is not intended to replace existing pathfinding solutions but instead compliment them and allow for new mechanics.
+The Waypoint Editor provides a system to create, manage, add functionality to waypoints that allow AI agents to follow and perform unique actions upon reaching destinations. This is not intended to replace existing pathfinding solutions but instead compliment them and allow for new mechanics. (This guide is in progress.)
+
+## Setup
+### Settings
+When the system is used for the first time a folder will be created called "Waypoint System Setttings" and in it will be a settings file. In this file you can change the default radius the path handlers use to detect when they have reached a waypoint (note: this radius can also be changed for each individual waypoint in the waypoint editor window). Next, we have the Ground Detection Layer, this is used to detect objects that are acceptable for waypoints to be placed/created on.
+The path for this is Assets -> Waypoint System Settings -> Settings
+
+### Preferences
+There is a preference page for modifying colors the system uses. This can range from selected colors, ID colors, arrow head colors, etc. This page also has the keybinds that are currently used (note: these keybinds cannot be changed)
+To navaigate to this preference page go to Edit -> Preferences -> Waypoint System Setttings.
+
+![image](https://github.com/user-attachments/assets/6a0f5e81-d86d-4795-9251-ef5a074ba7d9)
+
 
 ## Waypoint Event's
 Waypoint Event's allows you add custom logic to a waypoint node. This logic can alter the state of agent traversing it and hook into other system for endless possibilities.
