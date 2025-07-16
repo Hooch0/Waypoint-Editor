@@ -9,7 +9,7 @@ namespace Hooch.Waypoint.Editor
     public class WaypointHandle
     {
         public event Action<List<Waypoint>> SelectionChanged;
-        public event Action SelectionValuesChanged;
+        public event Action SelectionPositionChanged;
 
         public bool IsEditing { get; private set; }
         public bool IsAutolink { get; private set; }
@@ -584,7 +584,7 @@ namespace Hooch.Waypoint.Editor
 
         private void OnSelectionPositionChanged()
         {
-            SelectionValuesChanged?.Invoke();
+            SelectionPositionChanged?.Invoke();
         }
 
         private void OnSelectionBoxUpdated(List<Waypoint> waypoints, bool clearFlag)

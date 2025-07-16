@@ -96,7 +96,7 @@ namespace Hooch.Waypoint.Editor
             SetContainerEnabledStatus(false);
 
             editor.WaypointHandler.SelectionChanged += OnWaypointSelectionChanged;
-            editor.WaypointHandler.SelectionValuesChanged += OnSelectionValuesChanged;
+            editor.WaypointHandler.SelectionPositionChanged += OnSelectionPositionChanged;
 
             _dropdown = new WaypointTypeDropdown<WaypointTransitionLogic>("Transition Logic Overrides", new UnityEditor.IMGUI.Controls.AdvancedDropdownState());
             _dropdown.ItemPicked += OnItemPicked;
@@ -487,7 +487,7 @@ namespace Hooch.Waypoint.Editor
             }
         }
 
-        private void OnSelectionValuesChanged()
+        private void OnSelectionPositionChanged()
         {
             SetPropertiesData();
         }
