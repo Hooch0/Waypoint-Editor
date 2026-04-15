@@ -8,16 +8,16 @@ using UnityEngine;
 [assembly: InternalsVisibleTo("WaypointEditor.Editor")]
 namespace Hooch.Waypoint
 {
-    public class WaypointSceneAsset : ScriptableObject
+    public class WaypointSceneAsset : ScriptableObject, ISerializationCallbackReceiver
     {
 
-        [field: SerializeField] public Waypoint[] RuntimeWaypointMap { get; private set; }
-        [field: SerializeField] public WaypointConnections[] RuntimeConnectionMap { get; private set; }
-        [field: SerializeField] public Waypoint[] TagCacheMap { get; private set; }
+        [field: SerializeReference] public Waypoint[] RuntimeWaypointMap { get; private set; }
+        [field: SerializeReference] public WaypointConnections[] RuntimeConnectionMap { get; private set; }
+        [field: SerializeReference] public Waypoint[] TagCacheMap { get; private set; }
 
         [SerializeReference] private List<WaypointGroup> _waypointGroups = new List<WaypointGroup>();
 
-        internal void Internal_GenerateRuntimeMap()
+        internal void Internal_RebuildRuntimeIndex()
         {
             List<Waypoint> waypoints = GetAllWaypoints();
             List<WaypointConnections> connections = GetAllConnections();
@@ -57,6 +57,13 @@ namespace Hooch.Waypoint
 
             TagCacheMap = tagcache.ToArray();
         }
+
+        void ISerializationCallbackReceiver.OnBeforeSerialize()
+        {
+            Internal_RebuildRuntimeIndex();
+        }
+
+        void ISerializationCallbackReceiver.OnAfterDeserialize() { }
 
         public IReadOnlyWaypoint GetWaypoint(uint id)
         {
@@ -110,7 +117,12 @@ namespace Hooch.Waypoint
 
             foreach (WaypointGroup group in _waypointGroups)
             {
-                waypoints.AddRange(group.Waypoints);
+                if (group == null) continue;
+                foreach (Waypoint waypoint in group.Waypoints)
+                {
+                    if (waypoint == null) continue;
+                    waypoints.Add(waypoint);
+                }
             }
 
             return waypoints.OrderBy(x => x.ID).ToList();
@@ -122,7 +134,12 @@ namespace Hooch.Waypoint
 
             foreach (WaypointGroup group in _waypointGroups)
             {
-                connections.AddRange(group.Connections);
+                if (group == null) continue;
+                foreach (WaypointConnections connection in group.Connections)
+                {
+                    if (connection == null) continue;
+                    connections.Add(connection);
+                }
             }
 
             return connections.OrderBy(x => x.ID).ToList();

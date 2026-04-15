@@ -17,8 +17,6 @@ namespace Hooch.Waypoint.Editor
         private VisualElement _coreInspector;
         private ObjectField _waypointSceneAssetField;
         private Button _createSceneData;
-        private ToolbarButton _generateToolbarButton;
-        private ToolbarToggle _autoGenerateToolbarToggle;
 
         private SerializedObject _serializedSceneAsset;
 
@@ -41,15 +39,6 @@ namespace Hooch.Waypoint.Editor
             _waypointSceneAssetField = _root.Q<ObjectField>(WaypointConstants.WaypointEditor.WaypointSceneDataField);
             _waypointSceneAssetField.RegisterValueChangedCallback(OnWaypointSceneAssetFieldValueChanged);
             _waypointSceneAssetField.BindProperty(editor.SerializedWaypointEditor.FindProperty(WaypointConstants.WaypointEditor.SceneAssetBinding));
-
-            _generateToolbarButton = _root.Q<ToolbarButton>(WaypointConstants.WaypointEditor.GenerateToolbarButton);
-            _generateToolbarButton.clicked += OnGenerateToolbarButtonClicked;
-
-            _autoGenerateToolbarToggle = _root.Q<ToolbarToggle>(WaypointConstants.WaypointEditor.AutoGenerateToolbarToggle);
-            _autoGenerateToolbarToggle.BindProperty(editor.SerializedWaypointEditor.FindProperty(WaypointConstants.WaypointEditor.AutoGenerateBinding));
-
-            _editor.IsDirtyChanged += OnDirtyChanged;
-
         }
 
 
@@ -90,15 +79,5 @@ namespace Hooch.Waypoint.Editor
             _editor.SetSceneData(controller.SceneAsset);
         }
 
-        private void OnGenerateToolbarButtonClicked()
-        {
-            _editor.GenerateRuntimeMap();
-        }
-
-
-        private void OnDirtyChanged(bool val)
-        {
-            _generateToolbarButton.text = val == false ? "Generate" : "*Generate";
-        }
     }
 }

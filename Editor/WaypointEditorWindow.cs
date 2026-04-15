@@ -12,7 +12,6 @@ namespace Hooch.Waypoint.Editor
     public class WaypointEditorWindow : EditorWindow
     {
         public event Action<WaypointGroup> CurrentGroupChanged;
-        public event Action<bool> IsDirtyChanged;
         public SerializedObject SerializedWaypointEditor
         {
             get
@@ -38,9 +37,6 @@ namespace Hooch.Waypoint.Editor
         [SerializeField] private WaypointSceneAsset _sceneAsset;
         private bool _editingToggle;
         [SerializeField] private bool _autolinkToggle;
-        [SerializeField] private bool _autoGenerate;
-
-        private bool _isDirty = false;
 
 
         private Vector2 _windowSize = new Vector2(600, 800);
@@ -211,17 +207,6 @@ namespace Hooch.Waypoint.Editor
             return null;
         }
 
-        public void GenerateRuntimeMap()
-        {
-            if (SceneAsset == null) return;
-            SceneAsset.Internal_GenerateRuntimeMap();
-            EditorUtility.SetDirty(SceneAsset);
-            AssetDatabase.SaveAssetIfDirty(SceneAsset);
-
-            _isDirty = false;
-            IsDirtyChanged?.Invoke(_isDirty);
-        }
-
         public SerializedProperty GetCurrentSerializedGroup()
         {
             if (SerializedWaypointGroups != null)
@@ -244,13 +229,9 @@ namespace Hooch.Waypoint.Editor
 
         public void MarkDirty()
         {
-            _isDirty = true;
-            IsDirtyChanged?.Invoke(_isDirty);
-
-            if (_autoGenerate == true)
-            {
-                GenerateRuntimeMap();
-            }
+            if (SceneAsset == null) return;
+            SceneAsset.Internal_RebuildRuntimeIndex();
+            EditorUtility.SetDirty(SceneAsset);
         }
 
         private void ResetEditor()

@@ -16,8 +16,10 @@ namespace Hooch.Waypoint.Editor
 
             foreach (WaypointGroup group in groups)
             {
+                if (group == null) continue;
                 foreach (Waypoint waypoint in group.Waypoints)
                 {
+                    if (waypoint == null) continue;
                     allIDs.Add(waypoint.ID);
                 }
             }
