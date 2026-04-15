@@ -24,7 +24,9 @@ namespace Hooch.Waypoint
         [SerializeField] private string _tag;
         [SerializeReference] private List<WaypointEvent> _events = new List<WaypointEvent>();
 
-        public Waypoint(uint id, Vector3 position, float detectionRadius) 
+        public Waypoint() { }
+
+        public Waypoint(uint id, Vector3 position, float detectionRadius)
         {
             _iD = id;
             _position = position;

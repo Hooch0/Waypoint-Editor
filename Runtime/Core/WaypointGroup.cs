@@ -13,7 +13,7 @@ namespace Hooch.Waypoint
         public List<Waypoint> Waypoints { get => _waypoints; set => _waypoints = value; }
         public List<WaypointConnections> Connections => _connections;
 
-        [SerializeField] private List<Waypoint> _waypoints = new List<Waypoint>();
+        [SerializeReference] private List<Waypoint> _waypoints = new List<Waypoint>();
         [SerializeReference] private List<WaypointConnections> _connections = new List<WaypointConnections>();
 
         [SerializeField] private string _groupName;

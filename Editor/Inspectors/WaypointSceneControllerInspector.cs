@@ -24,6 +24,12 @@ namespace Hooch.Waypoint.Editor
             if (GUILayout.Button("Get or Create Scene Asset"))
             {
                 controller.SceneAsset = WaypointUtility.GetOrCreateSceneAsset();
+
+                if (EditorWindow.HasOpenInstances<WaypointEditorWindow>())
+                {
+                    WaypointEditorWindow window = EditorWindow.GetWindow<WaypointEditorWindow>(null, false);
+                    window.SetSceneData(controller.SceneAsset);
+                }
             }
 
             GUI.enabled = true;
